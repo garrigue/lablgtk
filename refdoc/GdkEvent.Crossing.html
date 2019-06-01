@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GdkEvent.Key.html">
+<link rel="next" href="GdkEvent.Focus.html">
+<link rel="Up" href="GdkEvent.html">
+<title>LablGTK : GdkEvent.Crossing</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GdkEvent.Key.html" title="GdkEvent.Key">Previous</a>
+&nbsp;<a class="up" href="GdkEvent.html" title="GdkEvent">Up</a>
+&nbsp;<a class="post" href="GdkEvent.Focus.html" title="GdkEvent.Focus">Next</a>
+</div>
+<h1>Module <a href="type_GdkEvent.Crossing.html">GdkEvent.Crossing</a></h1>
+
+<pre><span id="MODULECrossing"><span class="keyword">module</span> Crossing</span>: <code class="code">sig</code> <a href="GdkEvent.Crossing.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `ENTER_NOTIFY | `LEAVE_NOTIFY ] <a href="Gdk.html#TYPEevent">Gdk.event</a></code> </pre>
+
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type"><a href="GdkEvent.html#TYPEany">GdkEvent.any</a> -> <a href="GdkEvent.Crossing.html#TYPEt">t</a></code></pre>
+<pre><span id="VALsubwindow"><span class="keyword">val</span> subwindow</span> : <code class="type"><a href="GdkEvent.Crossing.html#TYPEt">t</a> -> <a href="Gdk.html#TYPEwindow">Gdk.window</a></code></pre>
+<pre><span id="VALtime"><span class="keyword">val</span> time</span> : <code class="type">[< <a href="GdkEvent.html#TYPEtimed">GdkEvent.timed</a> ] <a href="Gdk.html#TYPEevent">Gdk.event</a> -> int32</code></pre>
+<pre><span id="VALx"><span class="keyword">val</span> x</span> : <code class="type"><a href="GdkEvent.Crossing.html#TYPEt">t</a> -> float</code></pre>
+<pre><span id="VALy"><span class="keyword">val</span> y</span> : <code class="type"><a href="GdkEvent.Crossing.html#TYPEt">t</a> -> float</code></pre>
+<pre><span id="VALx_root"><span class="keyword">val</span> x_root</span> : <code class="type"><a href="GdkEvent.Crossing.html#TYPEt">t</a> -> float</code></pre>
+<pre><span id="VALy_root"><span class="keyword">val</span> y_root</span> : <code class="type"><a href="GdkEvent.Crossing.html#TYPEt">t</a> -> float</code></pre>
+<pre><span id="VALmode"><span class="keyword">val</span> mode</span> : <code class="type"><a href="GdkEvent.Crossing.html#TYPEt">t</a> -> <a href="Gdk.Tags.html#TYPEcrossing_mode">Gdk.Tags.crossing_mode</a></code></pre>
+<pre><span id="VALdetail"><span class="keyword">val</span> detail</span> : <code class="type"><a href="GdkEvent.Crossing.html#TYPEt">t</a> -> <a href="Gdk.Tags.html#TYPEnotify_type">Gdk.Tags.notify_type</a></code></pre>
+<pre><span id="VALfocus"><span class="keyword">val</span> focus</span> : <code class="type"><a href="GdkEvent.Crossing.html#TYPEt">t</a> -> bool</code></pre>
+<pre><span id="VALstate"><span class="keyword">val</span> state</span> : <code class="type"><a href="GdkEvent.Crossing.html#TYPEt">t</a> -> int</code></pre></body></html>

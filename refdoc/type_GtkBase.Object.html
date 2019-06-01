@@ -1,0 +1,13 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkBase.Object</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="keywordsign">`</span>giu&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;_ref_sink&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>giu&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_g_object_ref_sink"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;classe:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>giu&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;try_cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b&nbsp;<span class="constructor">Gobject</span>.obj<br>
+<span class="keyword">end</span></code></body></html>

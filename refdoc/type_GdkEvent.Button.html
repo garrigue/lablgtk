@@ -1,0 +1,30 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GdkEvent.Button</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;types&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">BUTTON_PRESS</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">BUTTON_RELEASE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">THREE_BUTTON_PRESS</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">TWO_BUTTON_PRESS</span>&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.types&nbsp;<span class="constructor">Gdk</span>.event<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;time&nbsp;:&nbsp;[&lt;&nbsp;<span class="constructor">GdkEvent</span>.timed&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int32<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;x&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;=&nbsp;<span class="string">"ml_GdkEventButton_x"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;y&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;=&nbsp;<span class="string">"ml_GdkEventButton_y"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;axes&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(float&nbsp;*&nbsp;float)&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventButton_axes"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;state&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_GdkEventButton_state"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;button&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_GdkEventButton_button"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;device&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.device<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventButton_device"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;x_root&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;=&nbsp;<span class="string">"ml_GdkEventButton_x_root"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;y_root&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;=&nbsp;<span class="string">"ml_GdkEventButton_y_root"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_type&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&lt;&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.types&nbsp;]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_event_set_type"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_button&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_event_button_set_button"</span><br>
+<span class="keyword">end</span></code></body></html>

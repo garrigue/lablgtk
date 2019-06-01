@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Glib.html">
+<link rel="next" href="Gpointer.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : Gobject</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Glib.html" title="Glib">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Gpointer.html" title="Gpointer">Next</a>
+</div>
+<h1>Module <a href="type_Gobject.html">Gobject</a></h1>
+
+<pre><span id="MODULEGobject"><span class="keyword">module</span> Gobject</span>: <code class="code">sig</code> <a href="Gobject.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEobj"><span class="keyword">type</span> <code class="type">-'a</code> obj</span> </pre>
+
+
+<pre><span id="TYPEg_type"><span class="keyword">type</span> <code class="type"></code>g_type</span> </pre>
+
+
+<pre><span id="TYPEg_class"><span class="keyword">type</span> <code class="type"></code>g_class</span> </pre>
+
+
+<pre><span id="TYPEg_value"><span class="keyword">type</span> <code class="type"></code>g_value</span> </pre>
+
+
+<pre><span id="TYPEg_closure"><span class="keyword">type</span> <code class="type"></code>g_closure</span> </pre>
+
+
+<pre><span id="TYPEbasic"><span class="keyword">type</span> <code class="type"></code>basic</span> = <code class="type">[ `BOOL of bool<br>       | `CAML of Stdlib.Obj.t<br>       | `CHAR of char<br>       | `FLOAT of float<br>       | `INT of int<br>       | `INT64 of int64<br>       | `POINTER of <a href="Gpointer.html#TYPEboxed">Gpointer.boxed</a> option<br>       | `STRING of string option ]</code> </pre>
+
+
+<pre><span id="TYPEdata_get"><span class="keyword">type</span> <code class="type"></code>data_get</span> = <code class="type">[ `BOOL of bool<br>       | `CAML of Stdlib.Obj.t<br>       | `CHAR of char<br>       | `FLOAT of float<br>       | `INT of int<br>       | `INT64 of int64<br>       | `NONE<br>       | `OBJECT of unit <a href="Gobject.html#TYPEobj">obj</a> option<br>       | `POINTER of <a href="Gpointer.html#TYPEboxed">Gpointer.boxed</a> option<br>       | `STRING of string option ]</code> </pre>
+
+
+<pre><span id="TYPEdata_set"><span class="keyword">type</span> <code class="type">'a</code> data_set</span> = <code class="type">[ `BOOL of bool<br>       | `CAML of Stdlib.Obj.t<br>       | `CHAR of char<br>       | `FLOAT of float<br>       | `INT of int<br>       | `INT32 of int32<br>       | `INT64 of int64<br>       | `LONG of nativeint<br>       | `OBJECT of 'a <a href="Gobject.html#TYPEobj">obj</a> option<br>       | `POINTER of <a href="Gpointer.html#TYPEboxed">Gpointer.boxed</a> option<br>       | `STRING of string option ]</code> </pre>
+
+
+<pre><span id="TYPEbase_data"><span class="keyword">type</span> <code class="type"></code>base_data</span> = <code class="type">[ `BOOLEAN<br>       | `BOXED<br>       | `CHAR<br>       | `DOUBLE<br>       | `ENUM<br>       | `FLAGS<br>       | `FLOAT<br>       | `INT<br>       | `INT64<br>       | `LONG<br>       | `OBJECT<br>       | `POINTER<br>       | `STRING<br>       | `UCHAR<br>       | `UINT<br>       | `UINT64<br>       | `ULONG ]</code> </pre>
+
+
+<pre><span id="TYPEdata_kind"><span class="keyword">type</span> <code class="type"></code>data_kind</span> = <code class="type">[ `BOOLEAN<br>       | `BOXED<br>       | `CHAR<br>       | `DOUBLE<br>       | `ENUM<br>       | `FLAGS<br>       | `FLOAT<br>       | `INT<br>       | `INT32<br>       | `INT64<br>       | `LONG<br>       | `OBJECT<br>       | `OTHER of <a href="Gobject.html#TYPEg_type">g_type</a><br>       | `POINTER<br>       | `STRING<br>       | `UCHAR<br>       | `UINT<br>       | `UINT32<br>       | `UINT64<br>       | `ULONG ]</code> </pre>
+
+
+<pre><span id="TYPEdata_conv_get"><span class="keyword">type</span> <code class="type"></code>data_conv_get</span> = <code class="type">[ `BOOL of bool<br>       | `CAML of Stdlib.Obj.t<br>       | `CHAR of char<br>       | `FLOAT of float<br>       | `INT of int<br>       | `INT32 of int32<br>       | `INT64 of int64<br>       | `NONE<br>       | `OBJECT of unit <a href="Gobject.html#TYPEobj">obj</a> option<br>       | `POINTER of <a href="Gpointer.html#TYPEboxed">Gpointer.boxed</a> option<br>       | `STRING of string option ]</code> </pre>
+
+
+<pre><code><span id="TYPEdata_conv"><span class="keyword">type</span> <code class="type">'a</code> data_conv</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTdata_conv.kind">kind</span>&nbsp;: <code class="type"><a href="Gobject.html#TYPEdata_kind">data_kind</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTdata_conv.proj">proj</span>&nbsp;: <code class="type"><a href="Gobject.html#TYPEdata_conv_get">data_conv_get</a> -> 'a</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTdata_conv.inj">inj</span>&nbsp;: <code class="type">'a -> unit <a href="Gobject.html#TYPEdata_set">data_set</a></code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><code><span id="TYPEproperty"><span class="keyword">type</span> <code class="type">('a, 'b)</code> property</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTproperty.name">name</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTproperty.conv">conv</span>&nbsp;: <code class="type">'b <a href="Gobject.html#TYPEdata_conv">data_conv</a></code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="TYPEfundamental_type"><span class="keyword">type</span> <code class="type"></code>fundamental_type</span> = <code class="type">[ `BOOLEAN<br>       | `BOXED<br>       | `CHAR<br>       | `DOUBLE<br>       | `ENUM<br>       | `FLAGS<br>       | `FLOAT<br>       | `INT<br>       | `INT64<br>       | `INTERFACE<br>       | `INVALID<br>       | `LONG<br>       | `NONE<br>       | `OBJECT<br>       | `PARAM<br>       | `POINTER<br>       | `STRING<br>       | `UCHAR<br>       | `UINT<br>       | `UINT64<br>       | `ULONG ]</code> </pre>
+
+
+<pre><span id="TYPEsignal_type"><span class="keyword">type</span> <code class="type"></code>signal_type</span> = <code class="type">[ `ACTION | `NO_HOOKS | `NO_RECURSE | `RUN_FIRST | `RUN_LAST ]</code> </pre>
+
+
+<pre><span id="EXCEPTIONCannot_cast"><span class="keyword">exception</span> Cannot_cast</span> <span class="keyword">of</span> <code class="type">string * string</code></pre>
+
+<pre><span id="VALget_type"><span class="keyword">val</span> get_type</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">obj</a> -> <a href="Gobject.html#TYPEg_type">g_type</a></code></pre>
+<pre><span id="VALis_a"><span class="keyword">val</span> is_a</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">obj</a> -> string -> bool</code></pre>
+<pre><span id="VALtry_cast"><span class="keyword">val</span> try_cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">obj</a> -> string -> 'b <a href="Gobject.html#TYPEobj">obj</a></code></pre>
+<pre><span id="VALget_oid"><span class="keyword">val</span> get_oid</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">obj</a> -> int</code></pre>
+<pre><span id="VALunsafe_cast"><span class="keyword">val</span> unsafe_cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">obj</a> -> 'b <a href="Gobject.html#TYPEobj">obj</a></code></pre>
+<pre><span id="VALcoerce"><span class="keyword">val</span> coerce</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">obj</a> -> unit <a href="Gobject.html#TYPEobj">obj</a></code></pre>
+<pre><span id="VALcoerce_option"><span class="keyword">val</span> coerce_option</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">obj</a> option -> unit <a href="Gobject.html#TYPEobj">obj</a> option</code></pre>
+<pre><span id="TYPEparam"><span class="keyword">type</span> <code class="type">+'a</code> param</span> </pre>
+
+
+<pre><span id="VALdyn_param"><span class="keyword">val</span> dyn_param</span> : <code class="type">string -> 'a <a href="Gobject.html#TYPEdata_set">data_set</a> -> 'b <a href="Gobject.html#TYPEparam">param</a></code></pre>
+<pre><span id="VALparam"><span class="keyword">val</span> param</span> : <code class="type">('a, 'b) <a href="Gobject.html#TYPEproperty">property</a> -> 'b -> 'a <a href="Gobject.html#TYPEparam">param</a></code></pre>
+<pre><span id="VALunsafe_create"><span class="keyword">val</span> unsafe_create</span> : <code class="type">classe:string -> 'a <a href="Gobject.html#TYPEparam">param</a> list -> 'a <a href="Gobject.html#TYPEobj">obj</a></code></pre>
+<pre><span id="VALunsafe_unref"><span class="keyword">val</span> unsafe_unref</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">obj</a> -> unit</code></pre>
+<pre><span id="VALget_ref_count"><span class="keyword">val</span> get_ref_count</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">obj</a> -> int</code></pre>
+<pre><span id="VALset"><span class="keyword">val</span> set</span> : <code class="type">('a, 'b) <a href="Gobject.html#TYPEproperty">property</a> -> 'a <a href="Gobject.html#TYPEobj">obj</a> -> 'b -> unit</code></pre>
+<pre><span id="VALget"><span class="keyword">val</span> get</span> : <code class="type">('a, 'b) <a href="Gobject.html#TYPEproperty">property</a> -> 'a <a href="Gobject.html#TYPEobj">obj</a> -> 'b</code></pre>
+<pre><span id="VALset_params"><span class="keyword">val</span> set_params</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">obj</a> -> 'a <a href="Gobject.html#TYPEparam">param</a> list -> unit</code></pre>
+<pre><span id="MODULEType"><span class="keyword">module</span> <a href="Gobject.Type.html">Type</a></span>: <code class="code">sig</code> <a href="Gobject.Type.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEValue"><span class="keyword">module</span> <a href="Gobject.Value.html">Value</a></span>: <code class="code">sig</code> <a href="Gobject.Value.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEClosure"><span class="keyword">module</span> <a href="Gobject.Closure.html">Closure</a></span>: <code class="code">sig</code> <a href="Gobject.Closure.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEData"><span class="keyword">module</span> <a href="Gobject.Data.html">Data</a></span>: <code class="code">sig</code> <a href="Gobject.Data.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEProperty"><span class="keyword">module</span> <a href="Gobject.Property.html">Property</a></span>: <code class="code">sig</code> <a href="Gobject.Property.html">..</a> <code class="code">end</code></pre></body></html>

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkText.View.html">
+<link rel="Up" href="GtkText.html">
+<title>LablGTK : GtkText.Iter</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkText.View.html" title="GtkText.View">Previous</a>
+&nbsp;<a class="up" href="GtkText.html" title="GtkText">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_GtkText.Iter.html">GtkText.Iter</a></h1>
+
+<pre><span id="MODULEIter"><span class="keyword">module</span> Iter</span>: <code class="code">sig</code> <a href="GtkText.Iter.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcopy"><span class="keyword">val</span> copy</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a></code></pre>
+<pre><span id="VALassign"><span class="keyword">val</span> assign</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> unit</code></pre>
+<pre><span id="VALget_buffer"><span class="keyword">val</span> get_buffer</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_buffer">Gtk.text_buffer</a></code></pre>
+<pre><span id="VALget_offset"><span class="keyword">val</span> get_offset</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int</code></pre>
+<pre><span id="VALget_line"><span class="keyword">val</span> get_line</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int</code></pre>
+<pre><span id="VALget_line_offset"><span class="keyword">val</span> get_line_offset</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int</code></pre>
+<pre><span id="VALget_line_index"><span class="keyword">val</span> get_line_index</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int</code></pre>
+<pre><span id="VALget_visible_line_index"><span class="keyword">val</span> get_visible_line_index</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int</code></pre>
+<pre><span id="VALget_visible_line_offset"><span class="keyword">val</span> get_visible_line_offset</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int</code></pre>
+<pre><span id="VALget_char"><span class="keyword">val</span> get_char</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Glib.html#TYPEunichar">Glib.unichar</a></code></pre>
+<pre><span id="VALget_slice"><span class="keyword">val</span> get_slice</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> string</code></pre>
+<pre><span id="VALget_text"><span class="keyword">val</span> get_text</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> string</code></pre>
+<pre><span id="VALget_visible_slice"><span class="keyword">val</span> get_visible_slice</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> string</code></pre>
+<pre><span id="VALget_visible_text"><span class="keyword">val</span> get_visible_text</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> string</code></pre>
+<pre><span id="VALget_pixbuf"><span class="keyword">val</span> get_pixbuf</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> option</code></pre>
+<pre><span id="VALget_marks"><span class="keyword">val</span> get_marks</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a> list</code></pre>
+<pre><span id="VALget_toggled_tags"><span class="keyword">val</span> get_toggled_tags</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool -> <a href="Gtk.html#TYPEtext_tag">Gtk.text_tag</a> list</code></pre>
+<pre><span id="VALget_child_anchor"><span class="keyword">val</span> get_child_anchor</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_child_anchor">Gtk.text_child_anchor</a> option</code></pre>
+<pre><span id="VALbegins_tag"><span class="keyword">val</span> begins_tag</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_tag">Gtk.text_tag</a> option -> bool</code></pre>
+<pre><span id="VALends_tag"><span class="keyword">val</span> ends_tag</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_tag">Gtk.text_tag</a> option -> bool</code></pre>
+<pre><span id="VALtoggles_tag"><span class="keyword">val</span> toggles_tag</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_tag">Gtk.text_tag</a> option -> bool</code></pre>
+<pre><span id="VALhas_tag"><span class="keyword">val</span> has_tag</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_tag">Gtk.text_tag</a> -> bool</code></pre>
+<pre><span id="VALget_tags"><span class="keyword">val</span> get_tags</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_tag">Gtk.text_tag</a> list</code></pre>
+<pre><span id="VALeditable"><span class="keyword">val</span> editable</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> default:bool -> bool</code></pre>
+<pre><span id="VALcan_insert"><span class="keyword">val</span> can_insert</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> default:bool -> bool</code></pre>
+<pre><span id="VALstarts_word"><span class="keyword">val</span> starts_word</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALends_word"><span class="keyword">val</span> ends_word</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALinside_word"><span class="keyword">val</span> inside_word</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALstarts_line"><span class="keyword">val</span> starts_line</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALends_line"><span class="keyword">val</span> ends_line</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALstarts_sentence"><span class="keyword">val</span> starts_sentence</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALends_sentence"><span class="keyword">val</span> ends_sentence</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALinside_sentence"><span class="keyword">val</span> inside_sentence</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALis_cursor_position"><span class="keyword">val</span> is_cursor_position</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALget_chars_in_line"><span class="keyword">val</span> get_chars_in_line</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int</code></pre>
+<pre><span id="VALget_bytes_in_line"><span class="keyword">val</span> get_bytes_in_line</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int</code></pre>
+<pre><span id="VALget_language"><span class="keyword">val</span> get_language</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Pango.html#TYPElanguage">Pango.language</a></code></pre>
+<pre><span id="VALis_end"><span class="keyword">val</span> is_end</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALis_start"><span class="keyword">val</span> is_start</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALforward_char"><span class="keyword">val</span> forward_char</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALbackward_char"><span class="keyword">val</span> backward_char</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALforward_chars"><span class="keyword">val</span> forward_chars</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALbackward_chars"><span class="keyword">val</span> backward_chars</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALforward_line"><span class="keyword">val</span> forward_line</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALbackward_line"><span class="keyword">val</span> backward_line</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALforward_lines"><span class="keyword">val</span> forward_lines</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALbackward_lines"><span class="keyword">val</span> backward_lines</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALforward_word_end"><span class="keyword">val</span> forward_word_end</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALforward_word_ends"><span class="keyword">val</span> forward_word_ends</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALbackward_word_start"><span class="keyword">val</span> backward_word_start</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALbackward_word_starts"><span class="keyword">val</span> backward_word_starts</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALforward_cursor_position"><span class="keyword">val</span> forward_cursor_position</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALbackward_cursor_position"><span class="keyword">val</span> backward_cursor_position</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALforward_cursor_positions"><span class="keyword">val</span> forward_cursor_positions</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALbackward_cursor_positions"><span class="keyword">val</span> backward_cursor_positions</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALforward_sentence_end"><span class="keyword">val</span> forward_sentence_end</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALbackward_sentence_start"><span class="keyword">val</span> backward_sentence_start</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALforward_sentence_ends"><span class="keyword">val</span> forward_sentence_ends</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALbackward_sentence_starts"><span class="keyword">val</span> backward_sentence_starts</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALset_offset"><span class="keyword">val</span> set_offset</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> unit</code></pre>
+<pre><span id="VALset_line"><span class="keyword">val</span> set_line</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> unit</code></pre>
+<pre><span id="VALset_line_offset"><span class="keyword">val</span> set_line_offset</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> unit</code></pre>
+<pre><span id="VALset_line_index"><span class="keyword">val</span> set_line_index</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> unit</code></pre>
+<pre><span id="VALset_visible_line_index"><span class="keyword">val</span> set_visible_line_index</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> unit</code></pre>
+<pre><span id="VALset_visible_line_offset"><span class="keyword">val</span> set_visible_line_offset</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> unit</code></pre>
+<pre><span id="VALforward_to_end"><span class="keyword">val</span> forward_to_end</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> unit</code></pre>
+<pre><span id="VALforward_to_line_end"><span class="keyword">val</span> forward_to_line_end</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALforward_to_tag_toggle"><span class="keyword">val</span> forward_to_tag_toggle</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_tag">Gtk.text_tag</a> option -> bool</code></pre>
+<pre><span id="VALbackward_to_tag_toggle"><span class="keyword">val</span> backward_to_tag_toggle</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_tag">Gtk.text_tag</a> option -> bool</code></pre>
+<pre><span id="VALequal"><span class="keyword">val</span> equal</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALcompare"><span class="keyword">val</span> compare</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int</code></pre>
+<pre><span id="VALin_range"><span class="keyword">val</span> in_range</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALorder"><span class="keyword">val</span> order</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> unit</code></pre>
+<pre><span id="VALforward_search"><span class="keyword">val</span> forward_search</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -><br>       string -><br>       ?flags:Gtk.Tags.text_search_flag list -><br>       <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> option -> (<a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> * <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a>) option</code></pre>
+<pre><span id="VALbackward_search"><span class="keyword">val</span> backward_search</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -><br>       string -><br>       ?flags:Gtk.Tags.text_search_flag list -><br>       <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> option -> (<a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> * <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a>) option</code></pre>
+<pre><span id="VALforward_find_char"><span class="keyword">val</span> forward_find_char</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> (<a href="Glib.html#TYPEunichar">Glib.unichar</a> -> bool) -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> option -> bool</code></pre>
+<pre><span id="VALbackward_find_char"><span class="keyword">val</span> backward_find_char</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> (<a href="Glib.html#TYPEunichar">Glib.unichar</a> -> bool) -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> option -> bool</code></pre></body></html>

@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkMisc.Statusbar.html">
+<link rel="next" href="GtkMisc.Calendar.html">
+<link rel="Up" href="GtkMisc.html">
+<title>LablGTK : GtkMisc.StatusIcon</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkMisc.Statusbar.html" title="GtkMisc.Statusbar">Previous</a>
+&nbsp;<a class="up" href="GtkMisc.html" title="GtkMisc">Up</a>
+&nbsp;<a class="post" href="GtkMisc.Calendar.html" title="GtkMisc.Calendar">Next</a>
+</div>
+<h1>Module <a href="type_GtkMisc.StatusIcon.html">GtkMisc.StatusIcon</a></h1>
+
+<pre><span id="MODULEStatusIcon"><span class="keyword">module</span> StatusIcon</span>: <code class="type"><a href="GtkMiscProps.GtkStatusIcon.html">GtkMiscProps.GtkStatusIcon</a></code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEgtk_status_icon">Gtk.gtk_status_icon</a></code></pre>
+<pre><span id="MODULEP"><span class="keyword">module</span> <a href="GtkMiscProps.GtkStatusIcon.P.html">P</a></span>: <code class="code">sig</code> <a href="GtkMiscProps.GtkStatusIcon.P.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULES"><span class="keyword">module</span> <a href="GtkMiscProps.GtkStatusIcon.S.html">S</a></span>: <code class="code">sig</code> <a href="GtkMiscProps.GtkStatusIcon.S.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type"><a href="Gtk.html#TYPEstatus_icon">Gtk.status_icon</a> <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> <a href="Gtk.html#TYPEgtk_status_icon">Gtk.gtk_status_icon</a></code></pre>
+<pre><span id="VALset_from_pixbuf"><span class="keyword">val</span> set_from_pixbuf</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> unit</code></pre>
+<pre><span id="VALset_from_file"><span class="keyword">val</span> set_from_file</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALset_from_stock"><span class="keyword">val</span> set_from_stock</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALset_from_icon_name"><span class="keyword">val</span> set_from_icon_name</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALget_pixbuf"><span class="keyword">val</span> get_pixbuf</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a></code></pre>
+<pre><span id="VALget_stock"><span class="keyword">val</span> get_stock</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string</code></pre>
+<pre><span id="VALget_icon_name"><span class="keyword">val</span> get_icon_name</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string</code></pre>
+<pre><span id="VALget_size"><span class="keyword">val</span> get_size</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int</code></pre>
+<pre><span id="VALset_screen"><span class="keyword">val</span> set_screen</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.html#TYPEscreen">Gdk.screen</a> -> unit</code></pre>
+<pre><span id="VALget_screen"><span class="keyword">val</span> get_screen</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.html#TYPEscreen">Gdk.screen</a></code></pre>
+<pre><span id="VALset_visible"><span class="keyword">val</span> set_visible</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool -> unit</code></pre>
+<pre><span id="VALget_visible"><span class="keyword">val</span> get_visible</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre>
+<pre><span id="VALis_embedded"><span class="keyword">val</span> is_embedded</span> : <code class="type">[> `gtkstatusicon ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre>
+<pre><span id="VALmake_params"><span class="keyword">val</span> make_params</span> : <code class="type">cont:(([> `gtkstatusicon ] as 'a) <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> 'b) -><br>       'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> ?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -> ?visible:bool -> 'b</code></pre></body></html>

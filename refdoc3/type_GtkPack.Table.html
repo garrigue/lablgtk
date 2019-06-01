@@ -1,0 +1,33 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkPack.Table</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.table&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">P</span>&nbsp;=&nbsp;<span class="constructor">GtkPackProps</span>.<span class="constructor">Table</span>.<span class="constructor">P</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;<span class="constructor">Gtk</span>.table&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.table&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_row_spacing&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>table&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_table_set_row_spacing"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_col_spacing&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>table&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_table_set_col_spacing"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make_params&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cont:(([&gt;&nbsp;<span class="keywordsign">`</span>table&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?columns:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?rows:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?homogeneous:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?row_spacings:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?col_spacings:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;has_x&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.expand_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;has_y&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.expand_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;attach&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>table&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;left:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;top:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?right:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?bottom:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?expand:<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.expand_type&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?fill:<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.expand_type&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?shrink:<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.expand_type&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?xpadding:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?ypadding:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+<span class="keyword">end</span></code></body></html>

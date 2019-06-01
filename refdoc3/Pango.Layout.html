@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Pango.Context.html">
+<link rel="Up" href="Pango.html">
+<title>LablGTK : Pango.Layout</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Pango.Context.html" title="Pango.Context">Previous</a>
+&nbsp;<a class="up" href="Pango.html" title="Pango">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Pango.Layout.html">Pango.Layout</a></h1>
+
+<pre><span id="MODULELayout"><span class="keyword">module</span> Layout</span>: <code class="code">sig</code> <a href="Pango.Layout.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Pango.html#TYPElayout">Pango.layout</a></code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type"><a href="Pango.html#TYPEcontext">Pango.context</a> -> <a href="Pango.html#TYPElayout">Pango.layout</a></code></pre>
+<pre><span id="VALcopy"><span class="keyword">val</span> copy</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> <a href="Pango.html#TYPElayout">Pango.layout</a></code></pre>
+<pre><span id="VALget_context"><span class="keyword">val</span> get_context</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> <a href="Pango.html#TYPEcontext">Pango.context</a></code></pre>
+<pre><span id="VALget_text"><span class="keyword">val</span> get_text</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> string</code></pre>
+<pre><span id="VALset_text"><span class="keyword">val</span> set_text</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> string -> unit</code></pre>
+<pre><span id="VALset_markup"><span class="keyword">val</span> set_markup</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> string -> unit</code></pre>
+<pre><span id="VALset_markup_with_accel"><span class="keyword">val</span> set_markup_with_accel</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> string -> <a href="Glib.html#TYPEunichar">Glib.unichar</a> -> unit</code></pre>
+<pre><span id="VALset_font_description"><span class="keyword">val</span> set_font_description</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> <a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> unit</code></pre>
+<pre><span id="VALget_width"><span class="keyword">val</span> get_width</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> int</code></pre>
+<pre><span id="VALset_width"><span class="keyword">val</span> set_width</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> int -> unit</code></pre>
+<pre><span id="VALget_indent"><span class="keyword">val</span> get_indent</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> int</code></pre>
+<pre><span id="VALset_indent"><span class="keyword">val</span> set_indent</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> int -> unit</code></pre>
+<pre><span id="VALget_spacing"><span class="keyword">val</span> get_spacing</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> int</code></pre>
+<pre><span id="VALset_spacing"><span class="keyword">val</span> set_spacing</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> int -> unit</code></pre>
+<pre><span id="VALget_wrap"><span class="keyword">val</span> get_wrap</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> <a href="Pango.Tags.html#TYPEwrap_mode">Pango.Tags.wrap_mode</a></code></pre>
+<pre><span id="VALset_wrap"><span class="keyword">val</span> set_wrap</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> <a href="Pango.Tags.html#TYPEwrap_mode">Pango.Tags.wrap_mode</a> -> unit</code></pre>
+<pre><span id="VALget_justify"><span class="keyword">val</span> get_justify</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> bool</code></pre>
+<pre><span id="VALset_justify"><span class="keyword">val</span> set_justify</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> bool -> unit</code></pre>
+<pre><span id="VALget_single_paragraph_mode"><span class="keyword">val</span> get_single_paragraph_mode</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> bool</code></pre>
+<pre><span id="VALset_single_paragraph_mode"><span class="keyword">val</span> set_single_paragraph_mode</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> bool -> unit</code></pre>
+<pre><span id="VALcontext_changed"><span class="keyword">val</span> context_changed</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> unit</code></pre>
+<pre><span id="VALget_size"><span class="keyword">val</span> get_size</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> <a href="Pango.html#TYPEunits">Pango.units</a> * <a href="Pango.html#TYPEunits">Pango.units</a></code></pre>
+<pre><span id="VALget_pixel_size"><span class="keyword">val</span> get_pixel_size</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> int * int</code></pre>
+<pre><span id="VALget_extent"><span class="keyword">val</span> get_extent</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> <a href="Pango.html#TYPErectangle">Pango.rectangle</a></code></pre>
+<pre><span id="VALget_pixel_extent"><span class="keyword">val</span> get_pixel_extent</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> <a href="Pango.html#TYPErectangle">Pango.rectangle</a></code></pre>
+<pre><span id="VALindex_to_pos"><span class="keyword">val</span> index_to_pos</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> int -> <a href="Pango.html#TYPErectangle">Pango.rectangle</a></code></pre>
+<pre><span id="VALxy_to_index"><span class="keyword">val</span> xy_to_index</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> x:int -> y:int -> int * int * bool</code></pre>
+<pre><span id="VALset_ellipsize"><span class="keyword">val</span> set_ellipsize</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> <a href="Pango.Tags.html#TYPEellipsize_mode">Pango.Tags.ellipsize_mode</a> -> unit</code></pre>
+<pre><span id="VALget_ellipsize"><span class="keyword">val</span> get_ellipsize</span> : <code class="type"><a href="Pango.html#TYPElayout">Pango.layout</a> -> <a href="Pango.Tags.html#TYPEellipsize_mode">Pango.Tags.ellipsize_mode</a></code></pre></body></html>

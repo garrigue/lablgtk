@@ -1,0 +1,53 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkTree.TreeModel</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_model<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_flags&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkEnums</span>.tree_model_flags&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_get_flags"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_n_columns&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_get_n_columns"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_column_type&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_get_column_type"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;alloc_iter&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;=&nbsp;<span class="string">"ml_alloc_GtkTreeIter"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;copy_iter&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_iter_copy"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_iter&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_path&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_get_path"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_value&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;row:<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;column:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_value&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_get_value"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;_get_iter_first&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_get_iter_first"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_iter_first&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;iter_next&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_iter_next"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;iter_has_child&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_iter_has_child"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;iter_n_children&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_iter_n_children"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;iter_nth_child&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;parent:<span class="constructor">Gtk</span>.tree_iter&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_iter_nth_child"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter_children&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?nth:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter_parent&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;foreach&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_foreach"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;row_changed&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>treemodel&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_model_row_changed"</span><br>
+<span class="keyword">end</span></code></body></html>

@@ -1,0 +1,64 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkTreeProps.CellRendererText</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.cell_renderer_text&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">P</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;background&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;background_gdk&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;<span class="constructor">Gdk</span>.color)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;background_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;editable&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;editable_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;family&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;family_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;font&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;font_desc&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;<span class="constructor">Pango</span>.font_description)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;foreground&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;foreground_gdk&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;<span class="constructor">Gdk</span>.color)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;foreground_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;markup&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;rise&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;rise_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;scale&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;float)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;scale_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;single_paragraph_mode&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;size&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;size_points&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;float)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;size_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;stretch&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;<span class="constructor">PangoEnums</span>.stretch)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;stretch_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;strikethrough&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;strikethrough_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;style&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;<span class="constructor">PangoEnums</span>.style)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;style_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;text&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;underline&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;<span class="constructor">PangoEnums</span>.underline)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;underline_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;variant&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;<span class="constructor">PangoEnums</span>.variant)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;variant_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;weight&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;weight_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">S</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;edited&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;],&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.cell_renderer_text&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.cell_renderer_text&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_fixed_height_from_font&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>cellrenderertext&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_cell_renderer_text_set_fixed_height_from_font"</span><br>
+<span class="keyword">end</span></code></body></html>

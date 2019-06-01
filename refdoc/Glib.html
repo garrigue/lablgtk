@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GdkPixbuf.html">
+<link rel="next" href="Gobject.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : Glib</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GdkPixbuf.html" title="GdkPixbuf">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Gobject.html" title="Gobject">Next</a>
+</div>
+<h1>Module <a href="type_Glib.html">Glib</a></h1>
+
+<pre><span id="MODULEGlib"><span class="keyword">module</span> Glib</span>: <code class="code">sig</code> <a href="Glib.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Interface to Glib functions</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/glib/stable/index.html">index</a></small></ul>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEunichar"><span class="keyword">type</span> <code class="type"></code>unichar</span> = <code class="type">int</code> </pre>
+
+
+<pre><span id="TYPEunistring"><span class="keyword">type</span> <code class="type"></code>unistring</span> = <code class="type"><a href="Glib.html#TYPEunichar">unichar</a> array</code> </pre>
+
+
+<pre><span id="EXCEPTIONGError"><span class="keyword">exception</span> GError</span> <span class="keyword">of</span> <code class="type">string</code></pre>
+<h4 id="3_MainEventLoop">Main Event Loop</h4>
+<pre><span id="MODULEMain"><span class="keyword">module</span> <a href="Glib.Main.html">Main</a></span>: <code class="code">sig</code> <a href="Glib.Main.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>The Main Event Loop</p>
+
+</div>
+
+<pre><span id="VALint_of_priority"><span class="keyword">val</span> int_of_priority</span> : <code class="type">[< `DEFAULT | `DEFAULT_IDLE | `HIGH | `HIGH_IDLE | `LOW ] -> int</code></pre>
+<pre><span id="MODULETimeout"><span class="keyword">module</span> <a href="Glib.Timeout.html">Timeout</a></span>: <code class="code">sig</code> <a href="Glib.Timeout.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+
+<pre><span id="MODULEIdle"><span class="keyword">module</span> <a href="Glib.Idle.html">Idle</a></span>: <code class="code">sig</code> <a href="Glib.Idle.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<h4 id="3_IOChannels">IO Channels</h4>
+<pre><span id="MODULEIo"><span class="keyword">module</span> <a href="Glib.Io.html">Io</a></span>: <code class="code">sig</code> <a href="Glib.Io.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>IO Channels</p>
+
+</div>
+<h4 id="3_MessageLogging">Message Logging</h4>
+<pre><span id="MODULEMessage"><span class="keyword">module</span> <a href="Glib.Message.html">Message</a></span>: <code class="code">sig</code> <a href="Glib.Message.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<h4 id="3_CharacterSets">Character Sets</h4>
+<pre><span id="MODULEConvert"><span class="keyword">module</span> <a href="Glib.Convert.html">Convert</a></span>: <code class="code">sig</code> <a href="Glib.Convert.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Character Set Conversion</p>
+
+</div>
+
+<pre><span id="MODULEUnichar"><span class="keyword">module</span> <a href="Glib.Unichar.html">Unichar</a></span>: <code class="code">sig</code> <a href="Glib.Unichar.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Unicode Manipulation</p>
+
+</div>
+
+<pre><span id="MODULEUtf8"><span class="keyword">module</span> <a href="Glib.Utf8.html">Utf8</a></span>: <code class="code">sig</code> <a href="Glib.Utf8.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Unicode Manipulation</p>
+
+</div>
+
+<pre><span id="MODULEMarkup"><span class="keyword">module</span> <a href="Glib.Markup.html">Markup</a></span>: <code class="code">sig</code> <a href="Glib.Markup.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<h4 id="3_MiscellaneousUtilityFunctions">Miscellaneous Utility Functions</h4>
+<pre><span id="VALget_prgname"><span class="keyword">val</span> get_prgname</span> : <code class="type">unit -> string</code></pre>
+<pre><span id="VALset_prgname"><span class="keyword">val</span> set_prgname</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="VALget_application_name"><span class="keyword">val</span> get_application_name</span> : <code class="type">unit -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.2</li>
+</ul>
+</div>
+
+<pre><span id="VALset_application_name"><span class="keyword">val</span> set_application_name</span> : <code class="type">string -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.2</li>
+</ul>
+</div>
+
+<pre><span id="VALget_user_name"><span class="keyword">val</span> get_user_name</span> : <code class="type">unit -> string</code></pre>
+<pre><span id="VALget_real_name"><span class="keyword">val</span> get_real_name</span> : <code class="type">unit -> string</code></pre>
+<pre><span id="VALget_home_dir"><span class="keyword">val</span> get_home_dir</span> : <code class="type">unit -> string option</code></pre>
+<pre><span id="VALget_tmp_dir"><span class="keyword">val</span> get_tmp_dir</span> : <code class="type">unit -> string</code></pre>
+<pre><span id="VALfind_program_in_path"><span class="keyword">val</span> find_program_in_path</span> : <code class="type">string -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Not_found</code> if the program is not found in the path
+        or is not executable</li>
+</ul>
+</div>
+
+<pre><span id="VALgetenv"><span class="keyword">val</span> getenv</span> : <code class="type">string -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Not_found</code> if the environment variable is not found.</li>
+</ul>
+</div>
+
+<pre><span id="VALsetenv"><span class="keyword">val</span> setenv</span> : <code class="type">string -> string -> bool -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<li><b>Raises</b> <code>Failure</code> if the environment variable couldn't be set.</li>
+</ul>
+</div>
+
+<pre><span id="VALunsetenv"><span class="keyword">val</span> unsetenv</span> : <code class="type">string -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+</ul>
+</div>
+
+<pre><span id="VALget_user_cache_dir"><span class="keyword">val</span> get_user_cache_dir</span> : <code class="type">unit -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="VALget_user_data_dir"><span class="keyword">val</span> get_user_data_dir</span> : <code class="type">unit -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="VALget_user_config_dir"><span class="keyword">val</span> get_user_config_dir</span> : <code class="type">unit -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="VALget_system_data_dirs"><span class="keyword">val</span> get_system_data_dirs</span> : <code class="type">unit -> string list</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="VALget_system_config_dirs"><span class="keyword">val</span> get_system_config_dirs</span> : <code class="type">unit -> string list</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="VALusleep"><span class="keyword">val</span> usleep</span> : <code class="type">int -> unit</code></pre></body></html>

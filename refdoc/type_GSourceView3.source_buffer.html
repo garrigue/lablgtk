@@ -1,0 +1,112 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GSourceView3.source_buffer</title>
+</head>
+<body>
+<code class="code"><span class="constructor">GtkSourceView3_types</span>.source_buffer&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keyword">object</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;obj&nbsp;:&nbsp;<span class="constructor">GtkSourceView3_types</span>.source_buffer&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_selection_clipboard&nbsp;:&nbsp;<span class="constructor">GData</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;apply_tag&nbsp;:&nbsp;<span class="constructor">GText</span>.tag&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;apply_tag_by_name&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;as_buffer&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_buffer<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;as_source_buffer&nbsp;:&nbsp;<span class="constructor">GtkSourceView3_types</span>.source_buffer&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_iter_to_source_mark&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?category:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;begin_not_undoable_action&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;begin_user_action&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;bounds&nbsp;:&nbsp;<span class="constructor">GText</span>.iter&nbsp;*&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;can_redo&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;can_undo&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;char_count&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;connect&nbsp;:&nbsp;<span class="constructor">GSourceView3</span>.source_buffer_signals<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;copy_clipboard&nbsp;:&nbsp;<span class="constructor">GData</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;create_child_anchor&nbsp;:&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.child_anchor<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;create_mark&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?left_gravity:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_mark<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;create_source_mark&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?category:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GSourceView3</span>.source_mark<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;create_tag&nbsp;:&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.tag_property&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.tag<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;cursor_position&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;cut_clipboard&nbsp;:&nbsp;?default_editable:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GData</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;delete&nbsp;:&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;delete_interactive&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?default_editable:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;delete_mark&nbsp;:&nbsp;<span class="constructor">GText</span>.mark&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;delete_selection&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?interactive:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?default_editable:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;end_iter&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;end_not_undoable_action&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;end_user_action&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;ensure_highlight&nbsp;:&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_iter_to_source_mark&nbsp;:&nbsp;?category:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_iter&nbsp;:&nbsp;<span class="constructor">GText</span>.position&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_iter_at_byte&nbsp;:&nbsp;line:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_iter_at_char&nbsp;:&nbsp;?line:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_iter_at_mark&nbsp;:&nbsp;<span class="constructor">GText</span>.mark&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_mark&nbsp;:&nbsp;<span class="constructor">GText</span>.mark&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_mark<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_oid&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_text&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?slice:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?visible:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;has_selection&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;highlight_matching_brackets&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;highlight_syntax&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?iter:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?tag_names:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?tags:<span class="constructor">GText</span>.tag&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_child_anchor&nbsp;:&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.child_anchor&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_interactive&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?iter:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?default_editable:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_pixbuf&nbsp;:&nbsp;iter:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pixbuf:<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_range&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;iter:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_range_interactive&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;iter:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?default_editable:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;iter_backward_to_context_class_toggle&nbsp;:&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;iter_forward_to_context_class_toggle&nbsp;:&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;iter_has_context_class&nbsp;:&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;language&nbsp;:&nbsp;<span class="constructor">GSourceView3</span>.source_language&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;line_count&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;max_undo_levels&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;misc&nbsp;:&nbsp;<span class="constructor">GObj</span>.gobject_ops<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;modified&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;move_mark&nbsp;:&nbsp;<span class="constructor">GText</span>.mark&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;where:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;paste_clipboard&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?iter:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?default_editable:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GData</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;place_cursor&nbsp;:&nbsp;where:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;redo&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_all_tags&nbsp;:&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_selection_clipboard&nbsp;:&nbsp;<span class="constructor">GData</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_source_marks&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?category:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_tag&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GText</span>.tag&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_tag_by_name&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;select_range&nbsp;:&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;selection_bounds&nbsp;:&nbsp;<span class="constructor">GText</span>.iter&nbsp;*&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_highlight_matching_brackets&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_highlight_syntax&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_language&nbsp;:&nbsp;<span class="constructor">GSourceView3</span>.source_language&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_max_undo_levels&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_modified&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_style_scheme&nbsp;:&nbsp;<span class="constructor">GSourceView3</span>.source_style_scheme&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_text&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_undo_manager&nbsp;:&nbsp;<span class="constructor">GSourceView3</span>.source_undo_manager&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;source_marks_at_iter&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?category:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GSourceView3</span>.source_mark&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;source_marks_at_line&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?category:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GSourceView3</span>.source_mark&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;start_iter&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;style_scheme&nbsp;:&nbsp;<span class="constructor">GSourceView3</span>.source_style_scheme&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;tag_table&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_tag_table<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;undo&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;undo_manager&nbsp;:&nbsp;<span class="constructor">GSourceView3</span>.source_undo_manager<br>
+<span class="keyword">end</span></code></body></html>

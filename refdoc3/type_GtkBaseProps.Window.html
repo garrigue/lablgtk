@@ -1,0 +1,99 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkBaseProps.Window</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.window&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">P</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;title&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;accept_focus&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;decorated&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;default_height&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;default_width&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;deletable&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;destroy_with_parent&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;focus_on_map&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;gravity&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;<span class="constructor">GdkEnums</span>.gravity)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;has_toplevel_focus&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;icon&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;option)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;icon_name&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_active&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;modal&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;window_position&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;<span class="constructor">GtkEnums</span>.window_position)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;opacity&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;float)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;resizable&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;role&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;screen&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;<span class="constructor">Gdk</span>.screen)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;skip_pager_hint&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;skip_taskbar_hint&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;startup_id&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;transient_for&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;<span class="constructor">Gtk</span>.window&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;option)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;kind&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;<span class="constructor">GtkEnums</span>.window_type)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;type_hint&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;<span class="constructor">GdkEnums</span>.window_type_hint)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;urgency_hint&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">S</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;activate_default&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;activate_focus&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;frame_event&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;keys_changed&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;move_focus&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;<span class="constructor">GtkEnums</span>.direction_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;set_focus&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;],&nbsp;<span class="constructor">Gtk</span>.widget&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?kind:<span class="constructor">GtkEnums</span>.window_type&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.window&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.window&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;present&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_window_present"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;iconify&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_window_iconify"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;deiconify&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_deiconify"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;stick&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_window_stick"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;unstick&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_window_unstick"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;maximize&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_window_maximize"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;unmaximize&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_unmaximize"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;fullscreen&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_fullscreen"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;unfullscreen&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_unfullscreen"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_decorated&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_set_decorated"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_mnemonic_modifier&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.modifier&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_set_mnemonic_modifier"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;move&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;y:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_move"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;parse_geometry&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_parse_geometry"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;reshow_with_initial_size&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_reshow_with_initial_size"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;resize&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;width:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;height:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_resize"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_role&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_set_role"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_role&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_window_get_role"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make_params&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cont:(([&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?title:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?decorated:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?deletable:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?focus_on_map:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?icon:<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?icon_name:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?modal:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?position:<span class="constructor">GtkEnums</span>.window_position&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?resizable:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?screen:<span class="constructor">Gdk</span>.screen&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?type_hint:<span class="constructor">GdkEnums</span>.window_type_hint&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?urgency_hint:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b<br>
+<span class="keyword">end</span></code></body></html>

@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GText.tag-c.html">
+<link rel="next" href="GText.iter-c.html">
+<link rel="Up" href="GText.html">
+<title>LablGTK : GText.nocopy_iter</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GText.tag-c.html" title="GText.tag">Previous</a>
+&nbsp;<a class="up" href="GText.html" title="GText">Up</a>
+&nbsp;<a class="post" href="GText.iter-c.html" title="GText.iter">Next</a>
+</div>
+<h1>Class <a href="type_GText.nocopy_iter.html">GText.nocopy_iter</a></h1>
+
+<pre><span id="TYPEnocopy_iter"><span class="keyword">class</span> nocopy_iter</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> </code><code class="code">object</code> <a href="GText.nocopy_iter-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/gtk-GtkTextIter.html">gtk-GtkTextIter</a></small></ul>
+</div>
+<br><hr width="100%">
+
+<pre><span id="METHODas_iter"><span class="keyword">method</span> as_iter</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a></code></pre>
+<pre><span id="METHODassign"><span class="keyword">method</span> assign</span> : <code class="type"><a href="GText.nocopy_iter-c.html">nocopy_iter</a> -> unit</code></pre>
+<pre><span id="METHODbackward_char"><span class="keyword">method</span> backward_char</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODbackward_chars"><span class="keyword">method</span> backward_chars</span> : <code class="type">int -> bool</code></pre>
+<pre><span id="METHODbackward_cursor_position"><span class="keyword">method</span> backward_cursor_position</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODbackward_cursor_positions"><span class="keyword">method</span> backward_cursor_positions</span> : <code class="type">int -> bool</code></pre>
+<pre><span id="METHODbackward_find_char"><span class="keyword">method</span> backward_find_char</span> : <code class="type">?limit:<a href="GText.iter-c.html">iter</a> -> (<a href="Glib.html#TYPEunichar">Glib.unichar</a> -> bool) -> bool</code></pre>
+<pre><span id="METHODbackward_line"><span class="keyword">method</span> backward_line</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODbackward_lines"><span class="keyword">method</span> backward_lines</span> : <code class="type">int -> bool</code></pre>
+<pre><span id="METHODbackward_sentence_start"><span class="keyword">method</span> backward_sentence_start</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODbackward_sentence_starts"><span class="keyword">method</span> backward_sentence_starts</span> : <code class="type">int -> bool</code></pre>
+<pre><span id="METHODbackward_to_tag_toggle"><span class="keyword">method</span> backward_to_tag_toggle</span> : <code class="type"><a href="GText.tag-c.html">tag</a> option -> bool</code></pre>
+<pre><span id="METHODbackward_word_start"><span class="keyword">method</span> backward_word_start</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODbackward_word_starts"><span class="keyword">method</span> backward_word_starts</span> : <code class="type">int -> bool</code></pre>
+<pre><span id="METHODforward_char"><span class="keyword">method</span> forward_char</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODforward_chars"><span class="keyword">method</span> forward_chars</span> : <code class="type">int -> bool</code></pre>
+<pre><span id="METHODforward_cursor_position"><span class="keyword">method</span> forward_cursor_position</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODforward_cursor_positions"><span class="keyword">method</span> forward_cursor_positions</span> : <code class="type">int -> bool</code></pre>
+<pre><span id="METHODforward_find_char"><span class="keyword">method</span> forward_find_char</span> : <code class="type">?limit:<a href="GText.iter-c.html">iter</a> -> (<a href="Glib.html#TYPEunichar">Glib.unichar</a> -> bool) -> bool</code></pre>
+<pre><span id="METHODforward_line"><span class="keyword">method</span> forward_line</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODforward_lines"><span class="keyword">method</span> forward_lines</span> : <code class="type">int -> bool</code></pre>
+<pre><span id="METHODforward_sentence_end"><span class="keyword">method</span> forward_sentence_end</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODforward_sentence_ends"><span class="keyword">method</span> forward_sentence_ends</span> : <code class="type">int -> bool</code></pre>
+<pre><span id="METHODforward_to_end"><span class="keyword">method</span> forward_to_end</span> : <code class="type">unit</code></pre>
+<pre><span id="METHODforward_to_tag_toggle"><span class="keyword">method</span> forward_to_tag_toggle</span> : <code class="type"><a href="GText.tag-c.html">tag</a> option -> bool</code></pre>
+<pre><span id="METHODforward_word_end"><span class="keyword">method</span> forward_word_end</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODforward_word_ends"><span class="keyword">method</span> forward_word_ends</span> : <code class="type">int -> bool</code></pre>
+<pre><span id="METHODforward_to_line_end"><span class="keyword">method</span> forward_to_line_end</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_line"><span class="keyword">method</span> set_line</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_line_index"><span class="keyword">method</span> set_line_index</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_line_offset"><span class="keyword">method</span> set_line_offset</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_offset"><span class="keyword">method</span> set_offset</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_visible_line_index"><span class="keyword">method</span> set_visible_line_index</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_visible_line_offset"><span class="keyword">method</span> set_visible_line_offset</span> : <code class="type">int -> unit</code></pre></body></html>

@@ -1,0 +1,42 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkButton.Toolbar</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.toolbar&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">P</span>&nbsp;=&nbsp;<span class="constructor">GtkButtonProps</span>.<span class="constructor">Toolbar</span>.<span class="constructor">P</span><br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">S</span>&nbsp;=&nbsp;<span class="constructor">GtkButtonProps</span>.<span class="constructor">Toolbar</span>.<span class="constructor">S</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;<span class="constructor">Gtk</span>.toolbar&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.toolbar&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make_params&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cont:(([&gt;&nbsp;<span class="keywordsign">`</span>toolbar&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?icon_size:<span class="constructor">GtkEnums</span>.icon_size&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?icon_size_set:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?show_arrow:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?toolbar_style:<span class="constructor">GtkEnums</span>.toolbar_style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;set&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?orientation:<span class="constructor">GtkEnums</span>.orientation&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?style:<span class="constructor">GtkEnums</span>.toolbar_style&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>orientable&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span>toolbar&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;unset_style&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolbar&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_toolbar_unset_style"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;insert&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolbar&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_toolbar_insert"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_item_index&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolbar&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_toolbar_get_item_index"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_n_items&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolbar&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_toolbar_get_n_items"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_nth_item&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolbar&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="keywordsign">`</span>toolitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_toolbar_get_nth_item"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_drop_index&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolbar&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_toolbar_get_drop_index"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_drop_highlight_item&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolbar&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_toolbar_set_drop_highlight_item"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_relief_style&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>toolbar&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkEnums</span>.relief_style<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_toolbar_get_relief_style"</span><br>
+<span class="keyword">end</span></code></body></html>

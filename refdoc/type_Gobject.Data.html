@@ -1,0 +1,43 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : Gobject.Data</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;boolean&nbsp;:&nbsp;bool&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;char&nbsp;:&nbsp;char&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uchar&nbsp;:&nbsp;char&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;int&nbsp;:&nbsp;int&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uint&nbsp;:&nbsp;int&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;long&nbsp;:&nbsp;int&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ulong&nbsp;:&nbsp;int&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;flags&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gpointer</span>.variant_table&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;list&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;enum&nbsp;:&nbsp;([&gt;&nbsp;&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gpointer</span>.variant_table&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;int32&nbsp;:&nbsp;int32&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uint32&nbsp;:&nbsp;int32&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;int64&nbsp;:&nbsp;int64&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uint64&nbsp;:&nbsp;int64&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;float&nbsp;:&nbsp;float&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;double&nbsp;:&nbsp;float&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;string&nbsp;:&nbsp;string&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;string_option&nbsp;:&nbsp;string&nbsp;option&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pointer&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.boxed&nbsp;option&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;unsafe_pointer&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;unsafe_pointer_option&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;option&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;boxed&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.boxed&nbsp;option&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;unsafe_boxed&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;unsafe_boxed_option&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;option&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;gobject&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;gobject_option&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;option&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;gobject_by_name&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;caml&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;caml_option&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;option&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;wrap&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;inj:(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;proj:(<span class="keywordsign">'</span>b&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b&nbsp;<span class="constructor">Gobject</span>.data_conv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.data_conv<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_value&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.data_conv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_value&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_value&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.data_conv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_value<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_type&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.data_conv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_type<br>
+<span class="keyword">end</span></code></body></html>

@@ -1,0 +1,19 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkData.AccelMap</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;load&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_accel_map_load"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;save&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_accel_map_save"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;add_entry&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?key:<span class="constructor">Gdk</span>.keysym&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?modi:<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.modifier&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;change_entry&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?key:<span class="constructor">Gdk</span>.keysym&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?modi:<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.modifier&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?replace:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;foreach&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(path:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;key:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;modi:<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.modifier&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;changed:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_accel_map_foreach"</span><br>
+<span class="keyword">end</span></code></body></html>

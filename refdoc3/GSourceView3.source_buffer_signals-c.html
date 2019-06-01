@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GSourceView3.source_undo_manager-c.html">
+<link rel="next" href="GSourceView3.source_buffer-c.html">
+<link rel="Up" href="GSourceView3.html">
+<title>LablGTK : GSourceView3.source_buffer_signals</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GSourceView3.source_undo_manager-c.html" title="GSourceView3.source_undo_manager">Previous</a>
+&nbsp;<a class="up" href="GSourceView3.html" title="GSourceView3">Up</a>
+&nbsp;<a class="post" href="GSourceView3.source_buffer-c.html" title="GSourceView3.source_buffer">Next</a>
+</div>
+<h1>Class <a href="type_GSourceView3.source_buffer_signals.html">GSourceView3.source_buffer_signals</a></h1>
+
+<pre><span id="TYPEsource_buffer_signals"><span class="keyword">class</span> source_buffer_signals</span> : <code class="type">GtkSourceView3_types.source_buffer <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GSourceView3.source_buffer_signals-c.html">..</a> <code class="code">end</code></pre><br><b>Inherits</b><ul>
+<li><a href="GText.buffer_signals_type-c.html"><code class="code">GText.buffer_signals_type</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="METHODchanged"><span class="keyword">method</span> changed</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODhighlight_updated"><span class="keyword">method</span> highlight_updated</span> : <code class="type">callback:(<a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODsource_mark_updated"><span class="keyword">method</span> source_mark_updated</span> : <code class="type">callback:(GtkSourceView3_types.source_mark <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_can_redo"><span class="keyword">method</span> notify_can_redo</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_can_undo"><span class="keyword">method</span> notify_can_undo</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_highlight_matching_brackets"><span class="keyword">method</span> notify_highlight_matching_brackets</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_highlight_syntax"><span class="keyword">method</span> notify_highlight_syntax</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_max_undo_levels"><span class="keyword">method</span> notify_max_undo_levels</span> : <code class="type">callback:(int -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre></body></html>

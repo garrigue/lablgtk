@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkTreeProps.TreeView.P.html">
+<link rel="Up" href="GtkTreeProps.TreeView.html">
+<title>LablGTK : GtkTreeProps.TreeView.S</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkTreeProps.TreeView.P.html" title="GtkTreeProps.TreeView.P">Previous</a>
+&nbsp;<a class="up" href="GtkTreeProps.TreeView.html" title="GtkTreeProps.TreeView">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_GtkTreeProps.TreeView.S.html">GtkTreeProps.TreeView.S</a></h1>
+
+<pre><span id="MODULES"><span class="keyword">module</span> S</span>: <code class="code">sig</code> <a href="GtkTreeProps.TreeView.S.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcolumns_changed"><span class="keyword">val</span> columns_changed</span> : <code class="type">([> `treeview ], unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALcursor_changed"><span class="keyword">val</span> cursor_changed</span> : <code class="type">([> `treeview ], unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALexpand_collapse_cursor_row"><span class="keyword">val</span> expand_collapse_cursor_row</span> : <code class="type">([> `treeview ], logical:bool -> expand:bool -> all:bool -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALmove_cursor"><span class="keyword">val</span> move_cursor</span> : <code class="type">([> `treeview ], <a href="GtkEnums.html#TYPEmovement_step">GtkEnums.movement_step</a> -> int -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALrow_activated"><span class="keyword">val</span> row_activated</span> : <code class="type">([> `treeview ], <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> <a href="Gtk.html#TYPEtree_view_column">Gtk.tree_view_column</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit)<br>       <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALrow_collapsed"><span class="keyword">val</span> row_collapsed</span> : <code class="type">([> `treeview ], <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALrow_expanded"><span class="keyword">val</span> row_expanded</span> : <code class="type">([> `treeview ], <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALselect_all"><span class="keyword">val</span> select_all</span> : <code class="type">([> `treeview ], unit -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALselect_cursor_parent"><span class="keyword">val</span> select_cursor_parent</span> : <code class="type">([> `treeview ], unit -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALselect_cursor_row"><span class="keyword">val</span> select_cursor_row</span> : <code class="type">([> `treeview ], start_editing:bool -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALset_scroll_adjustments"><span class="keyword">val</span> set_scroll_adjustments</span> : <code class="type">([> `treeview ],<br>        <a href="Gtk.html#TYPEadjustment">Gtk.adjustment</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> option -> <a href="Gtk.html#TYPEadjustment">Gtk.adjustment</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> option -> unit)<br>       <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALstart_interactive_search"><span class="keyword">val</span> start_interactive_search</span> : <code class="type">([> `treeview ], unit -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALtest_collapse_row"><span class="keyword">val</span> test_collapse_row</span> : <code class="type">([> `treeview ], <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALtest_expand_row"><span class="keyword">val</span> test_expand_row</span> : <code class="type">([> `treeview ], <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALtoggle_cursor_row"><span class="keyword">val</span> toggle_cursor_row</span> : <code class="type">([> `treeview ], unit -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALunselect_all"><span class="keyword">val</span> unselect_all</span> : <code class="type">([> `treeview ], unit -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre></body></html>

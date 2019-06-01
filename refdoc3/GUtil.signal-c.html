@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GUtil.memo-c.html">
+<link rel="next" href="GUtil.ml_signals-c.html">
+<link rel="Up" href="GUtil.html">
+<title>LablGTK : GUtil.signal</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GUtil.memo-c.html" title="GUtil.memo">Previous</a>
+&nbsp;<a class="up" href="GUtil.html" title="GUtil">Up</a>
+&nbsp;<a class="post" href="GUtil.ml_signals-c.html" title="GUtil.ml_signals">Next</a>
+</div>
+<h1>Class <a href="type_GUtil.signal.html">GUtil.signal</a></h1>
+
+<pre><span id="TYPEsignal"><span class="keyword">class</span> <code class="type">['a]</code> signal</span> : <code class="type">unit -> </code><code class="code">object</code> <a href="GUtil.signal-c.html">..</a> <code class="code">end</code></pre><br><hr width="100%">
+
+<pre><span id="ATTcallbacks"><span class="keyword">val</span> <span class="keyword">mutable</span> callbacks</span> : <code class="type">(<a href="GtkSignal.html#TYPEid">GtkSignal.id</a> * ('a -> unit)) list</code></pre>
+<pre><span id="METHODcallbacks"><span class="keyword">method</span> callbacks</span> : <code class="type">(<a href="GtkSignal.html#TYPEid">GtkSignal.id</a> * ('a -> unit)) list</code></pre>
+<pre><span id="METHODcall"><span class="keyword">method</span> call</span> : <code class="type">'a -> unit</code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type">after:bool -> callback:('a -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODdisconnect"><span class="keyword">method</span> disconnect</span> : <code class="type"><a href="GtkSignal.html#TYPEid">GtkSignal.id</a> -> bool</code></pre></body></html>

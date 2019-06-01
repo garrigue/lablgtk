@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GPack.button_box-c.html">
+<link rel="next" href="GPack.grid-c.html">
+<link rel="Up" href="GPack.html">
+<title>LablGTK : GPack.table</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GPack.button_box-c.html" title="GPack.button_box">Previous</a>
+&nbsp;<a class="up" href="GPack.html" title="GPack">Up</a>
+&nbsp;<a class="post" href="GPack.grid-c.html" title="GPack.grid">Next</a>
+</div>
+<h1>Class <a href="type_GPack.table.html">GPack.table</a></h1>
+
+<pre><span id="TYPEtable"><span class="keyword">class</span> table</span> : <code class="type"><a href="Gtk.html#TYPEtable">Gtk.table</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.table-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<div class="info-desc">
+<p>Pack widgets in regular patterns</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTable.html">GtkTable</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GContainer.container_full-c.html"><code class="code">GContainer.container_full</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type"><a href="Gtk.html#TYPEtable">Gtk.table</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODattach"><span class="keyword">method</span> attach</span> : <code class="type">left:int -><br>       top:int -><br>       ?right:int -><br>       ?bottom:int -><br>       ?expand:<a href="Gtk.Tags.html#TYPEexpand_type">Gtk.Tags.expand_type</a> -><br>       ?fill:<a href="Gtk.Tags.html#TYPEexpand_type">Gtk.Tags.expand_type</a> -><br>       ?shrink:<a href="Gtk.Tags.html#TYPEexpand_type">Gtk.Tags.expand_type</a> -><br>       ?xpadding:int -> ?ypadding:int -> <a href="GObj.widget-c.html">GObj.widget</a> -> unit</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">left</code> : column number to attach the left side of the widget to</div>
+<div class="param_info"><code class="code">top</code> : row number to attach the top of the widget to</div>
+<div class="param_info"><code class="code">right</code> : default value is <code class="code">left+1</code></div>
+<div class="param_info"><code class="code">bottom</code> : default value is <code class="code">top+1</code></div>
+<div class="param_info"><code class="code">expand</code> : default value is <code class="code">`NONE</code></div>
+<div class="param_info"><code class="code">fill</code> : default value is <code class="code">`BOTH</code></div>
+<div class="param_info"><code class="code">shrink</code> : default value is <code class="code">`NONE</code></div>
+
+<pre><span id="METHODcol_spacings"><span class="keyword">method</span> col_spacings</span> : <code class="type">int</code></pre>
+<pre><span id="METHODcolumns"><span class="keyword">method</span> columns</span> : <code class="type">int</code></pre>
+<pre><span id="METHODhomogeneous"><span class="keyword">method</span> homogeneous</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODrow_spacings"><span class="keyword">method</span> row_spacings</span> : <code class="type">int</code></pre>
+<pre><span id="METHODrows"><span class="keyword">method</span> rows</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_col_spacing"><span class="keyword">method</span> set_col_spacing</span> : <code class="type">int -> int -> unit</code></pre>
+<pre><span id="METHODset_col_spacings"><span class="keyword">method</span> set_col_spacings</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_columns"><span class="keyword">method</span> set_columns</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_homogeneous"><span class="keyword">method</span> set_homogeneous</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_row_spacing"><span class="keyword">method</span> set_row_spacing</span> : <code class="type">int -> int -> unit</code></pre>
+<pre><span id="METHODset_row_spacings"><span class="keyword">method</span> set_row_spacings</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_rows"><span class="keyword">method</span> set_rows</span> : <code class="type">int -> unit</code></pre></body></html>

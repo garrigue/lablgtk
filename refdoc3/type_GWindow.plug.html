@@ -1,0 +1,95 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GWindow.plug</title>
+</head>
+<body>
+<code class="code"><span class="constructor">Gtk</span>.plug&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keyword">object</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;obj&nbsp;:&nbsp;<span class="constructor">Gtk</span>.plug&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;accept_focus&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;activate_default&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;activate_focus&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_accel_group&nbsp;:&nbsp;<span class="constructor">Gtk</span>.accel_group&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;all_children&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;as_widget&nbsp;:&nbsp;<span class="constructor">Gtk</span>.widget&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;as_window&nbsp;:&nbsp;<span class="constructor">Gtk</span>.window&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;border_width&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;child&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;children&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;connect&nbsp;:&nbsp;<span class="constructor">GWindow</span>.plug_signals<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;decorated&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;default_height&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;default_width&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;deiconify&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;deletable&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;destroy&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;destroy_with_parent&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;drag&nbsp;:&nbsp;<span class="constructor">GObj</span>.drag_ops<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;event&nbsp;:&nbsp;<span class="constructor">GObj</span>.event_ops<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;focus&nbsp;:&nbsp;<span class="constructor">GContainer</span>.focus<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;focus_on_map&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_oid&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;gravity&nbsp;:&nbsp;<span class="constructor">GdkEnums</span>.gravity<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;has_toplevel_focus&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;icon&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;icon_name&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;iconify&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;is_active&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;kind&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.window_type<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;misc&nbsp;:&nbsp;<span class="constructor">GObj</span>.misc_ops<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;modal&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;move&nbsp;:&nbsp;x:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;y:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;opacity&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;parse_geometry&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;position&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.window_position<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;present&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;resizable&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;resize&nbsp;:&nbsp;width:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;height:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;resize_mode&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.resize_mode<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;role&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;screen&nbsp;:&nbsp;<span class="constructor">Gdk</span>.screen<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_accept_focus&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_border_width&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_decorated&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_default_height&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_default_size&nbsp;:&nbsp;width:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;height:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_default_width&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_deletable&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_destroy_with_parent&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_focus_on_map&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_geometry_hints&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?min_size:int&nbsp;*&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?max_size:int&nbsp;*&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?base_size:int&nbsp;*&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?aspect:float&nbsp;*&nbsp;float&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?resize_inc:int&nbsp;*&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?win_gravity:<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.gravity&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?pos:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?user_pos:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?user_size:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GObj</span>.widget&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_gravity&nbsp;:&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.gravity&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_icon&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_icon_name&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_modal&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_opacity&nbsp;:&nbsp;float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_position&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.window_position&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_resizable&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_resize_mode&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.resize_mode&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_role&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_screen&nbsp;:&nbsp;<span class="constructor">Gdk</span>.screen&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_skip_pager_hint&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_skip_taskbar_hint&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_title&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_transient_for&nbsp;:&nbsp;<span class="constructor">Gtk</span>.window&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_type_hint&nbsp;:&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.window_type_hint&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_urgency_hint&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_wmclass&nbsp;:&nbsp;name:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;clas:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;show&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;skip_pager_hint&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;skip_taskbar_hint&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;title&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;type_hint&nbsp;:&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.window_type_hint<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;urgency_hint&nbsp;:&nbsp;bool<br>
+<span class="keyword">end</span></code></body></html>

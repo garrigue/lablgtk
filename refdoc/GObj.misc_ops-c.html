@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GObj.drag_ops-c.html">
+<link rel="next" href="GObj.widget-c.html">
+<link rel="Up" href="GObj.html">
+<title>LablGTK : GObj.misc_ops</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GObj.drag_ops-c.html" title="GObj.drag_ops">Previous</a>
+&nbsp;<a class="up" href="GObj.html" title="GObj">Up</a>
+&nbsp;<a class="post" href="GObj.widget-c.html" title="GObj.widget">Next</a>
+</div>
+<h1>Class <a href="type_GObj.misc_ops.html">GObj.misc_ops</a></h1>
+
+<pre><span id="TYPEmisc_ops"><span class="keyword">class</span> misc_ops</span> : <code class="type"><a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.misc_ops-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkWidget.html">GtkWidget</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GObj.gobject_ops-c.html"><code class="code">GObj.gobject_ops</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type"><a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODactivate"><span class="keyword">method</span> activate</span> : <code class="type">unit -> bool</code></pre>
+<pre><span id="METHODadd_accelerator"><span class="keyword">method</span> add_accelerator</span> : <code class="type">'a.<br>         sgn:('a, unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a> -><br>         group:<a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -><br>         ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -><br>         ?flags:Gtk.Tags.accel_flag list -> <a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> unit</code></pre>
+<pre><span id="METHODadd_selection_target"><span class="keyword">method</span> add_selection_target</span> : <code class="type">target:string -> ?info:int -> <a href="Gdk.html#TYPEatom">Gdk.atom</a> -> unit</code></pre>
+<pre><span id="METHODallocation"><span class="keyword">method</span> allocation</span> : <code class="type"><a href="Gtk.html#TYPErectangle">Gtk.rectangle</a></code></pre>
+<pre><span id="METHODclear_selection_targets"><span class="keyword">method</span> clear_selection_targets</span> : <code class="type"><a href="Gdk.html#TYPEatom">Gdk.atom</a> -> unit</code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GObj.misc_signals-c.html">misc_signals</a></code></pre>
+<pre><span id="METHODconvert_selection"><span class="keyword">method</span> convert_selection</span> : <code class="type">target:string -> ?time:int32 -> <a href="Gdk.html#TYPEatom">Gdk.atom</a> -> bool</code></pre>
+<pre><span id="METHODcreate_pango_context"><span class="keyword">method</span> create_pango_context</span> : <code class="type"><a href="GPango.context_rw-c.html">GPango.context_rw</a></code></pre>
+<pre><span id="METHODdraw"><span class="keyword">method</span> draw</span> : <code class="type"><a href="Gdk.html#TYPEcairo">Gdk.cairo</a> -> unit</code></pre>
+<pre><span id="METHODgrab_default"><span class="keyword">method</span> grab_default</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODgrab_focus"><span class="keyword">method</span> grab_focus</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODgrab_selection"><span class="keyword">method</span> grab_selection</span> : <code class="type">?time:int32 -> <a href="Gdk.html#TYPEatom">Gdk.atom</a> -> bool</code></pre>
+<pre><span id="METHODhas_tooltip"><span class="keyword">method</span> has_tooltip</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODhide"><span class="keyword">method</span> hide</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODintersect"><span class="keyword">method</span> intersect</span> : <code class="type"><a href="Gdk.Rectangle.html#TYPEt">Gdk.Rectangle.t</a> -> <a href="Gdk.Rectangle.html#TYPEt">Gdk.Rectangle.t</a> option</code></pre>
+<pre><span id="METHODis_ancestor"><span class="keyword">method</span> is_ancestor</span> : <code class="type"><a href="GObj.widget-c.html">widget</a> -> bool</code></pre>
+<pre><span id="METHODmap"><span class="keyword">method</span> map</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODmodify_bg"><span class="keyword">method</span> modify_bg</span> : <code class="type">(Gtk.Tags.state_type * <a href="GDraw.html#TYPEcolor">GDraw.color</a>) list -> unit</code></pre>
+<pre><span id="METHODmodify_base"><span class="keyword">method</span> modify_base</span> : <code class="type">(Gtk.Tags.state_type * <a href="GDraw.html#TYPEcolor">GDraw.color</a>) list -> unit</code></pre>
+<pre><span id="METHODmodify_fg"><span class="keyword">method</span> modify_fg</span> : <code class="type">(Gtk.Tags.state_type * <a href="GDraw.html#TYPEcolor">GDraw.color</a>) list -> unit</code></pre>
+<pre><span id="METHODmodify_text"><span class="keyword">method</span> modify_text</span> : <code class="type">(Gtk.Tags.state_type * <a href="GDraw.html#TYPEcolor">GDraw.color</a>) list -> unit</code></pre>
+<pre><span id="METHODmodify_font"><span class="keyword">method</span> modify_font</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> unit</code></pre>
+<pre><span id="METHODmodify_font_by_name"><span class="keyword">method</span> modify_font_by_name</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODname"><span class="keyword">method</span> name</span> : <code class="type">string</code></pre>
+<pre><span id="METHODparent"><span class="keyword">method</span> parent</span> : <code class="type"><a href="GObj.widget-c.html">widget</a> option</code></pre>
+<pre><span id="METHODpango_context"><span class="keyword">method</span> pango_context</span> : <code class="type"><a href="GPango.context-c.html">GPango.context</a></code></pre>
+<pre><span id="METHODpointer"><span class="keyword">method</span> pointer</span> : <code class="type">int * int</code></pre>
+<pre><span id="METHODrealize"><span class="keyword">method</span> realize</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODremove_accelerator"><span class="keyword">method</span> remove_accelerator</span> : <code class="type">group:<a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> <a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> unit</code></pre>
+<pre><span id="METHODrender_icon"><span class="keyword">method</span> render_icon</span> : <code class="type">size:Gtk.Tags.icon_size -> <a href="GtkStock.html#TYPEid">GtkStock.id</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a></code></pre>
+<pre><span id="METHODreparent"><span class="keyword">method</span> reparent</span> : <code class="type"><a href="GObj.widget-c.html">widget</a> -> unit</code></pre>
+<pre><span id="METHODset_app_paintable"><span class="keyword">method</span> set_app_paintable</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_can_default"><span class="keyword">method</span> set_can_default</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_can_focus"><span class="keyword">method</span> set_can_focus</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_double_buffered"><span class="keyword">method</span> set_double_buffered</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_has_tooltip"><span class="keyword">method</span> set_has_tooltip</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_name"><span class="keyword">method</span> set_name</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_sensitive"><span class="keyword">method</span> set_sensitive</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_size_chars"><span class="keyword">method</span> set_size_chars</span> : <code class="type">?desc:<a href="Pango.html#TYPEfont_description">Pango.font_description</a> -><br>       ?lang:string -> ?width:int -> ?height:int -> unit -> unit</code></pre>
+<pre><span id="METHODset_style"><span class="keyword">method</span> set_style</span> : <code class="type"><a href="GObj.style-c.html">style</a> -> unit</code></pre>
+<pre><span id="METHODset_size_request"><span class="keyword">method</span> set_size_request</span> : <code class="type">?width:int -> ?height:int -> unit -> unit</code></pre>
+<pre><span id="METHODset_tooltip_markup"><span class="keyword">method</span> set_tooltip_markup</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_tooltip_text"><span class="keyword">method</span> set_tooltip_text</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODshow"><span class="keyword">method</span> show</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODshow_all"><span class="keyword">method</span> show_all</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODstyle"><span class="keyword">method</span> style</span> : <code class="type"><a href="GObj.style-c.html">style</a></code></pre>
+<pre><span id="METHODtooltip_markup"><span class="keyword">method</span> tooltip_markup</span> : <code class="type">string</code></pre>
+<pre><span id="METHODtooltip_text"><span class="keyword">method</span> tooltip_text</span> : <code class="type">string</code></pre>
+<pre><span id="METHODtoplevel"><span class="keyword">method</span> toplevel</span> : <code class="type"><a href="GObj.widget-c.html">widget</a></code></pre>
+<pre><span id="METHODunmap"><span class="keyword">method</span> unmap</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODunparent"><span class="keyword">method</span> unparent</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODunrealize"><span class="keyword">method</span> unrealize</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODvisible"><span class="keyword">method</span> visible</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODvisual"><span class="keyword">method</span> visual</span> : <code class="type"><a href="Gdk.html#TYPEvisual">Gdk.visual</a></code></pre>
+<pre><span id="METHODvisual_depth"><span class="keyword">method</span> visual_depth</span> : <code class="type">int</code></pre>
+<pre><span id="METHODwindow"><span class="keyword">method</span> window</span> : <code class="type"><a href="Gdk.html#TYPEwindow">Gdk.window</a></code></pre></body></html>

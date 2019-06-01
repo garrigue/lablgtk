@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GWindow.dialog_any-c.html">
+<link rel="next" href="GWindow.file_chooser_dialog_signals-c.html">
+<link rel="Up" href="GWindow.html">
+<title>LablGTK : GWindow.about_dialog</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GWindow.dialog_any-c.html" title="GWindow.dialog_any">Previous</a>
+&nbsp;<a class="up" href="GWindow.html" title="GWindow">Up</a>
+&nbsp;<a class="post" href="GWindow.file_chooser_dialog_signals-c.html" title="GWindow.file_chooser_dialog_signals">Next</a>
+</div>
+<h1>Class <a href="type_GWindow.about_dialog.html">GWindow.about_dialog</a></h1>
+
+<pre><span id="TYPEabout_dialog"><span class="keyword">class</span> about_dialog</span> : <code class="type">[> <a href="Gtk.html#TYPEabout_dialog">Gtk.about_dialog</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.about_dialog-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkAboutDialog.html">GtkAboutDialog</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GWindow.dialog_skel-c.html"><code class="code">GWindow.dialog_skel</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">([> <a href="Gtk.html#TYPEabout_dialog">Gtk.about_dialog</a> ] as 'a) <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GWindow.Buttons.html#TYPEabout">Buttons.about</a> <a href="GWindow.dialog_signals-c.html">dialog_signals</a></code></pre>
+<pre><span id="METHODartists"><span class="keyword">method</span> artists</span> : <code class="type">string list</code></pre>
+<pre><span id="METHODauthors"><span class="keyword">method</span> authors</span> : <code class="type">string list</code></pre>
+<pre><span id="METHODcomments"><span class="keyword">method</span> comments</span> : <code class="type">string</code></pre>
+<pre><span id="METHODcopyright"><span class="keyword">method</span> copyright</span> : <code class="type">string</code></pre>
+<pre><span id="METHODdocumenters"><span class="keyword">method</span> documenters</span> : <code class="type">string list</code></pre>
+<pre><span id="METHODlicense"><span class="keyword">method</span> license</span> : <code class="type">string</code></pre>
+<pre><span id="METHODlogo"><span class="keyword">method</span> logo</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a></code></pre>
+<pre><span id="METHODlogo_icon_name"><span class="keyword">method</span> logo_icon_name</span> : <code class="type">string</code></pre><div class="info ">
+<div class="info-desc">
+<p>The property <code class="code">name</code> is left unchanged, but it will
+        access <code class="code">program-name</code> if version is higher than 2.12</p>
+</div>
+</div>
+
+<pre><span id="METHODname"><span class="keyword">method</span> name</span> : <code class="type">string</code></pre>
+<pre><span id="METHODtranslator_credits"><span class="keyword">method</span> translator_credits</span> : <code class="type">string</code></pre>
+<pre><span id="METHODversion"><span class="keyword">method</span> version</span> : <code class="type">string</code></pre>
+<pre><span id="METHODwebsite"><span class="keyword">method</span> website</span> : <code class="type">string</code></pre>
+<pre><span id="METHODwebsite_label"><span class="keyword">method</span> website_label</span> : <code class="type">string</code></pre>
+<pre><span id="METHODwrap_license"><span class="keyword">method</span> wrap_license</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_artists"><span class="keyword">method</span> set_artists</span> : <code class="type">string list -> unit</code></pre>
+<pre><span id="METHODset_authors"><span class="keyword">method</span> set_authors</span> : <code class="type">string list -> unit</code></pre>
+<pre><span id="METHODset_comments"><span class="keyword">method</span> set_comments</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_copyright"><span class="keyword">method</span> set_copyright</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_documenters"><span class="keyword">method</span> set_documenters</span> : <code class="type">string list -> unit</code></pre>
+<pre><span id="METHODset_license"><span class="keyword">method</span> set_license</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_logo"><span class="keyword">method</span> set_logo</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> unit</code></pre>
+<pre><span id="METHODset_logo_icon_name"><span class="keyword">method</span> set_logo_icon_name</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_name"><span class="keyword">method</span> set_name</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_translator_credits"><span class="keyword">method</span> set_translator_credits</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_version"><span class="keyword">method</span> set_version</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_website"><span class="keyword">method</span> set_website</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_website_label"><span class="keyword">method</span> set_website_label</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_wrap_license"><span class="keyword">method</span> set_wrap_license</span> : <code class="type">bool -> unit</code></pre></body></html>

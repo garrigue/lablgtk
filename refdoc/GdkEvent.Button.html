@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GdkEvent.Motion.html">
+<link rel="next" href="GdkEvent.Scroll.html">
+<link rel="Up" href="GdkEvent.html">
+<title>LablGTK : GdkEvent.Button</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GdkEvent.Motion.html" title="GdkEvent.Motion">Previous</a>
+&nbsp;<a class="up" href="GdkEvent.html" title="GdkEvent">Up</a>
+&nbsp;<a class="post" href="GdkEvent.Scroll.html" title="GdkEvent.Scroll">Next</a>
+</div>
+<h1>Module <a href="type_GdkEvent.Button.html">GdkEvent.Button</a></h1>
+
+<pre><span id="MODULEButton"><span class="keyword">module</span> Button</span>: <code class="code">sig</code> <a href="GdkEvent.Button.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEtypes"><span class="keyword">type</span> <code class="type"></code>types</span> = <code class="type">[ `BUTTON_PRESS | `BUTTON_RELEASE | `THREE_BUTTON_PRESS | `TWO_BUTTON_PRESS ]</code> </pre>
+
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type"><a href="GdkEvent.Button.html#TYPEtypes">types</a> <a href="Gdk.html#TYPEevent">Gdk.event</a></code> </pre>
+
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type"><a href="GdkEvent.html#TYPEany">GdkEvent.any</a> -> <a href="GdkEvent.Button.html#TYPEt">t</a></code></pre>
+<pre><span id="VALtime"><span class="keyword">val</span> time</span> : <code class="type">[< <a href="GdkEvent.html#TYPEtimed">GdkEvent.timed</a> ] <a href="Gdk.html#TYPEevent">Gdk.event</a> -> int32</code></pre>
+<pre><span id="VALx"><span class="keyword">val</span> x</span> : <code class="type"><a href="GdkEvent.Button.html#TYPEt">t</a> -> float</code></pre>
+<pre><span id="VALy"><span class="keyword">val</span> y</span> : <code class="type"><a href="GdkEvent.Button.html#TYPEt">t</a> -> float</code></pre>
+<pre><span id="VALaxes"><span class="keyword">val</span> axes</span> : <code class="type"><a href="GdkEvent.Button.html#TYPEt">t</a> -> (float * float) option</code></pre>
+<pre><span id="VALstate"><span class="keyword">val</span> state</span> : <code class="type"><a href="GdkEvent.Button.html#TYPEt">t</a> -> int</code></pre>
+<pre><span id="VALbutton"><span class="keyword">val</span> button</span> : <code class="type"><a href="GdkEvent.Button.html#TYPEt">t</a> -> int</code></pre>
+<pre><span id="VALdevice"><span class="keyword">val</span> device</span> : <code class="type"><a href="GdkEvent.Button.html#TYPEt">t</a> -> <a href="Gdk.html#TYPEdevice">Gdk.device</a></code></pre>
+<pre><span id="VALx_root"><span class="keyword">val</span> x_root</span> : <code class="type"><a href="GdkEvent.Button.html#TYPEt">t</a> -> float</code></pre>
+<pre><span id="VALy_root"><span class="keyword">val</span> y_root</span> : <code class="type"><a href="GdkEvent.Button.html#TYPEt">t</a> -> float</code></pre>
+<pre><span id="VALset_type"><span class="keyword">val</span> set_type</span> : <code class="type"><a href="GdkEvent.Button.html#TYPEt">t</a> -> [< <a href="GdkEvent.Button.html#TYPEtypes">types</a> ] -> unit</code></pre>
+<pre><span id="VALset_button"><span class="keyword">val</span> set_button</span> : <code class="type"><a href="GdkEvent.Button.html#TYPEt">t</a> -> int -> unit</code></pre></body></html>

@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GMenu.menu_shell-c.html">
+<link rel="Up" href="GMenu.html">
+<title>LablGTK : GMenu.factory</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GMenu.menu_shell-c.html" title="GMenu.menu_shell">Previous</a>
+&nbsp;<a class="up" href="GMenu.html" title="GMenu">Up</a>
+&nbsp;</div>
+<h1>Class <a href="type_GMenu.factory.html">GMenu.factory</a></h1>
+
+<pre><span id="TYPEfactory"><span class="keyword">class</span> <code class="type">[#<a href="GMenu.menu_shell-c.html">menu_shell</a>]</code> factory</span> : <code class="type">?accel_group:<a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> ?accel_path:string -> ?accel_modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> ?accel_flags:Gtk.Tags.accel_flag list -> #<a href="GMenu.menu_shell-c.html">menu_shell</a> as 'a -> </code><code class="code">object</code> <a href="GMenu.factory-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<div class="info-desc">
+<p>A factory for menus</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkItemFactory.html">GtkItemFactory</a></small></ul>
+</div>
+<br><hr width="100%">
+
+<pre><span id="ATTflags"><span class="keyword">val</span> flags</span> : <code class="type">Gtk.Tags.accel_flag list</code></pre>
+<pre><span id="ATTgroup"><span class="keyword">val</span> group</span> : <code class="type"><a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a></code></pre>
+<pre><span id="ATTm"><span class="keyword">val</span> m</span> : <code class="type"><a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list</code></pre>
+<pre><span id="ATTmenu_shell"><span class="keyword">val</span> menu_shell</span> : <code class="type">'a</code></pre>
+<pre><span id="METHODaccel_group"><span class="keyword">method</span> accel_group</span> : <code class="type"><a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a></code></pre>
+<pre><span id="METHODadd_check_item"><span class="keyword">method</span> add_check_item</span> : <code class="type">?active:bool -><br>       ?key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -><br>       ?callback:(bool -> unit) -> string -> <a href="GMenu.check_menu_item-c.html">check_menu_item</a></code></pre>
+<pre><span id="METHODadd_item"><span class="keyword">method</span> add_item</span> : <code class="type">?key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -><br>       ?callback:(unit -> unit) -> ?submenu:<a href="GMenu.menu-c.html">menu</a> -> string -> <a href="GMenu.menu_item-c.html">menu_item</a></code></pre>
+<pre><span id="METHODadd_radio_item"><span class="keyword">method</span> add_radio_item</span> : <code class="type">?group:<a href="Gtk.html#TYPEradio_menu_item">Gtk.radio_menu_item</a> <a href="Gtk.html#TYPEgroup">Gtk.group</a> -><br>       ?active:bool -><br>       ?key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -><br>       ?callback:(bool -> unit) -> string -> <a href="GMenu.radio_menu_item-c.html">radio_menu_item</a></code></pre>
+<pre><span id="METHODadd_submenu"><span class="keyword">method</span> add_submenu</span> : <code class="type">?key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> string -> <a href="GMenu.menu-c.html">menu</a></code></pre>
+<pre><span id="METHODbind"><span class="keyword">method</span> <span class="keyword">private</span> bind</span> : <code class="type">?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -><br>       ?key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -><br>       ?callback:(unit -> unit) -> <a href="GMenu.menu_item-c.html">menu_item</a> -> string -> unit</code></pre>
+<pre><span id="METHODmenu"><span class="keyword">method</span> menu</span> : <code class="type">'a</code></pre></body></html>

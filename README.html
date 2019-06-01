@@ -1,0 +1,1378 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.8" />
+<title>LablGTK2: an interface to the GIMP Tool Kit</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
+}
+
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>LablGTK2: an interface to the GIMP Tool Kit</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p><a href="http://lablgtk.forge.ocamlcore.org">Visit the website for infos and updates</a></p></div>
+<div class="paragraph"><p><a href="http://forge.ocamlcore.org/tracker/?group_id=220">Report bugs on the OCaml Forge</a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_run_and_compile_lablgtk2_code">Run and compile lablgtk2 code</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_run_the_examples">Run the examples</h3>
+<div class="paragraph"><p>From the examples directory, type:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>lablgtk2 ???.ml</code></pre>
+</div></div>
+<div class="paragraph"><p>In case you haven&#8217;t installed lablgtk2 yet, add the -localdir switch:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>../src/lablgtk2 -localdir ???.ml</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_how_to_compile_and_link">How to compile and link</h3>
+<div class="paragraph"><p>The lablgtk2 script loads an extra module GtkInit, whose only contents
+is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>let locale = GtkMain.Main.init ()</code></pre>
+</div></div>
+<div class="paragraph"><p>To compile the examples, you must either add this line, or add this
+module to your link, before calling any Gtk function.</p></div>
+<div class="paragraph"><p>If you&#8217;re using ocamlfind, you can use the convenience package
+<code>lablgtk2.auto-init</code>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ocamlfind ocamlc -package lablgtk2.auto-init -linkpkg -w s ???.ml -o ???</code></pre>
+</div></div>
+<div class="paragraph"><p>Otherwise, use something similar to:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ocamlc -I +lablgtk2 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content"><code>lablgtk.auto-init</code> is a convenience module: use it for quick tests but
+for bigger applications, call <code>GtkMain.Main.init</code> at the right time in your
+code. It prevents any usage of the application without graphics, including
+commands like <code>--help</code>.</td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_api_coverage">API Coverage</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Lablgtk binds most of the GTK+ API and some functions in other libraries
+like Glib.</p></div>
+<div class="paragraph"><p>Some functions are not handled to avoid commiting unused and un-tested
+code. Don&#8217;t hesitate to ask for the ones you may need since they&#8217;re
+most-usually very simple to add.</p></div>
+<div class="paragraph"><p>Some widgets are only supported in newer versions of GTK+.</p></div>
+<div class="paragraph"><p>If you use them in older versions, you will get a runtime error:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>Failure "Gobject.unsafe_create : type GtkActionGroup is not yet defined"</code></pre>
+</div></div>
+<div class="paragraph"><p>For unsupported methods, the error message is a bit clearer:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x &lt; 2.4"</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_structure_of_the_modules">Structure of the modules</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_raw_gtk_modules">(raw) Gtk* modules</h3>
+<div class="paragraph"><p>These modules are composed of one submodule for each class.</p></div>
+<div class="paragraph"><p>Signals specific to a widget are in a Signals inner module.</p></div>
+<div class="paragraph"><p>A setter function is defined to give access to set_param functions.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_g_a_z_modules">G[A-Z]* modules</h3>
+<div class="paragraph"><p>These modules provide classes to wrap the raw function calls.
+Here are the widget classes contained in each module:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+GPango:        Pango font handling
+</p>
+</li>
+<li>
+<p>
+GDraw:         Gdk pixmaps, etc&#8230;
+</p>
+</li>
+<li>
+<p>
+GObj:         gtkobj, widget, style
+</p>
+</li>
+<li>
+<p>
+GData:        data, adjustment, tooltips
+</p>
+</li>
+<li>
+<p>
+GContainer:   container, item_container
+</p>
+</li>
+<li>
+<p>
+GWindow:      window, dialog, color_selection_dialog, file_selection, plug
+</p>
+</li>
+<li>
+<p>
+GPack:        box, button_box, table, fixed, layout, packer, paned, notebook
+</p>
+</li>
+<li>
+<p>
+GBin:         scrolled_window, event_box, handle_box, frame,
+                aspect_frame, viewport, socket
+</p>
+</li>
+<li>
+<p>
+GButton:      button, toggle_button, check_button, radio_button, toolbar
+</p>
+</li>
+<li>
+<p>
+GMenu:        menu_item, tearoff_item, check_menu_item, radio_menu_item,
+                menu_shell, menu, option_menu, menu_bar, factory
+</p>
+</li>
+<li>
+<p>
+GMisc:        separator, statusbar, calendar, drawing_area,
+                misc, arrow, image, pixmap, label, tips_query,
+                color_selection, font_selection
+</p>
+</li>
+<li>
+<p>
+GTree:        tree_item, tree, view (also tree/list_store, model)
+</p>
+</li>
+<li>
+<p>
+GList:        list_item, liste, clist
+</p>
+</li>
+<li>
+<p>
+GEdit:        editable, entry, spin_button, combo
+</p>
+</li>
+<li>
+<p>
+GRange:       progress, progress_bar, range, scale, scrollbar
+</p>
+</li>
+<li>
+<p>
+GText:        view (also buffer, iter, mark, tag, tagtable)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>While subtyping follows the Gtk widget hierarchy, you cannot always
+use width subtyping (i.e. #super is not unifiable with all the
+subclasses of super). Still, it works for some classes, like
+#widget and #container, and allows subtyping without coercion towards
+these classes (cf. #container in examples/pousse.ml for instance).</p></div>
+<div class="paragraph"><p>Practically, each widget class is composed of:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+a coerce method, returning the object coerced to the type widget.
+</p>
+</li>
+<li>
+<p>
+an as_widget method, returning the raw Gtk widget used for packing, etc&#8230;
+</p>
+</li>
+<li>
+<p>
+a destroy method, sending the destroy signal to the object.
+</p>
+</li>
+<li>
+<p>
+a get_oid method, the equivalent of Oo.id for Gtk objects.
+</p>
+</li>
+<li>
+<p>
+a connect sub-object, allowing one to widget specific
+  signals (this is what prevents width subtyping in subclasses.)
+</p>
+</li>
+<li>
+<p>
+a misc sub-object, giving access to miscellaneous functionality of
+  the basic gtkwidget class, and a misc#connect sub-object.
+</p>
+</li>
+<li>
+<p>
+an event sub-object, for Xevent related functions (only if the widget
+  has an Xwindow), and an event#connect sub-object.
+</p>
+</li>
+<li>
+<p>
+a drag  sub-object, containing drag and drop functions,
+  and a drag#connect sub-object.
+</p>
+</li>
+<li>
+<p>
+widget specific methods.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Here is a diagram of the structure (- for methods, + for sub-objects)</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>      - coerce : widget
+      - as_widget : Gtk.widget obj
+      - destroy : unit -&gt; unit
+      - get_oid : int
+      - ...
+      + connect : mywidget_signals
+      |   - after
+      |   - signal_name : callback:(... -&gt; ...) -&gt; GtkSignal.id
+      + misc : misc_ops
+      |   - show, hide, disconnect, ...
+      |   + connect : misc_signals
+      + drag : drag_ops
+      |   - ...
+      |   + connect : drag_signals
+      + event : event_ops
+      |   - add, ...
+      |   + connect : event_signals</code></pre>
+</div></div>
+<div class="paragraph"><p>You create a widget with <code>&lt;Module&gt;.&lt;widget name&gt; options ... ()</code>.</p></div>
+<div class="paragraph"><p>Many optional arguments are admitted. The last two of them, packing:
+and show:, allow you respectively to call a function on your newly
+created widget, and to decide whether to show it immediately or not.</p></div>
+<div class="paragraph"><p>By default all widgets except toplevel windows (GWindow module) are
+shown immediately.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_default_arguments">Default arguments</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>For many constructor or method arguments, default values are provided.
+Generally speaking, this default value is defined by GTK, and you must
+refer to GTK&#8217;s documentation.</p></div>
+<div class="paragraph"><p>For ML-defined defaults, default values are usually either false, 0, None
+or `NONE, according to the expected type.</p></div>
+<div class="paragraph"><p>Important exceptions are <code>~show</code>, which defaults to true in all widgets
+except those in GWindow, and <code>~fill</code>, which defaults to true or `BOTH.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_note_about_unit_as_method_argument">Note about unit as method argument</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>O&#8217;Caml introduces no distinction between methods having side-effects
+and methods simply returning a value. In practice, this is
+confusing, and awkward when used for callbacks. For this reason all
+methods having noticeable side-effects should take arguments, and
+unit if they have no argument.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_to_use_threads">How to use threads</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre><code>% lablgtk2 -thread
+        Objective Caml version 3.09
+
+# let w = GWindow.window ~show:true ();;
+# let b = GButton.button ~packing:w#add ~label:"Hello!" ();;</code></pre>
+</div></div>
+<div class="paragraph"><p>You should see a window with a button appear at once.</p></div>
+<div class="paragraph"><p>The GTK main loop is running in a separate thread. Any command is
+immediately reflected.</p></div>
+<div class="paragraph"><p>For Windows and OSX/Quartz, there are restrictions on which commands can
+be used in which thread. See the windows port section below for how to
+use them.</p></div>
+<div class="paragraph"><p>When using threads in a stand-alone application, you must link with
+gtkThread.cmo and call GtkThread.main in place of GMain.main.</p></div>
+<div class="paragraph"><p>Since 2.16.0, busy waiting is no longer necessary with systems
+threads. (I.e., CPU usage is 0% if nothing occurs.)</p></div>
+<div class="sect2">
+<h3 id="_vm_threads">VM threads</h3>
+<div class="paragraph"><p>With VM threads, you have to enable busy waiting by hand, otherwise other
+threads won&#8217;t be executed; see <code>gtkThread.mli</code> for details.</p></div>
+<div class="paragraph"><p>Beware that with VM threads, you cannot switch threads within
+a callback. The only thread-related command you may use in a
+callback is Thread.create. Calling blocking operations may cause
+deadlocks. On the other hand, all newly created threads will be run
+outside of the callback, so they can use all thread operations.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_unicode">Unicode</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Gtk-2 uses unicode (utf8) for all strings. If you use non-ascii strings,
+you must imperatively convert them to unicode.</p></div>
+<div class="paragraph"><p>This can be done with the <code>Glib.Convert.locale_to_utf8</code> function. If
+your input is already in utf8, it is still a good idea to validate it
+with Glib.Utf8.validate, as malformed utf8 strings may cause
+segmentation faults.</p></div>
+<div class="paragraph"><p>Note that setlocale is now always called (except if you set
+GTK_SETLOCALE to 0 in the environment), but LC_NUMERIC is reverted to
+"C" to avoid problems with floating point conversion in Caml.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_memory_management">Memory management</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Important efforts have been dedicated to cooperate with Gtk&#8217;s
+reference-counting mechanism. You should generally be able to use
+Gdk/Gtk data structures without caring about memory management. They
+will be freed when nobody points to them any more.</p></div>
+<div class="paragraph"><p>This also means that you do not need to pay too much attention to
+whether a data structure is still alive or not. If it is not, you
+should get an error rather than a core dump.</p></div>
+<div class="paragraph"><p>The case of Gtk objects deserves special care. Since they are
+interactive, we cannot just destroy them when they are no longer
+referenced. They have to be explicitly destroyed. If a widget was
+added to a container widget, it will automatically be destroyed when
+its last container is destroyed. For this reason you need only
+destroy toplevel widgets.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">Some Gtk data structures are allocated in the Caml heap,
+and their use in signals (Gtk functions internally calling callbacks)
+relies on their address being stable during a function call. For
+this reason automatic compaction is disabled in GtkMain. If you need
+it, you may use compaction through Gc.compact where it is safe
+(timeouts, other threads&#8230;), but do not enable automatic compaction.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ml_side_signals">ML-side signals</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The GUtil module provides two kinds of utilities: a memo table, to be
+able to dynamically cast widgets to their original class, and more
+interesting ML-side signals.</p></div>
+<div class="paragraph"><p>With ML-side signals, you can combine LablGTK widgets into your own
+components, and add signals to them. Later you can connect to these
+signals, just like GTK signals. This proved very efficient to
+develop complex applications, abstracting the plumbing between
+various components. Explanations are provided in GUtil.mli.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_files_in_the_source_distribution">Files in the source distribution</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<code>gdk.ml</code>: low-level interface to the General Drawing Kit
+</p>
+</li>
+<li>
+<p>
+<code>gtk.ml</code>: low-level interface to the GIMP Tool Kit
+</p>
+</li>
+<li>
+<p>
+<code>gtkThread.ml</code>: main loop for threaded version
+</p>
+</li>
+<li>
+<p>
+<code>g[A-Z]*.ml</code>: object-oriented interface to GTK
+</p>
+</li>
+<li>
+<p>
+<code>gdkObj.ml</code>: object-oriented interface to GDK
+</p>
+</li>
+<li>
+<p>
+<code>lablgtk2</code>: toplevel
+</p>
+</li>
+<li>
+<p>
+<code>examples/*.ml</code>: various examples
+</p>
+</li>
+<li>
+<p>
+<code>applications/browser</code>: an ongoing port of ocamlbrowser
+</p>
+</li>
+<li>
+<p>
+<code>applications/camlirc</code>: an IRC client (by Nobuaki Yoshida)
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_contributed_components">Contributed components</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The GToolbox module contains contributed components to help you build
+your applications.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_platform_specific_caveats">Platform-specific caveats</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_windows">Windows</h3>
+<div class="paragraph"><p>See README.win32 for detailed information on installation.</p></div>
+<div class="paragraph"><p>If you want to use threads, you must be aware of windows specific
+restrictions; see for instance:
+   <a href="http://article.gmane.org/gmane.comp.video.gimp.windows.devel/314">http://article.gmane.org/gmane.comp.video.gimp.windows.devel/314</a></p></div>
+<div class="paragraph"><p>I.e. all GTK related calls must occur in the same thread, the one
+that runs the main loop. If you want to call them from other threads
+you need to do some forwarding. Fortunately, with a functional
+language this is easy. Two functions, are available in the GtkThread
+module to help you:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>val async : ('a -&gt; unit) -&gt; 'a -&gt; unit
+val sync : ('a -&gt; 'b) -&gt; 'a -&gt; 'b</code></pre>
+</div></div>
+<div class="paragraph"><p>They will forward your call to the main thread (between handling two GUI
+events). This can be either asynchronous or synchronous.</p></div>
+<div class="paragraph"><p>In the synchronous case, beware of deadlocks (the trivial case, when you
+are calling from the same thread, is properly avoided).</p></div>
+<div class="paragraph"><p>Note also that since callbacks are always called from the main loop
+thread, you can freely use GTK in them. Also, non-graphical operations
+are thread-safe.</p></div>
+<div class="paragraph"><p>Here is an example using the lablgtk toplevel with threads:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>% lablgtk2.bat -thread
+        Objective Caml version 3.09
+
+# open GtkThread;;
+# let w = sync (GWindow.window ~show:true) ();;
+# let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
+# b#connect#clicked (fun () -&gt; prerr_endline "Hello");;</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_osx_quartz">OSX/Quartz</h3>
+<div class="paragraph"><p>Since Darwin is Unix, this port compiles as usual.</p></div>
+<div class="paragraph"><p>Note however that Quartz imposes even stronger restrictions than
+Windows on threads: only the main thread of the application can do
+GUI work. Just apply the same techniques as described above, being
+careful to ensure that your first call to GtkThread.main occurs in
+the main thread. This is done automatically in the threaded toplvel.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_support_for_additional_libraries">Support for additional libraries</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_libglade">LibGlade</h3>
+<div class="paragraph"><p>There is support for Glade-generated XML UI description files, using
+libglade. You can read in a file, access widgets, and define callbacks.</p></div>
+<div class="paragraph"><p>A tool for extracting widget definitions from glade description is
+provided. It generates a wrapper class, and you can then generate an
+object corresponding to the intended layout, and access individual
+widgets through its methods. Example:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>% lablgladecc2 project1.glade &gt; project1.ml
+% lablgtk2 -thread
+# #use "project1.ml" ;;
+class window1 : ...
+# let w1 = new window1 () ;;
+# w1#bind ~name:"on_paste1_activate"
+    ~callback:(fun () -&gt; w1#text1#insert "some text\n");;</code></pre>
+</div></div>
+<div class="paragraph"><p>See lablgladecc2 -help for other features (tracing and source
+embedding).</p></div>
+<div class="paragraph"><p>The executable must be linked with lablglade.cma.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_gl_extension">GL extension</h3>
+<div class="paragraph"><p>You can use lablgtk in combination with LablGL:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+get and install lablGL 1.04 from
+    <a href="http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html">http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html</a>
+</p>
+</li>
+<li>
+<p>
+get and install gtkglarea-1.99.0.tar.gz from
+    <a href="ftp://ftp.gnome.org/pub/gnome/sources/gtkglarea/1.99/">ftp://ftp.gnome.org/pub/gnome/sources/gtkglarea/1.99/</a>
+  or any other gnome mirror site
+</p>
+</li>
+<li>
+<p>
+reconfigure
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>You can then use the widget GlGtk.gl_area as an OpenGL window.</p></div>
+<div class="paragraph"><p>Some examples are in examples/GL, but basically any LablGL example
+can be easily ported.</p></div>
+<div class="paragraph"><p>The executable must be linked with both lablgl.cma and lablgtkgl.cma.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_svg">SVG</h3>
+<div class="paragraph"><p>This binding was contributed by Olivier Andrieu.</p></div>
+<div class="paragraph"><p>It requires librsvg-2.x (preferably 2.2.x).</p></div>
+<div class="paragraph"><p>See an example in examples/rsvg.</p></div>
+<div class="paragraph"><p>The executable must be linked with lablrsvg.cma.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_gnomecanvas">GnomeCanvas</h3>
+<div class="paragraph"><p>This binding was contributed by Olivier Andrieu.</p></div>
+<div class="paragraph"><p>It requires libgnomecanvas-2.x.</p></div>
+<div class="paragraph"><p>See examples in examples/canvas.</p></div>
+<div class="paragraph"><p>The executable must be linked with lablgnomecanvas.cma.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_gtksourceview_1">GtkSourceView 1</h3>
+<div class="paragraph"><p>This binding was contributed by Maxence Guesdon and Stefano Zacchiroli.</p></div>
+<div class="paragraph"><p>It requires libgtksourceview-1.x.</p></div>
+<div class="paragraph"><p>See examples in examples/sourceview.</p></div>
+<div class="paragraph"><p>The executable must be linked with lablgtksourceview.cma.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_gtksourceview_2">GtkSourceView 2</h3>
+<div class="paragraph"><p>This binding was contributed by Benjamin Monate; it is based on the
+GtksourceView 1 support mentionned below.</p></div>
+<div class="paragraph"><p>It requires libgtksourceview-2.x.</p></div>
+<div class="paragraph"><p>See examples in examples/sourceview/*2.ml</p></div>
+<div class="paragraph"><p>The executable must be linked with lablgtksourceview2.cma.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_authors">Authors</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_lablgtk2">Lablgtk2</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+Jacques Garrigue &lt;<a href="mailto:garrigue@math.nagoya-u.ac.jp">garrigue@math.nagoya-u.ac.jp</a>&gt;
+</p>
+</li>
+<li>
+<p>
+Benjamin Monate  &lt;<a href="mailto:benjamin.monate@free.fr">benjamin.monate@free.fr</a>&gt;
+</p>
+</li>
+<li>
+<p>
+Olivier Andrieu  &lt;<a href="mailto:oandrieu@nerim.net">oandrieu@nerim.net</a>&gt;
+</p>
+</li>
+<li>
+<p>
+Adrien Nader     &lt;<a href="mailto:adrien@notk.org">adrien@notk.org</a>&gt;
+</p>
+</li>
+<li>
+<p>
+Jun Furuse       &lt;<a href="mailto:jun.furuse@gmail.com">jun.furuse@gmail.com</a>&gt;
+</p>
+</li>
+<li>
+<p>
+Maxence Guesdon  &lt;<a href="mailto:maxence.guesdon@inria.fr">maxence.guesdon@inria.fr</a>&gt;
+</p>
+</li>
+<li>
+<p>
+Stefano Zacchiroli  &lt;<a href="mailto:zack@cs.unibo.it">zack@cs.unibo.it</a>&gt;
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_lablgtk1">Lablgtk1</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+Hubert Fauque  &lt;<a href="mailto:hubert.fauque@wanadoo.fr">hubert.fauque@wanadoo.fr</a>&gt;
+</p>
+</li>
+<li>
+<p>
+Koji Kagawa    &lt;<a href="mailto:kagawa@eng.kagawa-u.ac.jp">kagawa@eng.kagawa-u.ac.jp</a>&gt;
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2013-09-19 08:57:10 CEST
+</div>
+</div>
+</body>
+</html>

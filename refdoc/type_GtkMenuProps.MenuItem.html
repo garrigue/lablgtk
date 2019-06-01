@@ -1,0 +1,32 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkMenuProps.MenuItem</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.menu_item&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">S</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;activate&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>menuitem&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;activate_item&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>menuitem&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;<span class="constructor">Gtk</span>.menu_item&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.menu_item&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_submenu&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>menuitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>menu&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_menu_item_set_submenu"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_submenu&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>menuitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.widget&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_menu_item_get_submenu"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;activate&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>menuitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_menu_item_activate"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;select&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>menuitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_menu_item_select"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;deselect&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>menuitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_menu_item_deselect"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_accel_path&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>menuitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_menu_item_set_accel_path"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;toggle_size_request&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>menuitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_menu_item_toggle_size_request"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;toggle_size_allocate&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>menuitem&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_menu_item_toggle_size_allocate"</span><br>
+<span class="keyword">end</span></code></body></html>

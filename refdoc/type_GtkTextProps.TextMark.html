@@ -1,0 +1,22 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkTextProps.TextMark</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_mark<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;[&nbsp;<span class="keywordsign">`</span>textmark&nbsp;]&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_mark<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_visible&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>textmark&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_mark_set_visible"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_visible&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>textmark&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_mark_get_visible"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_deleted&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>textmark&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_mark_get_deleted"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_name&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>textmark&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_mark_get_name"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_buffer&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>textmark&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_buffer&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_mark_get_buffer"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_left_gravity&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>textmark&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_mark_get_left_gravity"</span><br>
+<span class="keyword">end</span></code></body></html>

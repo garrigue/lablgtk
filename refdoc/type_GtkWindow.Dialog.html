@@ -1,0 +1,28 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkWindow.Dialog</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.dialog&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">P</span>&nbsp;=&nbsp;<span class="constructor">GtkBaseProps</span>.<span class="constructor">Dialog</span>.<span class="constructor">P</span><br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">S</span>&nbsp;=&nbsp;<span class="constructor">GtkBaseProps</span>.<span class="constructor">Dialog</span>.<span class="constructor">S</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;<span class="constructor">Gtk</span>.dialog&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.dialog&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;action_area&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>dialog&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.button_box&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_dialog_get_action_area"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;vbox&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>dialog&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.box&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_dialog_get_content_area"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;add_button&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>dialog&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_dialog_add_button"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;response&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>dialog&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_dialog_response"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_response_sensitive&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>dialog&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_dialog_set_response_sensitive"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_default_response&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>dialog&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_dialog_set_default_response"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;run&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>dialog&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_gtk_dialog_run"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;std_response&nbsp;:&nbsp;<span class="constructor">GtkEnums</span>.response&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;decode_response&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkEnums</span>.response<br>
+<span class="keyword">end</span></code></body></html>

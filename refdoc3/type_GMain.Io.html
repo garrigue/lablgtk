@@ -1,0 +1,19 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GMain.Io</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;channel&nbsp;=&nbsp;<span class="constructor">Glib</span>.<span class="constructor">Io</span>.channel<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;condition&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">ERR</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">HUP</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">IN</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">NVAL</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">OUT</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">PRI</span>&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;id<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;channel_of_descr&nbsp;:&nbsp;<span class="constructor">Unix</span>.file_descr&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GMain</span>.<span class="constructor">Io</span>.channel<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;add_watch&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cond:<span class="constructor">GMain</span>.<span class="constructor">Io</span>.condition&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">GMain</span>.<span class="constructor">Io</span>.condition&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?prio:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GMain</span>.<span class="constructor">Io</span>.channel&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GMain</span>.<span class="constructor">Io</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;remove&nbsp;:&nbsp;<span class="constructor">GMain</span>.<span class="constructor">Io</span>.id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;read&nbsp;:&nbsp;<span class="constructor">GMain</span>.<span class="constructor">Io</span>.channel&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;buf:bytes&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;len:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;read_chars&nbsp;:&nbsp;<span class="constructor">GMain</span>.<span class="constructor">Io</span>.channel&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;buf:bytes&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;len:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+<span class="keyword">end</span></code></body></html>

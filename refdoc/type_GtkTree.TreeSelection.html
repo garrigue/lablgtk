@@ -1,0 +1,45 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkTree.TreeSelection</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_selection<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">S</span>&nbsp;=&nbsp;<span class="constructor">GtkTreeProps</span>.<span class="constructor">TreeSelection</span>.<span class="constructor">S</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_mode&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.selection_mode&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_set_mode"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_mode&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.selection_mode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_get_mode"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_select_function&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_set_select_function"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;selected_foreach&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_selected_foreach"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_selected_rows&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;count_selected_rows&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_count_selected_rows"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;select_path&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_select_path"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;path_is_selected&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_path_is_selected"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;unselect_path&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_unselect_path"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;select_iter&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_select_iter"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;unselect_iter&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_unselect_iter"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;iter_is_selected&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_iter_is_selected"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;select_all&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_select_all"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;unselect_all&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_unselect_all"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;select_range&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_select_range"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;unselect_range&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.tree_selection&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_selection_unselect_range"</span><br>
+<span class="keyword">end</span></code></body></html>

@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GDraw.html">
+<link rel="next" href="GFile.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GEdit</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GDraw.html" title="GDraw">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GFile.html" title="GFile">Next</a>
+</div>
+<h1>Module <a href="type_GEdit.html">GEdit</a></h1>
+
+<pre><span id="MODULEGEdit"><span class="keyword">module</span> GEdit</span>: <code class="code">sig</code> <a href="GEdit.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Editable Widgets</p>
+<h4 id="3_GtkEditable">GtkEditable</h4>
+<pre><span id="TYPEeditable_signals"><span class="keyword">class</span> <a href="GEdit.editable_signals-c.html">editable_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEeditable">Gtk.editable</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.editable_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEeditable"><span class="keyword">class</span> <a href="GEdit.editable-c.html">editable</a></span> : <code class="type">[> <a href="Gtk.html#TYPEeditable">Gtk.editable</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.editable-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Interface for text-editing widgets</p>
+
+</div>
+<br><h4 id="3_GtkEntryGtkEntryCompletion">GtkEntry &amp; GtkEntryCompletion</h4>
+<pre><span id="TYPEentry_completion_signals"><span class="keyword">class</span> <a href="GEdit.entry_completion_signals-c.html">entry_completion_signals</a></span> : <code class="type">[> `entrycompletion ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.entry_completion_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEentry_completion"><span class="keyword">class</span> <a href="GEdit.entry_completion-c.html">entry_completion</a></span> : <code class="type">[> `celllayout | `entrycompletion ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.entry_completion-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEentry_signals"><span class="keyword">class</span> <a href="GEdit.entry_signals-c.html">entry_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEentry">Gtk.entry</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.entry_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEentry"><span class="keyword">class</span> <a href="GEdit.entry-c.html">entry</a></span> : <code class="type">[> <a href="Gtk.html#TYPEentry">Gtk.entry</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.entry-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A single line text entry field</p>
+
+</div>
+<br>
+<pre><span id="VALentry"><span class="keyword">val</span> entry</span> : <code class="type">?text:string -><br>       ?visibility:bool -><br>       ?max_length:int -><br>       ?activates_default:bool -><br>       ?editable:bool -><br>       ?has_frame:bool -><br>       ?width_chars:int -><br>       ?xalign:float -><br>       ?placeholder_text:string -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GEdit.entry-c.html">entry</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkEntry.html">GtkEntry</a></small></ul>
+</div>
+
+<pre><span id="VALentry_completion"><span class="keyword">val</span> entry_completion</span> : <code class="type">?model:#<a href="GTree.model-c.html">GTree.model</a> -><br>       ?minimum_key_length:int -><br>       ?entry:<a href="GEdit.entry-c.html">entry</a> -> unit -> <a href="GEdit.entry_completion-c.html">entry_completion</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkEntryCompletion.html">GtkEntryCompletion</a></small></ul>
+</div>
+<h5 id="4_GtkSpinButton">GtkSpinButton</h5>
+<pre><span id="TYPEspin_button_signals"><span class="keyword">class</span> <a href="GEdit.spin_button_signals-c.html">spin_button_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEspin_button">Gtk.spin_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.spin_button_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEspin_button"><span class="keyword">class</span> <a href="GEdit.spin_button-c.html">spin_button</a></span> : <code class="type"><a href="Gtk.html#TYPEspin_button">Gtk.spin_button</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.spin_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Retrieve an integer or floating-point number from the user</p>
+
+</div>
+<br>
+<pre><span id="VALspin_button"><span class="keyword">val</span> spin_button</span> : <code class="type">?adjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?rate:float -><br>       ?digits:int -><br>       ?numeric:bool -><br>       ?snap_to_ticks:bool -><br>       ?update_policy:[ `ALWAYS | `IF_VALID ] -><br>       ?value:float -><br>       ?wrap:bool -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GEdit.spin_button-c.html">spin_button</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkSpinButton.html">GtkSpinButton</a></small></ul>
+</div>
+<h4 id="3_GtkComboBox">GtkComboBox</h4>
+<pre><span id="TYPEcombo_box_signals"><span class="keyword">class</span> <a href="GEdit.combo_box_signals-c.html">combo_box_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEcombo_box">Gtk.combo_box</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.combo_box_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcombo_box"><span class="keyword">class</span> <a href="GEdit.combo_box-c.html">combo_box</a></span> : <code class="type">[> <a href="Gtk.html#TYPEcombo_box">Gtk.combo_box</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.combo_box-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALcombo_box"><span class="keyword">val</span> combo_box</span> : <code class="type">?model:#<a href="GTree.model-c.html">GTree.model</a> -><br>       ?active:int -><br>       ?add_tearoffs:bool -><br>       ?focus_on_click:bool -><br>       ?entry_text_column:int -><br>       ?has_entry:bool -><br>       ?has_frame:bool -><br>       ?wrap_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GEdit.combo_box-c.html">combo_box</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkComboBox.html">GtkComboBox</a></small></ul>
+</div>
+<h5 id="4_ConvenienceAPIsimulatingGtk2">Convenience API simulating Gtk+ 2</h5>
+<pre><span id="TYPEcombo_box_entry"><span class="keyword">class</span> <a href="GEdit.combo_box_entry-c.html">combo_box_entry</a></span> : <code class="type">[> <a href="Gtk.html#TYPEcombo_box">Gtk.combo_box</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.combo_box_entry-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="VALcombo_box_entry"><span class="keyword">val</span> combo_box_entry</span> : <code class="type">?model:#<a href="GTree.model-c.html">GTree.model</a> -><br>       ?text_column:string <a href="GTree.html#TYPEcolumn">GTree.column</a> -><br>       ?active:int -><br>       ?add_tearoffs:bool -><br>       ?focus_on_click:bool -><br>       ?has_frame:bool -><br>       ?wrap_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GEdit.combo_box_entry-c.html">combo_box_entry</a></code></pre><h5 id="4_ConvenienceAPIfortextonlyComboBoxes">Convenience API for text-only ComboBoxes</h5>
+<pre><span id="TYPEtext_combo"><span class="keyword">type</span> <code class="type">#<a href="GEdit.combo_box-c.html">combo_box</a></code> text_combo</span> = <code class="type">(#<a href="GEdit.combo_box-c.html">combo_box</a> as 'a) * (<a href="GTree.list_store-c.html">GTree.list_store</a> * string <a href="GTree.html#TYPEcolumn">GTree.column</a>)</code> </pre>
+
+
+<pre><span id="VALtext_combo_add"><span class="keyword">val</span> text_combo_add</span> : <code class="type">#<a href="GEdit.combo_box-c.html">combo_box</a> <a href="GEdit.html#TYPEtext_combo">text_combo</a> -> string -> unit</code></pre>
+<pre><span id="VALtext_combo_get_active"><span class="keyword">val</span> text_combo_get_active</span> : <code class="type">#<a href="GEdit.combo_box-c.html">combo_box</a> <a href="GEdit.html#TYPEtext_combo">text_combo</a> -> string option</code></pre>
+<pre><span id="VALcombo_box_text"><span class="keyword">val</span> combo_box_text</span> : <code class="type">?strings:string list -><br>       ?use_markup:bool -><br>       ?active:int -><br>       ?add_tearoffs:bool -><br>       ?focus_on_click:bool -><br>       ?entry_text_column:int -><br>       ?has_entry:bool -><br>       ?has_frame:bool -><br>       ?wrap_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -><br>       ?show:bool -> unit -> <a href="GEdit.combo_box-c.html">combo_box</a> <a href="GEdit.html#TYPEtext_combo">text_combo</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>A convenience function for creating simple <a href="GEdit.html#VALcombo_box"><code class="code">GEdit.combo_box</code></a>. 
+    Creates a simple <a href="GTree.html#VALlist_store"><code class="code">GTree.list_store</code></a> with a single text column, 
+    adds <code class="code">strings</code> in it, creates a <a href="GTree.html#VALcell_renderer_text"><code class="code">GTree.cell_renderer_text</code></a> and 
+    connects it with the model.</p>
+</div>
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkComboBox.html">GtkComboBox</a></small></ul>
+</div>
+
+<pre><span id="VALcombo_box_entry_text"><span class="keyword">val</span> combo_box_entry_text</span> : <code class="type">?strings:string list -><br>       ?active:int -><br>       ?add_tearoffs:bool -><br>       ?focus_on_click:bool -><br>       ?has_frame:bool -><br>       ?wrap_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -><br>       ?show:bool -> unit -> <a href="GEdit.combo_box_entry-c.html">combo_box_entry</a> <a href="GEdit.html#TYPEtext_combo">text_combo</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>A convenience function. See <a href="GEdit.html#VALcombo_box_text"><code class="code">GEdit.combo_box_text</code></a></p>
+</div>
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkComboBoxEntry.html">GtkComboBoxEntry</a></small></ul>
+</div>
+</body></html>

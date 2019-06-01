@@ -1,0 +1,44 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkActionProps.Action</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.action&nbsp;<span class="constructor">Gobject</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">P</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;hide_if_empty&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_important&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;label&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;icon_name&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;name&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sensitive&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;short_label&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;stock_id&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;<span class="constructor">GtkStock</span>.id)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tooltip&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;visible&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;visible_horizontal&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;visible_vertical&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">S</span>&nbsp;:&nbsp;<span class="keyword">sig</span>&nbsp;<span class="keyword">val</span>&nbsp;activate&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.action&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.action&nbsp;<span class="constructor">Gobject</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;is_sensitive&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_action_is_sensitive"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;is_visible&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_action_is_visible"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;activate&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_action_activate"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_proxies&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.widget&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_action_get_proxies"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;connect_accelerator&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_action_connect_accelerator"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;disconnect_accelerator&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_action_disconnect_accelerator"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_accel_path&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_action_set_accel_path"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_accel_group&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>action&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.accel_group&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_action_set_accel_group"</span><br>
+<span class="keyword">end</span></code></body></html>

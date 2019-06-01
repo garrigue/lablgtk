@@ -1,0 +1,12 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GdkEvent.Visibility</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">VISIBILITY_NOTIFY</span>&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Visibility</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;visibility&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Visibility</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.visibility_state<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventVisibility_state"</span><br>
+<span class="keyword">end</span></code></body></html>

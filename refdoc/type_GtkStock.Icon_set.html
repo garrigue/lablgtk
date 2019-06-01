@@ -1,0 +1,15 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkStock.Icon_set</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;new_icon_set&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.icon_set&nbsp;=&nbsp;<span class="string">"ml_gtk_icon_set_new"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;new_from_pixbuf&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.icon_set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_icon_set_new_from_pixbuf"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;add_source&nbsp;:&nbsp;<span class="constructor">Gtk</span>.icon_set&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.icon_source&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_icon_set_add_source"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_sizes&nbsp;:&nbsp;<span class="constructor">Gtk</span>.icon_set&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.icon_size&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_icon_set_get_sizes"</span><br>
+<span class="keyword">end</span></code></body></html>

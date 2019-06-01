@@ -1,0 +1,14 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GUtil.signal</title>
+</head>
+<body>
+<code class="code">unit&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keyword">object</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;<span class="keyword">mutable</span>&nbsp;callbacks&nbsp;:&nbsp;(<span class="constructor">GtkSignal</span>.id&nbsp;*&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit))&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;call&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;callbacks&nbsp;:&nbsp;(<span class="constructor">GtkSignal</span>.id&nbsp;*&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit))&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;connect&nbsp;:&nbsp;after:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;callback:(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;disconnect&nbsp;:&nbsp;<span class="constructor">GtkSignal</span>.id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+<span class="keyword">end</span></code></body></html>

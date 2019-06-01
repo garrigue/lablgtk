@@ -1,0 +1,71 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GEdit.spin_button_signals</title>
+</head>
+<body>
+<code class="code">[&gt;&nbsp;<span class="constructor">Gtk</span>.spin_button&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keyword">object</span>&nbsp;(<span class="keywordsign">'</span>a)<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;activate&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;after&nbsp;:&nbsp;<span class="keywordsign">'</span>a<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backspace&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;change_value&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.scroll_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;changed&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;copy_clipboard&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;cut_clipboard&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;delete_from_cursor&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.delete_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;delete_text&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(start:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;destroy&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;icon_press&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.entry_icon_position&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;icon_released&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.entry_icon_position&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;input&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_at_cursor&nbsp;:&nbsp;callback:(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_text&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;ref&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;move_cursor&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.movement_step&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;extend:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_activates_default&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_adjustment&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">GData</span>.adjustment&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_digits&nbsp;:&nbsp;callback:(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_has_frame&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_invisible_char&nbsp;:&nbsp;callback:(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_max_length&nbsp;:&nbsp;callback:(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_numeric&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_overwrite_mode&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_placeholder_text&nbsp;:&nbsp;callback:(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_primary_icon_activatable&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_primary_icon_sensitive&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_rate&nbsp;:&nbsp;callback:(float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_scroll_offset&nbsp;:&nbsp;callback:(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_secondary_icon_activatable&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_secondary_icon_sensitive&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_snap_to_ticks&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_text&nbsp;:&nbsp;callback:(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_text_length&nbsp;:&nbsp;callback:(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_update_policy&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.spin_button_update_policy&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_value&nbsp;:&nbsp;callback:(float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_visibility&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_width_chars&nbsp;:&nbsp;callback:(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_wrap&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_xalign&nbsp;:&nbsp;callback:(float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;output&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;paste_clipboard&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;populate_popup&nbsp;:&nbsp;callback:(<span class="constructor">GMenu</span>.menu&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;toggle_overwrite&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;value_changed&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;wrapped&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+<span class="keyword">end</span></code></body></html>

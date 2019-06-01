@@ -1,0 +1,26 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkBase.Widget.Tooltip</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_markup&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_widget_get_tooltip_markup"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_markup&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_widget_set_tooltip_markup"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_text&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_widget_get_tooltip_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_text&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_widget_set_tooltip_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_window&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.window&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_widget_get_tooltip_window"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_window&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>window&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_widget_set_tooltip_window"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_has_tooltip&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_widget_get_has_tooltip"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_has_tooltip&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_widget_set_has_tooltip"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;trigger_query&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_widget_trigger_tooltip_query"</span><br>
+<span class="keyword">end</span></code></body></html>

@@ -1,0 +1,57 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GTree.icon_view</title>
+</head>
+<body>
+<code class="code">([&gt;&nbsp;<span class="constructor">Gtk</span>.icon_view&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keyword">object</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;obj&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;all_children&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;as_widget&nbsp;:&nbsp;<span class="constructor">Gtk</span>.widget&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;border_width&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;children&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;column_spacing&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;columns&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;connect&nbsp;:&nbsp;<span class="constructor">GTree</span>.icon_view_signals<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;destroy&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;drag&nbsp;:&nbsp;<span class="constructor">GObj</span>.drag_ops<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;event&nbsp;:&nbsp;<span class="constructor">GObj</span>.event_ops<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;focus&nbsp;:&nbsp;<span class="constructor">GContainer</span>.focus<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_oid&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_path_at_pos&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_selected_items&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;item_activated&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;item_width&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;margin&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;misc&nbsp;:&nbsp;<span class="constructor">GObj</span>.misc_ops<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;model&nbsp;:&nbsp;<span class="constructor">GTree</span>.model<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;orientation&nbsp;:&nbsp;<span class="constructor">GtkEnums</span>.orientation<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;path_is_selected&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;resize_mode&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.resize_mode<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;row_spacing&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;select_all&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;select_path&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;selected_foreach&nbsp;:&nbsp;(<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;selection_mode&nbsp;:&nbsp;<span class="constructor">GtkEnums</span>.selection_mode<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_border_width&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_column_spacing&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_columns&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_item_width&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_margin&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_markup_column&nbsp;:&nbsp;string&nbsp;<span class="constructor">GTree</span>.column&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_model&nbsp;:&nbsp;<span class="constructor">GTree</span>.model&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_orientation&nbsp;:&nbsp;<span class="constructor">GtkEnums</span>.orientation&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_pixbuf_column&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="constructor">GTree</span>.column&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_resize_mode&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.resize_mode&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_row_spacing&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_selection_mode&nbsp;:&nbsp;<span class="constructor">GtkEnums</span>.selection_mode&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_spacing&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_text_column&nbsp;:&nbsp;string&nbsp;<span class="constructor">GTree</span>.column&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;spacing&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;unselect_all&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;unselect_path&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+<span class="keyword">end</span></code></body></html>

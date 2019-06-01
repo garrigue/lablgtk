@@ -1,0 +1,27 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkTree.TreePath</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;create_&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_new"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;from_string&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_new_from_string"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;to_string&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_to_string"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;append_index&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_append_index"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;int&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;prepend_index&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_prepend_index"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_depth&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_get_depth"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_indices&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_get_indices"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;copy&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_copy"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;next&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_next"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;prev&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_prev"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;up&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_up"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;down&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_down"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;is_ancestor&nbsp;:&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_tree_path_is_ancestor"</span><br>
+<span class="keyword">end</span></code></body></html>

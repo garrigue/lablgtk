@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GTree.tree_store-c.html">
+<link rel="next" href="GTree.model_sort-c.html">
+<link rel="Up" href="GTree.html">
+<title>LablGTK : GTree.list_store</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GTree.tree_store-c.html" title="GTree.tree_store">Previous</a>
+&nbsp;<a class="up" href="GTree.html" title="GTree">Up</a>
+&nbsp;<a class="post" href="GTree.model_sort-c.html" title="GTree.model_sort">Next</a>
+</div>
+<h1>Class <a href="type_GTree.list_store.html">GTree.list_store</a></h1>
+
+<pre><span id="TYPElist_store"><span class="keyword">class</span> list_store</span> : <code class="type"><a href="Gtk.html#TYPElist_store">Gtk.list_store</a> -> </code><code class="code">object</code> <a href="GTree.list_store-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkListStore.html">GtkListStore</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GTree.tree_sortable-c.html"><code class="code">GTree.tree_sortable</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type"><a href="Gtk.html#TYPElist_store">Gtk.list_store</a></code></pre>
+<pre><span id="METHODappend"><span class="keyword">method</span> append</span> : <code class="type">unit -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="METHODclear"><span class="keyword">method</span> clear</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODinsert"><span class="keyword">method</span> insert</span> : <code class="type">int -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="METHODinsert_after"><span class="keyword">method</span> insert_after</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="METHODinsert_before"><span class="keyword">method</span> insert_before</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="METHODiter_is_valid"><span class="keyword">method</span> iter_is_valid</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.2</li>
+</ul>
+</div>
+
+<pre><span id="METHODmove_after"><span class="keyword">method</span> move_after</span> : <code class="type">iter:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> pos:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.2</li>
+</ul>
+</div>
+
+<pre><span id="METHODmove_before"><span class="keyword">method</span> move_before</span> : <code class="type">iter:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> pos:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.2</li>
+</ul>
+</div>
+
+<pre><span id="METHODprepend"><span class="keyword">method</span> prepend</span> : <code class="type">unit -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="METHODremove"><span class="keyword">method</span> remove</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre>
+<pre><span id="METHODset"><span class="keyword">method</span> set</span> : <code class="type">'a. row:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> column:'a <a href="GTree.html#TYPEcolumn">column</a> -> 'a -> unit</code></pre>
+<pre><span id="METHODswap"><span class="keyword">method</span> swap</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.2</li>
+</ul>
+</div>
+</body></html>

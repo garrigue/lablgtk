@@ -1,0 +1,546 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Gpointer.html">
+<link rel="next" href="GtkActionProps.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : Gtk</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Gpointer.html" title="Gpointer">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GtkActionProps.html" title="GtkActionProps">Next</a>
+</div>
+<h1>Module <a href="type_Gtk.html">Gtk</a></h1>
+
+<pre><span id="MODULEGtk"><span class="keyword">module</span> Gtk</span>: <code class="code">sig</code> <a href="Gtk.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="EXCEPTIONError"><span class="keyword">exception</span> Error</span> <span class="keyword">of</span> <code class="type">string</code></pre>
+
+<pre><span id="TYPEoptobj"><span class="keyword">type</span> <code class="type">'a</code> optobj</span> = <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> <a href="Gpointer.html#TYPEoptboxed">Gpointer.optboxed</a></code> </pre>
+
+
+<pre><span id="TYPEclampf"><span class="keyword">type</span> <code class="type"></code>clampf</span> = <code class="type">float</code> </pre>
+
+
+<pre><span id="MODULETags"><span class="keyword">module</span> <a href="Gtk.Tags.html">Tags</a></span>: <code class="code">sig</code> <a href="Gtk.Tags.html">..</a> <code class="code">end</code></pre>
+<pre><span id="TYPEgtk_class"><span class="keyword">type</span> <code class="type"></code>gtk_class</span> </pre>
+
+
+<pre><span id="TYPEaccel_group"><span class="keyword">type</span> <code class="type"></code>accel_group</span> </pre>
+
+
+<pre><span id="TYPEclipboard"><span class="keyword">type</span> <code class="type"></code>clipboard</span> </pre>
+
+
+<pre><span id="TYPEstyle"><span class="keyword">type</span> <code class="type"></code>style</span> = <code class="type">[ `style ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEgroup"><span class="keyword">type</span> <code class="type">'a</code> group</span> = <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> option</code> </pre>
+
+
+<pre><span id="TYPEstatusbar_message"><span class="keyword">type</span> <code class="type"></code>statusbar_message</span> </pre>
+
+
+<pre><span id="TYPEstatusbar_context"><span class="keyword">type</span> <code class="type"></code>statusbar_context</span> </pre>
+
+
+<pre><span id="TYPEselection_data"><span class="keyword">type</span> <code class="type"></code>selection_data</span> </pre>
+
+
+<pre><code><span id="TYPErectangle"><span class="keyword">type</span> <code class="type"></code>rectangle</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTrectangle.x">x</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTrectangle.y">y</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTrectangle.width">width</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTrectangle.height">height</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><code><span id="TYPEtarget_entry"><span class="keyword">type</span> <code class="type"></code>target_entry</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtarget_entry.target">target</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtarget_entry.flags">flags</span>&nbsp;: <code class="type">Tags.target_flags list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtarget_entry.info">info</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><code><span id="TYPEbox_packing"><span class="keyword">type</span> <code class="type"></code>box_packing</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTbox_packing.expand">expand</span>&nbsp;: <code class="type">bool</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTbox_packing.fill">fill</span>&nbsp;: <code class="type">bool</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTbox_packing.padding">padding</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTbox_packing.pack_type">pack_type</span>&nbsp;: <code class="type">Tags.pack_type</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="TYPEorientable"><span class="keyword">type</span> <code class="type"></code>orientable</span> = <code class="type">[ `giu | `orientable ]</code> </pre>
+
+
+<pre><span id="TYPEadjustment"><span class="keyword">type</span> <code class="type"></code>adjustment</span> = <code class="type">[ `adjustment | `giu ]</code> </pre>
+
+
+<pre><span id="TYPEtooltips"><span class="keyword">type</span> <code class="type"></code>tooltips</span> = <code class="type">[ `giu | `tooltips ]</code> </pre>
+
+
+<pre><span id="TYPEwidget"><span class="keyword">type</span> <code class="type"></code>widget</span> = <code class="type">[ `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEcontainer"><span class="keyword">type</span> <code class="type"></code>container</span> = <code class="type">[ `container | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEbin"><span class="keyword">type</span> <code class="type"></code>bin</span> = <code class="type">[ `bin | `container | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEalignment"><span class="keyword">type</span> <code class="type"></code>alignment</span> = <code class="type">[ `alignment | `bin | `container | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEbutton"><span class="keyword">type</span> <code class="type"></code>button</span> = <code class="type">[ `bin | `button | `container | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtoggle_button"><span class="keyword">type</span> <code class="type"></code>toggle_button</span> = <code class="type">[ `bin | `button | `container | `giu | `togglebutton | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEradio_button"><span class="keyword">type</span> <code class="type"></code>radio_button</span> = <code class="type">[ `bin | `button | `container | `giu | `radiobutton | `togglebutton | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEcolor_button"><span class="keyword">type</span> <code class="type"></code>color_button</span> = <code class="type">[ `bin | `button | `colorbutton | `container | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEfont_button"><span class="keyword">type</span> <code class="type"></code>font_button</span> = <code class="type">[ `bin | `button | `container | `fontbutton | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPElink_button"><span class="keyword">type</span> <code class="type"></code>link_button</span> = <code class="type">[ `bin | `button | `container | `giu | `linkbutton | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEscale_button"><span class="keyword">type</span> <code class="type"></code>scale_button</span> = <code class="type">[ `bin | `button | `container | `giu | `scalebutton | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEoption_menu"><span class="keyword">type</span> <code class="type"></code>option_menu</span> = <code class="type">[ `bin | `button | `container | `giu | `optionmenu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEevent_box"><span class="keyword">type</span> <code class="type"></code>event_box</span> = <code class="type">[ `bin | `container | `eventbox | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEframe"><span class="keyword">type</span> <code class="type"></code>frame</span> = <code class="type">[ `bin | `container | `frame | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEaspect_frame"><span class="keyword">type</span> <code class="type"></code>aspect_frame</span> = <code class="type">[ `aspectframe | `bin | `container | `frame | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEhandle_box"><span class="keyword">type</span> <code class="type"></code>handle_box</span> = <code class="type">[ `bin | `container | `giu | `handlebox | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEinvisible"><span class="keyword">type</span> <code class="type"></code>invisible</span> = <code class="type">[ `bin | `container | `giu | `invisible | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEitem"><span class="keyword">type</span> <code class="type"></code>item</span> = <code class="type">[ `bin | `container | `giu | `item | `widget ]</code> </pre>
+
+
+<pre><span id="TYPElist_item"><span class="keyword">type</span> <code class="type"></code>list_item</span> = <code class="type">[ `bin | `container | `giu | `item | `listitem | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEmenu_item"><span class="keyword">type</span> <code class="type"></code>menu_item</span> = <code class="type">[ `bin | `container | `giu | `item | `menuitem | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEimage_menu_item"><span class="keyword">type</span> <code class="type"></code>image_menu_item</span> = <code class="type">[ `bin | `container | `giu | `imagemenuitem | `item | `menuitem | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEcheck_menu_item"><span class="keyword">type</span> <code class="type"></code>check_menu_item</span> = <code class="type">[ `bin | `checkmenuitem | `container | `giu | `item | `menuitem | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEradio_menu_item"><span class="keyword">type</span> <code class="type"></code>radio_menu_item</span> = <code class="type">[ `bin<br>       | `checkmenuitem<br>       | `container<br>       | `giu<br>       | `item<br>       | `menuitem<br>       | `radiomenuitem<br>       | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtree_item"><span class="keyword">type</span> <code class="type"></code>tree_item</span> = <code class="type">[ `bin | `container | `giu | `item | `treeitem | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEscrolled_window"><span class="keyword">type</span> <code class="type"></code>scrolled_window</span> = <code class="type">[ `bin | `container | `giu | `scrolledwindow | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEviewport"><span class="keyword">type</span> <code class="type"></code>viewport</span> = <code class="type">[ `bin | `container | `giu | `viewport | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEwindow"><span class="keyword">type</span> <code class="type"></code>window</span> = <code class="type">[ `bin | `container | `giu | `widget | `window ]</code> </pre>
+
+
+<pre><span id="TYPEassistant"><span class="keyword">type</span> <code class="type"></code>assistant</span> = <code class="type">[ `assistant | `bin | `container | `giu | `widget | `window ]</code> </pre>
+
+
+<pre><span id="TYPEdialog"><span class="keyword">type</span> <code class="type"></code>dialog</span> = <code class="type">[ `bin | `container | `dialog | `giu | `widget | `window ]</code> </pre>
+
+
+<pre><span id="TYPEmessage_dialog"><span class="keyword">type</span> <code class="type"></code>message_dialog</span> = <code class="type">[ `bin | `container | `dialog | `giu | `messagedialog | `widget | `window ]</code> </pre>
+
+
+<pre><span id="TYPEcolor_selection_dialog"><span class="keyword">type</span> <code class="type"></code>color_selection_dialog</span> = <code class="type">[ `bin<br>       | `colorselectiondialog<br>       | `container<br>       | `dialog<br>       | `giu<br>       | `widget<br>       | `window ]</code> </pre>
+
+
+<pre><span id="TYPEinput_dialog"><span class="keyword">type</span> <code class="type"></code>input_dialog</span> = <code class="type">[ `bin | `container | `dialog | `giu | `inputdialog | `widget | `window ]</code> </pre>
+
+
+<pre><span id="TYPEfile_selection"><span class="keyword">type</span> <code class="type"></code>file_selection</span> = <code class="type">[ `bin | `container | `dialog | `fileselection | `giu | `widget | `window ]</code> </pre>
+
+
+<pre><span id="TYPEfont_selection_dialog"><span class="keyword">type</span> <code class="type"></code>font_selection_dialog</span> = <code class="type">[ `bin<br>       | `container<br>       | `dialog<br>       | `fontselectiondialog<br>       | `giu<br>       | `widget<br>       | `window ]</code> </pre>
+
+
+<pre><span id="TYPEplug"><span class="keyword">type</span> <code class="type"></code>plug</span> = <code class="type">[ `bin | `container | `giu | `plug | `widget | `window ]</code> </pre>
+
+
+<pre><span id="TYPEbox"><span class="keyword">type</span> <code class="type"></code>box</span> = <code class="type">[ `box | `container | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEbutton_box"><span class="keyword">type</span> <code class="type"></code>button_box</span> = <code class="type">[ `box | `buttonbox | `container | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEcolor_selection"><span class="keyword">type</span> <code class="type"></code>color_selection</span> = <code class="type">[ `box | `colorselection | `container | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEfont_selection"><span class="keyword">type</span> <code class="type"></code>font_selection</span> = <code class="type">[ `box | `container | `fontselection | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEcombo"><span class="keyword">type</span> <code class="type"></code>combo</span> = <code class="type">[ `box | `combo | `container | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEstatusbar"><span class="keyword">type</span> <code class="type"></code>statusbar</span> = <code class="type">[ `box | `container | `giu | `statusbar | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEstatus_icon"><span class="keyword">type</span> <code class="type"></code>status_icon</span> = <code class="type">[ `gtkstatusicon ]</code> </pre>
+
+
+<pre><span id="TYPEgtk_status_icon"><span class="keyword">type</span> <code class="type"></code>gtk_status_icon</span> = <code class="type"><a href="Gtk.html#TYPEstatus_icon">status_icon</a> <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEfixed"><span class="keyword">type</span> <code class="type"></code>fixed</span> = <code class="type">[ `container | `fixed | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPElayout"><span class="keyword">type</span> <code class="type"></code>layout</span> = <code class="type">[ `container | `giu | `layout | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEmenu_shell"><span class="keyword">type</span> <code class="type"></code>menu_shell</span> = <code class="type">[ `container | `giu | `menushell | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEmenu"><span class="keyword">type</span> <code class="type"></code>menu</span> = <code class="type">[ `container | `giu | `menu | `menushell | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEmenu_bar"><span class="keyword">type</span> <code class="type"></code>menu_bar</span> = <code class="type">[ `container | `giu | `menubar | `menushell | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEnotebook"><span class="keyword">type</span> <code class="type"></code>notebook</span> = <code class="type">[ `container | `giu | `notebook | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEpacker"><span class="keyword">type</span> <code class="type"></code>packer</span> = <code class="type">[ `container | `giu | `packer | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEpaned"><span class="keyword">type</span> <code class="type"></code>paned</span> = <code class="type">[ `container | `giu | `paned | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEsocket"><span class="keyword">type</span> <code class="type"></code>socket</span> = <code class="type">[ `container | `giu | `socket | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtable"><span class="keyword">type</span> <code class="type"></code>table</span> = <code class="type">[ `container | `giu | `table | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEgrid"><span class="keyword">type</span> <code class="type"></code>grid</span> = <code class="type">[ `container | `giu | `grid | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtoolbar"><span class="keyword">type</span> <code class="type"></code>toolbar</span> = <code class="type">[ `container | `giu | `orientable | `toolbar | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtool_item"><span class="keyword">type</span> <code class="type"></code>tool_item</span> = <code class="type">[ `bin | `container | `giu | `toolitem | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEseparator_tool_item"><span class="keyword">type</span> <code class="type"></code>separator_tool_item</span> = <code class="type">[ `bin | `container | `giu | `separatortoolitem | `toolitem | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtool_button"><span class="keyword">type</span> <code class="type"></code>tool_button</span> = <code class="type">[ `bin | `container | `giu | `toolbutton | `toolitem | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtoggle_tool_button"><span class="keyword">type</span> <code class="type"></code>toggle_tool_button</span> = <code class="type">[ `bin<br>       | `container<br>       | `giu<br>       | `toggletoolbutton<br>       | `toolbutton<br>       | `toolitem<br>       | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEradio_tool_button"><span class="keyword">type</span> <code class="type"></code>radio_tool_button</span> = <code class="type">[ `bin<br>       | `container<br>       | `giu<br>       | `radiotoolbutton<br>       | `toggletoolbutton<br>       | `toolbutton<br>       | `toolitem<br>       | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEmenu_tool_button"><span class="keyword">type</span> <code class="type"></code>menu_tool_button</span> = <code class="type">[ `bin<br>       | `container<br>       | `giu<br>       | `menutoolbutton<br>       | `toolbutton<br>       | `toolitem<br>       | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtree"><span class="keyword">type</span> <code class="type"></code>tree</span> = <code class="type">[ `container | `giu | `tree | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEcalendar"><span class="keyword">type</span> <code class="type"></code>calendar</span> = <code class="type">[ `calendar | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEdrawing_area"><span class="keyword">type</span> <code class="type"></code>drawing_area</span> = <code class="type">[ `drawingarea | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEcurve"><span class="keyword">type</span> <code class="type"></code>curve</span> = <code class="type">[ `curve | `drawingarea | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEeditable"><span class="keyword">type</span> <code class="type"></code>editable</span> = <code class="type">[ `editable | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEentry"><span class="keyword">type</span> <code class="type"></code>entry</span> = <code class="type">[ `editable | `entry | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEspin_button"><span class="keyword">type</span> <code class="type"></code>spin_button</span> = <code class="type">[ `editable | `entry | `giu | `spinbutton | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEold_editable"><span class="keyword">type</span> <code class="type"></code>old_editable</span> = <code class="type">[ `editable | `giu | `oldeditable | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtext"><span class="keyword">type</span> <code class="type"></code>text</span> = <code class="type">[ `editable | `giu | `oldeditable | `text | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEmisc"><span class="keyword">type</span> <code class="type"></code>misc</span> = <code class="type">[ `giu | `misc | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEarrow"><span class="keyword">type</span> <code class="type"></code>arrow</span> = <code class="type">[ `arrow | `giu | `misc | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEimage"><span class="keyword">type</span> <code class="type"></code>image</span> = <code class="type">[ `giu | `image | `misc | `widget ]</code> </pre>
+
+
+<pre><span id="TYPElabel"><span class="keyword">type</span> <code class="type"></code>label</span> = <code class="type">[ `giu | `label | `misc | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtips_query"><span class="keyword">type</span> <code class="type"></code>tips_query</span> = <code class="type">[ `giu | `label | `misc | `tipsquery | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEpixmap"><span class="keyword">type</span> <code class="type"></code>pixmap</span> = <code class="type">[ `giu | `misc | `pixmap | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEprogress"><span class="keyword">type</span> <code class="type"></code>progress</span> = <code class="type">[ `giu | `progress | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEprogress_bar"><span class="keyword">type</span> <code class="type"></code>progress_bar</span> = <code class="type">[ `giu | `progress | `progressbar | `widget ]</code> </pre>
+
+
+<pre><span id="TYPErange"><span class="keyword">type</span> <code class="type"></code>range</span> = <code class="type">[ `giu | `range | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEscale"><span class="keyword">type</span> <code class="type"></code>scale</span> = <code class="type">[ `giu | `range | `scale | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEscrollbar"><span class="keyword">type</span> <code class="type"></code>scrollbar</span> = <code class="type">[ `giu | `range | `scrollbar | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEruler"><span class="keyword">type</span> <code class="type"></code>ruler</span> = <code class="type">[ `giu | `ruler | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEseparator"><span class="keyword">type</span> <code class="type"></code>separator</span> = <code class="type">[ `giu | `separator | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtext_view"><span class="keyword">type</span> <code class="type"></code>text_view</span> = <code class="type">[ `container | `giu | `textview | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtext_buffer"><span class="keyword">type</span> <code class="type"></code>text_buffer</span> = <code class="type">[ `textbuffer ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtext_tag_table"><span class="keyword">type</span> <code class="type"></code>text_tag_table</span> = <code class="type">[ `texttagtable ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtext_tag"><span class="keyword">type</span> <code class="type"></code>text_tag</span> = <code class="type">[ `texttag ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtext_mark"><span class="keyword">type</span> <code class="type"></code>text_mark</span> = <code class="type">[ `textmark ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtext_child_anchor"><span class="keyword">type</span> <code class="type"></code>text_child_anchor</span> = <code class="type">[ `textchildanchor ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtext_iter"><span class="keyword">type</span> <code class="type"></code>text_iter</span> </pre>
+
+
+<pre><span id="TYPEtree_view"><span class="keyword">type</span> <code class="type"></code>tree_view</span> = <code class="type">[ `container | `giu | `treeview | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtree_view_column"><span class="keyword">type</span> <code class="type"></code>tree_view_column</span> = <code class="type">[ `celllayout | `giu | `treeviewcolumn ]</code> </pre>
+
+
+<pre><span id="TYPEtree_selection"><span class="keyword">type</span> <code class="type"></code>tree_selection</span> = <code class="type">[ `treeselection ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtree_model"><span class="keyword">type</span> <code class="type"></code>tree_model</span> = <code class="type">[ `treemodel ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtree_model_custom"><span class="keyword">type</span> <code class="type"></code>tree_model_custom</span> = <code class="type">[ `custommodel | `treemodel ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtree_sortable"><span class="keyword">type</span> <code class="type"></code>tree_sortable</span> = <code class="type">[ `tree_sortable | `treemodel ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtree_model_sort"><span class="keyword">type</span> <code class="type"></code>tree_model_sort</span> = <code class="type">[ `treemodel | `treemodelsort | `treesortable ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtree_model_filter"><span class="keyword">type</span> <code class="type"></code>tree_model_filter</span> = <code class="type">[ `treemodel | `treemodelfilter ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtree_store"><span class="keyword">type</span> <code class="type"></code>tree_store</span> = <code class="type">[ `treemodel | `treesortable | `treestore ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPElist_store"><span class="keyword">type</span> <code class="type"></code>list_store</span> = <code class="type">[ `liststore | `treemodel | `treesortable ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEtree_iter"><span class="keyword">type</span> <code class="type"></code>tree_iter</span> </pre>
+
+
+<pre><span id="TYPEtree_path"><span class="keyword">type</span> <code class="type"></code>tree_path</span> </pre>
+
+
+<pre><span id="TYPErow_reference"><span class="keyword">type</span> <code class="type"></code>row_reference</span> </pre>
+
+
+<pre><span id="TYPEcell_renderer"><span class="keyword">type</span> <code class="type"></code>cell_renderer</span> = <code class="type">[ `cellrenderer | `giu ]</code> </pre>
+
+
+<pre><span id="TYPEcell_renderer_pixbuf"><span class="keyword">type</span> <code class="type"></code>cell_renderer_pixbuf</span> = <code class="type">[ `cellrenderer | `cellrendererpixbuf | `giu ]</code> </pre>
+
+
+<pre><span id="TYPEcell_renderer_text"><span class="keyword">type</span> <code class="type"></code>cell_renderer_text</span> = <code class="type">[ `cellrenderer | `cellrenderertext | `giu ]</code> </pre>
+
+
+<pre><span id="TYPEcell_renderer_toggle"><span class="keyword">type</span> <code class="type"></code>cell_renderer_toggle</span> = <code class="type">[ `cellrenderer | `cellrenderertoggle | `giu ]</code> </pre>
+
+
+<pre><span id="TYPEcell_renderer_progress"><span class="keyword">type</span> <code class="type"></code>cell_renderer_progress</span> = <code class="type">[ `cellrenderer | `cellrendererprogress | `giu ]</code> </pre>
+
+
+<pre><span id="TYPEcell_renderer_combo"><span class="keyword">type</span> <code class="type"></code>cell_renderer_combo</span> = <code class="type">[ `cellrenderer | `cellrenderercombo | `cellrenderertext | `giu ]</code> </pre>
+
+
+<pre><span id="TYPEcell_renderer_accel"><span class="keyword">type</span> <code class="type"></code>cell_renderer_accel</span> = <code class="type">[ `cellrenderer | `cellrendereraccel | `cellrenderertext | `giu ]</code> </pre>
+
+
+<pre><span id="TYPEicon_source"><span class="keyword">type</span> <code class="type"></code>icon_source</span> </pre>
+
+
+<pre><span id="TYPEicon_set"><span class="keyword">type</span> <code class="type"></code>icon_set</span> </pre>
+
+
+<pre><span id="TYPEicon_factory"><span class="keyword">type</span> <code class="type"></code>icon_factory</span> = <code class="type">[ `iconfactory ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEsize_group"><span class="keyword">type</span> <code class="type"></code>size_group</span> = <code class="type">[ `sizegroup ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEcell_layout"><span class="keyword">type</span> <code class="type"></code>cell_layout</span> = <code class="type">[ `celllayout ]</code> </pre>
+
+
+<pre><span id="TYPEcombo_box"><span class="keyword">type</span> <code class="type"></code>combo_box</span> = <code class="type">[ `bin | `celllayout | `combobox | `container | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEcombo_box_text"><span class="keyword">type</span> <code class="type"></code>combo_box_text</span> = <code class="type">[ `bin<br>       | `celllayout<br>       | `combobox<br>       | `comboboxtext<br>       | `container<br>       | `giu<br>       | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEexpander"><span class="keyword">type</span> <code class="type"></code>expander</span> = <code class="type">[ `bin | `container | `expander | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEfile_filter"><span class="keyword">type</span> <code class="type"></code>file_filter</span> = <code class="type">[ `filefilter | `giu ]</code> </pre>
+
+
+<pre><span id="TYPEfile_chooser"><span class="keyword">type</span> <code class="type"></code>file_chooser</span> = <code class="type">[ `filechooser | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEentry_completion"><span class="keyword">type</span> <code class="type"></code>entry_completion</span> = <code class="type">[ `celllayout | `entrycompletion ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEaction"><span class="keyword">type</span> <code class="type"></code>action</span> = <code class="type">[ `action ]</code> </pre>
+
+
+<pre><span id="TYPEtoggle_action"><span class="keyword">type</span> <code class="type"></code>toggle_action</span> = <code class="type">[ `action | `toggleaction ]</code> </pre>
+
+
+<pre><span id="TYPEradio_action"><span class="keyword">type</span> <code class="type"></code>radio_action</span> = <code class="type">[ `action | `radioaction | `toggleaction ]</code> </pre>
+
+
+<pre><span id="TYPEaction_group"><span class="keyword">type</span> <code class="type"></code>action_group</span> = <code class="type">[ `actiongroup ]</code> </pre>
+
+
+<pre><span id="TYPEui_manager"><span class="keyword">type</span> <code class="type"></code>ui_manager</span> = <code class="type">[ `uimanager ]</code> </pre>
+
+
+<pre><span id="TYPEicon_view"><span class="keyword">type</span> <code class="type"></code>icon_view</span> = <code class="type">[ `container | `giu | `iconview | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEabout_dialog"><span class="keyword">type</span> <code class="type"></code>about_dialog</span> = <code class="type">[ `aboutdialog | `bin | `container | `dialog | `giu | `widget | `window ]</code> </pre>
+
+
+<pre><span id="TYPEfile_chooser_button"><span class="keyword">type</span> <code class="type"></code>file_chooser_button</span> = <code class="type">[ `box | `container | `filechooser | `filechooserbutton | `giu | `widget ]</code> </pre>
+
+
+<pre><span id="TYPEtooltip"><span class="keyword">type</span> <code class="type"></code>tooltip</span> = <code class="type">[ `tooltip ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+
+<pre><span id="TYPEobj"><span class="keyword">type</span> <code class="type">'a</code> obj</span> = <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+
+</body></html>

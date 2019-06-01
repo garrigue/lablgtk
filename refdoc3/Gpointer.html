@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Gobject.html">
+<link rel="next" href="Gtk.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : Gpointer</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Gobject.html" title="Gobject">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Gtk.html" title="Gtk">Next</a>
+</div>
+<h1>Module <a href="type_Gpointer.html">Gpointer</a></h1>
+
+<pre><span id="MODULEGpointer"><span class="keyword">module</span> Gpointer</span>: <code class="code">sig</code> <a href="Gpointer.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p><code class="code">Gpointer</code>: various kinds of pointers to C data</p>
+</div>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEoptaddr"><span class="keyword">type</span> <code class="type">'a</code> optaddr</span> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>Marked pointers</p>
+</div>
+</div>
+
+
+<pre><span id="VALoptaddr"><span class="keyword">val</span> optaddr</span> : <code class="type">'a option -> 'a <a href="Gpointer.html#TYPEoptaddr">optaddr</a></code></pre>
+<pre><span id="TYPEoptstring"><span class="keyword">type</span> <code class="type"></code>optstring</span> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>Naked pointers</p>
+</div>
+</div>
+
+
+<pre><span id="VALraw_null"><span class="keyword">val</span> raw_null</span> : <code class="type"><a href="Gpointer.html#TYPEoptstring">optstring</a></code></pre>
+<pre><span id="VALoptstring"><span class="keyword">val</span> optstring</span> : <code class="type">string option -> <a href="Gpointer.html#TYPEoptstring">optstring</a></code></pre>
+<pre><span id="TYPEboxed"><span class="keyword">type</span> <code class="type"></code>boxed</span> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>Boxed pointers</p>
+</div>
+</div>
+
+
+<pre><span id="VALboxed_null"><span class="keyword">val</span> boxed_null</span> : <code class="type"><a href="Gpointer.html#TYPEboxed">boxed</a></code></pre>
+<pre><span id="VALpeek_string"><span class="keyword">val</span> peek_string</span> : <code class="type">?pos:int -> ?len:int -> <a href="Gpointer.html#TYPEboxed">boxed</a> -> string</code></pre>
+<pre><span id="VALpeek_int"><span class="keyword">val</span> peek_int</span> : <code class="type"><a href="Gpointer.html#TYPEboxed">boxed</a> -> int</code></pre>
+<pre><span id="VALpoke_int"><span class="keyword">val</span> poke_int</span> : <code class="type"><a href="Gpointer.html#TYPEboxed">boxed</a> -> int -> unit</code></pre>
+<pre><span id="VALpeek_nativeint"><span class="keyword">val</span> peek_nativeint</span> : <code class="type"><a href="Gpointer.html#TYPEboxed">boxed</a> -> nativeint</code></pre>
+<pre><span id="VALpoke_nativeint"><span class="keyword">val</span> poke_nativeint</span> : <code class="type"><a href="Gpointer.html#TYPEboxed">boxed</a> -> nativeint -> unit</code></pre>
+<pre><span id="TYPEoptboxed"><span class="keyword">type</span> <code class="type">'a</code> optboxed</span> </pre>
+
+
+<pre><span id="VALoptboxed"><span class="keyword">val</span> optboxed</span> : <code class="type">'a option -> 'a <a href="Gpointer.html#TYPEoptboxed">optboxed</a></code></pre>
+<pre><span id="VALmay_box"><span class="keyword">val</span> may_box</span> : <code class="type">f:('a -> 'b) -> 'a option -> 'b <a href="Gpointer.html#TYPEoptboxed">optboxed</a></code></pre>
+<pre><span id="TYPEvariant_table"><span class="keyword">type</span> <code class="type">[>  ]</code> variant_table</span> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>Variant tables</p>
+</div>
+</div>
+
+
+<pre><span id="VALdecode_variant"><span class="keyword">val</span> decode_variant</span> : <code class="type">([>  ] as 'a) <a href="Gpointer.html#TYPEvariant_table">variant_table</a> -> int -> 'a</code></pre>
+<pre><span id="VALencode_variant"><span class="keyword">val</span> encode_variant</span> : <code class="type">([>  ] as 'a) <a href="Gpointer.html#TYPEvariant_table">variant_table</a> -> 'a -> int</code></pre>
+<pre><span id="VALdecode_flags"><span class="keyword">val</span> decode_flags</span> : <code class="type">([>  ] as 'a) <a href="Gpointer.html#TYPEvariant_table">variant_table</a> -> int -> 'a list</code></pre>
+<pre><span id="VALencode_flags"><span class="keyword">val</span> encode_flags</span> : <code class="type">([>  ] as 'a) <a href="Gpointer.html#TYPEvariant_table">variant_table</a> -> 'a list -> int</code></pre>
+<pre><span id="EXCEPTIONNull"><span class="keyword">exception</span> Null</span></pre>
+<div class="info ">
+<div class="info-desc">
+<p>Null pointer exception</p>
+</div>
+</div>
+
+<pre><span id="TYPEstable"><span class="keyword">type</span> <code class="type">'a</code> stable</span> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>Ensure a value is copied in the old generation</p>
+</div>
+</div>
+
+
+<pre><span id="VALstable_copy"><span class="keyword">val</span> stable_copy</span> : <code class="type">'a -> 'a <a href="Gpointer.html#TYPEstable">stable</a></code></pre><p>Region handling</p>
+
+<pre><span id="TYPEregion"><span class="keyword">type</span> <code class="type"></code>region</span> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>The abstract type of heap regions</p>
+</div>
+</div>
+
+
+<pre><span id="VALlength"><span class="keyword">val</span> length</span> : <code class="type"><a href="Gpointer.html#TYPEregion">region</a> -> int</code></pre><div class="info ">
+<div class="info-desc">
+<p>the length of the region</p>
+</div>
+</div>
+
+<pre><span id="VALget_addr"><span class="keyword">val</span> get_addr</span> : <code class="type"><a href="Gpointer.html#TYPEregion">region</a> -> nativeint</code></pre><div class="info ">
+<div class="info-desc">
+<p>the start address of the region</p>
+</div>
+</div>
+
+<pre><span id="VALsub"><span class="keyword">val</span> sub</span> : <code class="type">?pos:int -> ?len:int -> <a href="Gpointer.html#TYPEregion">region</a> -> <a href="Gpointer.html#TYPEregion">region</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>subregion of length <code class="code">len</code> starting at offset <code class="code">pos</code></p>
+</div>
+</div>
+
+<pre><span id="VALget_byte"><span class="keyword">val</span> get_byte</span> : <code class="type"><a href="Gpointer.html#TYPEregion">region</a> -> pos:int -> int</code></pre>
+<pre><span id="VALset_byte"><span class="keyword">val</span> set_byte</span> : <code class="type"><a href="Gpointer.html#TYPEregion">region</a> -> pos:int -> int -> unit</code></pre>
+<pre><span id="VALblit"><span class="keyword">val</span> blit</span> : <code class="type">src:<a href="Gpointer.html#TYPEregion">region</a> -> dst:<a href="Gpointer.html#TYPEregion">region</a> -> unit</code></pre>
+<pre><span id="VALregion_of_bytes"><span class="keyword">val</span> region_of_bytes</span> : <code class="type">bytes -> <a href="Gpointer.html#TYPEregion">region</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>create a region sharing a string</p>
+</div>
+</div>
+
+<pre><span id="VALbytes_of_region"><span class="keyword">val</span> bytes_of_region</span> : <code class="type"><a href="Gpointer.html#TYPEregion">region</a> -> bytes</code></pre><div class="info ">
+<div class="info-desc">
+<p>copy the contents of the region to a string</p>
+</div>
+</div>
+
+<pre><span id="TYPEbigarray"><span class="keyword">type</span> <code class="type">'a</code> bigarray</span> = <code class="type">(int, Bigarray.int8_unsigned_elt, 'a) Bigarray.Array1.t</code> </pre>
+
+
+<pre><span id="VALregion_of_bigarray"><span class="keyword">val</span> region_of_bigarray</span> : <code class="type">'a <a href="Gpointer.html#TYPEbigarray">bigarray</a> -> <a href="Gpointer.html#TYPEregion">region</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>create a region sharing a bigarray</p>
+</div>
+</div>
+<p>Unsafe access</p>
+
+<pre><span id="VALunsafe_create_region"><span class="keyword">val</span> unsafe_create_region</span> : <code class="type">path:int array -> get_length:('a -> int) -> 'a -> <a href="Gpointer.html#TYPEregion">region</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">unsafe_create_region ~path ~get_length</code> returns a function
+    to build regions from a specific kind of data abstraction</p>
+</div>
+</div>
+
+<pre><span id="VALunsafe_get_byte"><span class="keyword">val</span> unsafe_get_byte</span> : <code class="type"><a href="Gpointer.html#TYPEregion">region</a> -> pos:int -> int</code></pre>
+<pre><span id="VALunsafe_set_byte"><span class="keyword">val</span> unsafe_set_byte</span> : <code class="type"><a href="Gpointer.html#TYPEregion">region</a> -> pos:int -> int -> unit</code></pre></body></html>

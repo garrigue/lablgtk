@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GTree.model_signals-c.html">
+<link rel="next" href="GTree.tree_sortable_signals-c.html">
+<link rel="Up" href="GTree.html">
+<title>LablGTK : GTree.model</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GTree.model_signals-c.html" title="GTree.model_signals">Previous</a>
+&nbsp;<a class="up" href="GTree.html" title="GTree">Up</a>
+&nbsp;<a class="post" href="GTree.tree_sortable_signals-c.html" title="GTree.tree_sortable_signals">Next</a>
+</div>
+<h1>Class <a href="type_GTree.model.html">GTree.model</a></h1>
+
+<pre><span id="TYPEmodel"><span class="keyword">class</span> model</span> : <code class="type">[> `treemodel ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.model-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTreeModel.html">GtkTreeModel</a></small></ul>
+</div>
+<br><hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">([> `treemodel ] as 'a) <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="ATTid"><span class="keyword">val</span> id</span> : <code class="type">int</code></pre>
+<pre><span id="METHODas_model"><span class="keyword">method</span> as_model</span> : <code class="type"><a href="Gtk.html#TYPEtree_model">Gtk.tree_model</a></code></pre>
+<pre><span id="METHODmisc"><span class="keyword">method</span> misc</span> : <code class="type"><a href="GObj.gobject_ops-c.html">GObj.gobject_ops</a></code></pre>
+<pre><span id="METHODcoerce"><span class="keyword">method</span> coerce</span> : <code class="type"><a href="GTree.model-c.html">model</a></code></pre>
+<pre><span id="METHODflags"><span class="keyword">method</span> flags</span> : <code class="type"><a href="GtkEnums.html#TYPEtree_model_flags">GtkEnums.tree_model_flags</a> list</code></pre>
+<pre><span id="METHODn_columns"><span class="keyword">method</span> n_columns</span> : <code class="type">int</code></pre>
+<pre><span id="METHODget_column_type"><span class="keyword">method</span> get_column_type</span> : <code class="type">int -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a></code></pre>
+<pre><span id="METHODget_iter"><span class="keyword">method</span> get_iter</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="METHODget_path"><span class="keyword">method</span> get_path</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a></code></pre>
+<pre><span id="METHODget_row_reference"><span class="keyword">method</span> get_row_reference</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> <a href="GTree.row_reference-c.html">row_reference</a></code></pre>
+<pre><span id="METHODget"><span class="keyword">method</span> get</span> : <code class="type">'b. row:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> column:'b <a href="GTree.html#TYPEcolumn">column</a> -> 'b</code></pre>
+<pre><span id="METHODget_iter_first"><span class="keyword">method</span> get_iter_first</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> option</code></pre>
+<pre><span id="METHODiter_next"><span class="keyword">method</span> iter_next</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre>
+<pre><span id="METHODiter_has_child"><span class="keyword">method</span> iter_has_child</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre>
+<pre><span id="METHODiter_n_children"><span class="keyword">method</span> iter_n_children</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> option -> int</code></pre>
+<pre><span id="METHODiter_children"><span class="keyword">method</span> iter_children</span> : <code class="type">?nth:int -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> option -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Invalid_argument</code> if arguments do not designate a valid node</li>
+</ul>
+</div>
+
+<pre><span id="METHODiter_parent"><span class="keyword">method</span> iter_parent</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> option</code></pre>
+<pre><span id="METHODforeach"><span class="keyword">method</span> foreach</span> : <code class="type">(<a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool) -> unit</code></pre>
+<pre><span id="METHODrow_changed"><span class="keyword">method</span> row_changed</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> unit</code></pre></body></html>

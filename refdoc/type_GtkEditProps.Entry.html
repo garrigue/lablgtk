@@ -1,0 +1,88 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkEditProps.Entry</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.entry&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">P</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;text&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;text_length&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;visibility&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;max_length&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;activates_default&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cursor_position&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;editable&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;has_frame&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;invisible_char&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;scroll_offset&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;selection_bound&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;width_chars&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;int)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;xalign&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;float)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;overwrite_mode&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;primary_icon_activatable&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;primary_icon_name&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;string&nbsp;option)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;primary_icon_pixbuf&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;primary_icon_sensitive&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;primary_icon_stock&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;<span class="constructor">GtkStock</span>.id)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;primary_icon_tooltip_markup&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;primary_icon_tooltip_text&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;secondary_icon_activatable&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;secondary_icon_name&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;string&nbsp;option)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;secondary_icon_pixbuf&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;secondary_icon_sensitive&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;bool)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;secondary_icon_stock&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;<span class="constructor">GtkStock</span>.id)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;secondary_icon_tooltip_markup&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;secondary_icon_tooltip_text&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;placeholder_text&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;string)&nbsp;<span class="constructor">Gobject</span>.property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">S</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;activate&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;backspace&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;copy_clipboard&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cut_clipboard&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;delete_from_cursor&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;<span class="constructor">GtkEnums</span>.delete_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;insert_at_cursor&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;move_cursor&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;<span class="constructor">GtkEnums</span>.movement_step&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;extend:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;paste_clipboard&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;populate_popup&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;<span class="constructor">Gtk</span>.menu&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;toggle_overwrite&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;icon_press&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkEnums</span>.entry_icon_position&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;icon_released&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkEnums</span>.entry_icon_position&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Button</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;<span class="constructor">Gtk</span>.entry&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.entry&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_completion&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.entry_completion&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_entry_get_completion"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_completion&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.entry_completion&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_entry_set_completion"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make_params&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cont:(([&gt;&nbsp;<span class="keywordsign">`</span>entry&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.param&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?text:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?visibility:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?max_length:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?activates_default:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?editable:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?has_frame:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?width_chars:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?xalign:float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?placeholder_text:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b<br>
+<span class="keyword">end</span></code></body></html>

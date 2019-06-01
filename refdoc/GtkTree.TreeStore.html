@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkTree.TreeModel.html">
+<link rel="next" href="GtkTree.ListStore.html">
+<link rel="Up" href="GtkTree.html">
+<title>LablGTK : GtkTree.TreeStore</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkTree.TreeModel.html" title="GtkTree.TreeModel">Previous</a>
+&nbsp;<a class="up" href="GtkTree.html" title="GtkTree">Up</a>
+&nbsp;<a class="post" href="GtkTree.ListStore.html" title="GtkTree.ListStore">Next</a>
+</div>
+<h1>Module <a href="type_GtkTree.TreeStore.html">GtkTree.TreeStore</a></h1>
+
+<pre><span id="MODULETreeStore"><span class="keyword">module</span> TreeStore</span>: <code class="code">sig</code> <a href="GtkTree.TreeStore.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a></code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type"><a href="Gobject.html#TYPEg_type">Gobject.g_type</a> array -> <a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a></code></pre>
+<pre><span id="VALset_value"><span class="keyword">val</span> set_value</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> row:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> column:int -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> unit</code></pre>
+<pre><span id="VALremove"><span class="keyword">val</span> remove</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre>
+<pre><span id="VALinsert"><span class="keyword">val</span> insert</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> iter:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> ?parent:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> int -> unit</code></pre>
+<pre><span id="VALinsert"><span class="keyword">val</span> insert</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> ?parent:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> int -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="VALinsert_before"><span class="keyword">val</span> insert_before</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -><br>       iter:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> ?parent:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> unit</code></pre>
+<pre><span id="VALinsert_before"><span class="keyword">val</span> insert_before</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> ?parent:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="VALinsert_after"><span class="keyword">val</span> insert_after</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -><br>       iter:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> ?parent:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> unit</code></pre>
+<pre><span id="VALinsert_after"><span class="keyword">val</span> insert_after</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> ?parent:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="VALappend"><span class="keyword">val</span> append</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> iter:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> ?parent:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> unit</code></pre>
+<pre><span id="VALappend"><span class="keyword">val</span> append</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> ?parent:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> unit -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="VALprepend"><span class="keyword">val</span> prepend</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> iter:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> ?parent:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> unit</code></pre>
+<pre><span id="VALprepend"><span class="keyword">val</span> prepend</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> ?parent:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> unit -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a></code></pre>
+<pre><span id="VALis_ancestor"><span class="keyword">val</span> is_ancestor</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> iter:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> descendant:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre>
+<pre><span id="VALiter_depth"><span class="keyword">val</span> iter_depth</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> int</code></pre>
+<pre><span id="VALclear"><span class="keyword">val</span> clear</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> unit</code></pre>
+<pre><span id="VALiter_is_valid"><span class="keyword">val</span> iter_is_valid</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre>
+<pre><span id="VALswap"><span class="keyword">val</span> swap</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre>
+<pre><span id="VALmove_before"><span class="keyword">val</span> move_before</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> iter:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> pos:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre>
+<pre><span id="VALmove_after"><span class="keyword">val</span> move_after</span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> iter:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> pos:<a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre></body></html>

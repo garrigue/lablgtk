@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GEdit.html">
+<link rel="next" href="GMain.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GFile</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GEdit.html" title="GEdit">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GMain.html" title="GMain">Next</a>
+</div>
+<h1>Module <a href="type_GFile.html">GFile</a></h1>
+
+<pre><span id="MODULEGFile"><span class="keyword">module</span> GFile</span>: <code class="code">sig</code> <a href="GFile.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>The new file chooser widget</p>
+</div>
+</div>
+<hr width="100%">
+<h4 id="3_GtkFileFilter">GtkFileFilter</h4>
+<pre><span id="TYPEfilter"><span class="keyword">class</span> <a href="GFile.filter-c.html">filter</a></span> : <code class="type">[> <a href="Gtk.html#TYPEfile_filter">Gtk.file_filter</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GFile.filter-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALfilter"><span class="keyword">val</span> filter</span> : <code class="type">?name:string -><br>       ?patterns:string list -> ?mime_types:string list -> unit -> <a href="GFile.filter-c.html">filter</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/gtk-gtkfilefilter.html">gtk-gtkfilefilter</a></small></ul>
+</div>
+<h4 id="3_GtkFileChooser">GtkFileChooser</h4>
+<pre><span id="TYPEchooser_signals"><span class="keyword">class type</span> <a href="GFile.chooser_signals-c.html">chooser_signals</a></span> = <code class="code">object</code> <a href="GFile.chooser_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+
+<pre><span id="TYPEchooser"><span class="keyword">class type</span> <a href="GFile.chooser-c.html">chooser</a></span> = <code class="code">object</code> <a href="GFile.chooser-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+
+<pre><span id="TYPEchooser_widget_signals"><span class="keyword">class</span> <a href="GFile.chooser_widget_signals-c.html">chooser_widget_signals</a></span> : <code class="type">[> `filechooser | `giu | `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GFile.chooser_widget_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEchooser_widget"><span class="keyword">class</span> <a href="GFile.chooser_widget-c.html">chooser_widget</a></span> : <code class="type">[> `filechooser | `giu | `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GFile.chooser_widget-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALchooser_widget"><span class="keyword">val</span> chooser_widget</span> : <code class="type">action:Gtk.Tags.file_chooser_action -><br>       ?filename:string -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GFile.chooser_widget-c.html">chooser_widget</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkFileChooserWidget.html">GtkFileChooserWidget</a></small></ul>
+</div>
+
+<pre><span id="TYPEchooser_button_signals"><span class="keyword">class</span> <a href="GFile.chooser_button_signals-c.html">chooser_button_signals</a></span> : <code class="type">[> `container | `filechooser | `giu | `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GFile.chooser_button_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEchooser_button"><span class="keyword">class</span> <a href="GFile.chooser_button-c.html">chooser_button</a></span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser_button">Gtk.file_chooser_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GFile.chooser_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALchooser_button"><span class="keyword">val</span> chooser_button</span> : <code class="type">action:Gtk.Tags.file_chooser_action -><br>       ?title:string -><br>       ?width_chars:int -><br>       ?filename:string -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GFile.chooser_button-c.html">chooser_button</a></code></pre></body></html>

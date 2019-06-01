@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="next" href="GWindow.window-c.html">
+<link rel="Up" href="GWindow.html">
+<title>LablGTK : GWindow.window_skel</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="GWindow.html" title="GWindow">Up</a>
+&nbsp;<a class="post" href="GWindow.window-c.html" title="GWindow.window">Next</a>
+</div>
+<h1>Class <a href="type_GWindow.window_skel.html">GWindow.window_skel</a></h1>
+
+<pre><span id="TYPEwindow_skel"><span class="keyword">class</span> window_skel</span> : <code class="type">[> <a href="Gtk.html#TYPEwindow">Gtk.window</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.window_skel-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkWindow.html">GtkWindow</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GContainer.bin-c.html"><code class="code">GContainer.bin</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">([> <a href="Gtk.html#TYPEwindow">Gtk.window</a> ] as 'a) <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODactivate_default"><span class="keyword">method</span> activate_default</span> : <code class="type">unit -> bool</code></pre>
+<pre><span id="METHODactivate_focus"><span class="keyword">method</span> activate_focus</span> : <code class="type">unit -> bool</code></pre>
+<pre><span id="METHODadd_accel_group"><span class="keyword">method</span> add_accel_group</span> : <code class="type"><a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> unit</code></pre>
+<pre><span id="METHODas_window"><span class="keyword">method</span> as_window</span> : <code class="type"><a href="Gtk.html#TYPEwindow">Gtk.window</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODdeiconify"><span class="keyword">method</span> deiconify</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODevent"><span class="keyword">method</span> event</span> : <code class="type"><a href="GObj.event_ops-c.html">GObj.event_ops</a></code></pre>
+<pre><span id="METHODiconify"><span class="keyword">method</span> iconify</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODmove"><span class="keyword">method</span> move</span> : <code class="type">x:int -> y:int -> unit</code></pre>
+<pre><span id="METHODparse_geometry"><span class="keyword">method</span> parse_geometry</span> : <code class="type">string -> bool</code></pre>
+<pre><span id="METHODpresent"><span class="keyword">method</span> present</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODresize"><span class="keyword">method</span> resize</span> : <code class="type">width:int -> height:int -> unit</code></pre>
+<pre><span id="METHODshow"><span class="keyword">method</span> show</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODset_accept_focus"><span class="keyword">method</span> set_accept_focus</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_decorated"><span class="keyword">method</span> set_decorated</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_default_height"><span class="keyword">method</span> set_default_height</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_default_size"><span class="keyword">method</span> set_default_size</span> : <code class="type">width:int -> height:int -> unit</code></pre>
+<pre><span id="METHODset_default_width"><span class="keyword">method</span> set_default_width</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_deletable"><span class="keyword">method</span> set_deletable</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_destroy_with_parent"><span class="keyword">method</span> set_destroy_with_parent</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_focus_on_map"><span class="keyword">method</span> set_focus_on_map</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_geometry_hints"><span class="keyword">method</span> set_geometry_hints</span> : <code class="type">?min_size:int * int -><br>       ?max_size:int * int -><br>       ?base_size:int * int -><br>       ?aspect:float * float -><br>       ?resize_inc:int * int -><br>       ?win_gravity:<a href="Gdk.Tags.html#TYPEgravity">Gdk.Tags.gravity</a> -><br>       ?pos:bool -> ?user_pos:bool -> ?user_size:bool -> <a href="GObj.widget-c.html">GObj.widget</a> -> unit</code></pre>
+<pre><span id="METHODset_gravity"><span class="keyword">method</span> set_gravity</span> : <code class="type"><a href="Gdk.Tags.html#TYPEgravity">Gdk.Tags.gravity</a> -> unit</code></pre>
+<pre><span id="METHODset_icon"><span class="keyword">method</span> set_icon</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> option -> unit</code></pre>
+<pre><span id="METHODset_icon_name"><span class="keyword">method</span> set_icon_name</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_modal"><span class="keyword">method</span> set_modal</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_opacity"><span class="keyword">method</span> set_opacity</span> : <code class="type">float -> unit</code></pre>
+<pre><span id="METHODset_position"><span class="keyword">method</span> set_position</span> : <code class="type">Gtk.Tags.window_position -> unit</code></pre>
+<pre><span id="METHODset_resizable"><span class="keyword">method</span> set_resizable</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_role"><span class="keyword">method</span> set_role</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_screen"><span class="keyword">method</span> set_screen</span> : <code class="type"><a href="Gdk.html#TYPEscreen">Gdk.screen</a> -> unit</code></pre>
+<pre><span id="METHODset_skip_pager_hint"><span class="keyword">method</span> set_skip_pager_hint</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_skip_taskbar_hint"><span class="keyword">method</span> set_skip_taskbar_hint</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_title"><span class="keyword">method</span> set_title</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_transient_for"><span class="keyword">method</span> set_transient_for</span> : <code class="type"><a href="Gtk.html#TYPEwindow">Gtk.window</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="METHODset_type_hint"><span class="keyword">method</span> set_type_hint</span> : <code class="type"><a href="Gdk.Tags.html#TYPEwindow_type_hint">Gdk.Tags.window_type_hint</a> -> unit</code></pre>
+<pre><span id="METHODset_wmclass"><span class="keyword">method</span> set_wmclass</span> : <code class="type">name:string -> clas:string -> unit</code></pre>
+<pre><span id="METHODaccept_focus"><span class="keyword">method</span> accept_focus</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODdecorated"><span class="keyword">method</span> decorated</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODdefault_height"><span class="keyword">method</span> default_height</span> : <code class="type">int</code></pre>
+<pre><span id="METHODdefault_width"><span class="keyword">method</span> default_width</span> : <code class="type">int</code></pre>
+<pre><span id="METHODdeletable"><span class="keyword">method</span> deletable</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODdestroy_with_parent"><span class="keyword">method</span> destroy_with_parent</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODfocus_on_map"><span class="keyword">method</span> focus_on_map</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODgravity"><span class="keyword">method</span> gravity</span> : <code class="type"><a href="GdkEnums.html#TYPEgravity">GdkEnums.gravity</a></code></pre>
+<pre><span id="METHODhas_toplevel_focus"><span class="keyword">method</span> has_toplevel_focus</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODicon"><span class="keyword">method</span> icon</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> option</code></pre>
+<pre><span id="METHODicon_name"><span class="keyword">method</span> icon_name</span> : <code class="type">string</code></pre>
+<pre><span id="METHODis_active"><span class="keyword">method</span> is_active</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODkind"><span class="keyword">method</span> kind</span> : <code class="type">Gtk.Tags.window_type</code></pre>
+<pre><span id="METHODmodal"><span class="keyword">method</span> modal</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODopacity"><span class="keyword">method</span> opacity</span> : <code class="type">float</code></pre>
+<pre><span id="METHODposition"><span class="keyword">method</span> position</span> : <code class="type">Gtk.Tags.window_position</code></pre>
+<pre><span id="METHODresizable"><span class="keyword">method</span> resizable</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODrole"><span class="keyword">method</span> role</span> : <code class="type">string</code></pre>
+<pre><span id="METHODscreen"><span class="keyword">method</span> screen</span> : <code class="type"><a href="Gdk.html#TYPEscreen">Gdk.screen</a></code></pre>
+<pre><span id="METHODskip_pager_hint"><span class="keyword">method</span> skip_pager_hint</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODskip_taskbar_hint"><span class="keyword">method</span> skip_taskbar_hint</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODtitle"><span class="keyword">method</span> title</span> : <code class="type">string</code></pre>
+<pre><span id="METHODtype_hint"><span class="keyword">method</span> type_hint</span> : <code class="type"><a href="Gdk.Tags.html#TYPEwindow_type_hint">Gdk.Tags.window_type_hint</a></code></pre>
+<pre><span id="METHODset_urgency_hint"><span class="keyword">method</span> set_urgency_hint</span> : <code class="type">bool -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>since Gtk 2.8</p>
+</div>
+</div>
+
+<pre><span id="METHODurgency_hint"><span class="keyword">method</span> urgency_hint</span> : <code class="type">bool</code></pre><div class="info ">
+<div class="info-desc">
+<p>since Gtk 2.8</p>
+</div>
+</div>
+</body></html>

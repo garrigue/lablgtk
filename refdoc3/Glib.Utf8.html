@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Glib.Unichar.html">
+<link rel="next" href="Glib.Markup.html">
+<link rel="Up" href="Glib.html">
+<title>LablGTK : Glib.Utf8</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Glib.Unichar.html" title="Glib.Unichar">Previous</a>
+&nbsp;<a class="up" href="Glib.html" title="Glib">Up</a>
+&nbsp;<a class="post" href="Glib.Markup.html" title="Glib.Markup">Next</a>
+</div>
+<h1>Module <a href="type_Glib.Utf8.html">Glib.Utf8</a></h1>
+
+<pre><span id="MODULEUtf8"><span class="keyword">module</span> Utf8</span>: <code class="code">sig</code> <a href="Glib.Utf8.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Unicode Manipulation</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/glib/stable/glib-Unicode-Manipulation.html">glib-Unicode-Manipulation</a></small></ul>
+</div>
+<hr width="100%">
+<p>UTF-8 handling, and conversion to UCS-4</p>
+
+<pre><span id="VALvalidate"><span class="keyword">val</span> validate</span> : <code class="type">string -> bool</code></pre><div class="info ">
+<div class="info-desc">
+<p>If you read an UTF-8 string from somewhere, you should validate it,
+      or risk random segmentation faults</p>
+</div>
+</div>
+
+<pre><span id="VALlength"><span class="keyword">val</span> length</span> : <code class="type">string -> int</code></pre>
+<pre><span id="VALfrom_unichar"><span class="keyword">val</span> from_unichar</span> : <code class="type"><a href="Glib.html#TYPEunichar">Glib.unichar</a> -> string</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">from_unichar 0xiii</code> converts a code point <code class="code">iii</code> (usually in hexadecimal
+      form) into a string containing the UTF-8 encoded character <code class="code">0xiii</code>. See 
+      <a href="http://www.unicode.org/">unicode.org</a> for charmaps.
+      Does not check that the given code point is a valid unicode point.</p>
+</div>
+</div>
+
+<pre><span id="VALfrom_unistring"><span class="keyword">val</span> from_unistring</span> : <code class="type"><a href="Glib.html#TYPEunistring">Glib.unistring</a> -> string</code></pre>
+<pre><span id="VALto_unichar_validated"><span class="keyword">val</span> to_unichar_validated</span> : <code class="type">string -> pos:int Stdlib.ref -> <a href="Glib.html#TYPEunichar">Glib.unichar</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">to_unichar_validated</code> decodes an UTF-8 encoded code point and checks
+      for incomplete characters, invalid characters and overlong encodings.</p>
+</div>
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Convert.Error</code> if invalid</li>
+</ul>
+</div>
+
+<pre><span id="VALto_unichar"><span class="keyword">val</span> to_unichar</span> : <code class="type">string -> pos:int Stdlib.ref -> <a href="Glib.html#TYPEunichar">Glib.unichar</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">to_unichar</code> decodes an UTF-8 encoded code point. Result is undefined 
+      if <code class="code">pos</code> does not point to a valid UTF-8 encoded character.</p>
+</div>
+</div>
+
+<pre><span id="VALto_unistring"><span class="keyword">val</span> to_unistring</span> : <code class="type">string -> <a href="Glib.html#TYPEunistring">Glib.unistring</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">to_unistring</code> decodes an UTF-8 encoded string into an array of
+      <code class="code">unichar</code>. The string <em>must</em> be valid.</p>
+</div>
+</div>
+
+<pre><span id="VALfirst_char"><span class="keyword">val</span> first_char</span> : <code class="type">string -> <a href="Glib.html#TYPEunichar">Glib.unichar</a></code></pre>
+<pre><span id="VALoffset_to_pos"><span class="keyword">val</span> offset_to_pos</span> : <code class="type">string -> pos:int -> off:int -> int</code></pre>
+<pre><span id="TYPEnormalize_mode"><span class="keyword">type</span> <code class="type"></code>normalize_mode</span> = <code class="type">[ `ALL | `ALL_COMPOSE | `DEFAULT | `DEFAULT_COMPOSE ]</code> </pre>
+
+
+<pre><span id="VALnormalize"><span class="keyword">val</span> normalize</span> : <code class="type">string -> <a href="Glib.Utf8.html#TYPEnormalize_mode">normalize_mode</a> -> string</code></pre>
+<pre><span id="VALuppercase"><span class="keyword">val</span> uppercase</span> : <code class="type">string -> string</code></pre>
+<pre><span id="VALlowercase"><span class="keyword">val</span> lowercase</span> : <code class="type">string -> string</code></pre>
+<pre><span id="VALcasefold"><span class="keyword">val</span> casefold</span> : <code class="type">string -> string</code></pre>
+<pre><span id="VALcollate"><span class="keyword">val</span> collate</span> : <code class="type">string -> string -> int</code></pre>
+<pre><span id="VALcollate_key"><span class="keyword">val</span> collate_key</span> : <code class="type">string -> string</code></pre></body></html>

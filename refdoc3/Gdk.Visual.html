@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Gdk.Screen.html">
+<link rel="next" href="Gdk.Color.html">
+<link rel="Up" href="Gdk.html">
+<title>LablGTK : Gdk.Visual</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Gdk.Screen.html" title="Gdk.Screen">Previous</a>
+&nbsp;<a class="up" href="Gdk.html" title="Gdk">Up</a>
+&nbsp;<a class="post" href="Gdk.Color.html" title="Gdk.Color">Next</a>
+</div>
+<h1>Module <a href="type_Gdk.Visual.html">Gdk.Visual</a></h1>
+
+<pre><span id="MODULEVisual"><span class="keyword">module</span> Visual</span>: <code class="code">sig</code> <a href="Gdk.Visual.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEvisual_type"><span class="keyword">type</span> <code class="type"></code>visual_type</span> = <code class="type">[ `DIRECT_COLOR<br>       | `GRAYSCALE<br>       | `PSEUDO_COLOR<br>       | `STATIC_COLOR<br>       | `STATIC_GRAY<br>       | `TRUE_COLOR ]</code> </pre>
+
+
+<pre><span id="VALget_best"><span class="keyword">val</span> get_best</span> : <code class="type">?depth:int -> ?kind:<a href="Gdk.Visual.html#TYPEvisual_type">visual_type</a> -> unit -> <a href="Gdk.html#TYPEvisual">Gdk.visual</a></code></pre>
+<pre><span id="VALget_type"><span class="keyword">val</span> get_type</span> : <code class="type"><a href="Gdk.html#TYPEvisual">Gdk.visual</a> -> <a href="Gdk.Visual.html#TYPEvisual_type">visual_type</a></code></pre>
+<pre><span id="VALdepth"><span class="keyword">val</span> depth</span> : <code class="type"><a href="Gdk.html#TYPEvisual">Gdk.visual</a> -> int</code></pre></body></html>

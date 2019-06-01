@@ -1,0 +1,37 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkTreeProps.TreeView.S</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;columns_changed&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cursor_changed&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;expand_collapse_cursor_row&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;logical:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;expand:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;all:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;move_cursor&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;<span class="constructor">GtkEnums</span>.movement_step&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;row_activated&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_view_column&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;row_collapsed&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;row_expanded&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;select_all&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;select_cursor_parent&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;select_cursor_row&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;start_editing:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;set_scroll_adjustments&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.adjustment&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.adjustment&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;start_interactive_search&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;test_collapse_row&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;test_expand_row&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tree_path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;toggle_cursor_row&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;unselect_all&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>treeview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+<span class="keyword">end</span></code></body></html>

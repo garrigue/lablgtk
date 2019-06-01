@@ -1,0 +1,62 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : Pango.Layout</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.layout<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;create&nbsp;:&nbsp;<span class="constructor">Pango</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.layout&nbsp;=&nbsp;<span class="string">"ml_pango_layout_new"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;copy&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.layout&nbsp;=&nbsp;<span class="string">"ml_pango_layout_copy"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_context&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.context<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_context"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_text&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_text&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_markup&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_markup"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_markup_with_accel&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Glib</span>.unichar&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_markup_with_accel"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_font_description&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.font_description&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_font_description"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_width&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_width"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_width&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_width"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_indent&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_indent"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_indent&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_indent"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_spacing&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_spacing"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_spacing&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_spacing"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_wrap&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.<span class="constructor">Tags</span>.wrap_mode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_wrap"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_wrap&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.<span class="constructor">Tags</span>.wrap_mode&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_wrap"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_justify&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_justify"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_justify&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_justify"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_single_paragraph_mode&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_single_paragraph_mode"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_single_paragraph_mode&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_single_paragraph_mode"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;context_changed&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_context_changed"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_size&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.units&nbsp;*&nbsp;<span class="constructor">Pango</span>.units<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_size"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_pixel_size&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_pixel_size"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_extent&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.rectangle<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_extent"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_pixel_extent&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.rectangle<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_pixel_extent"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;index_to_pos&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.rectangle<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_index_to_pos"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;xy_to_index&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;y:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;*&nbsp;int&nbsp;*&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_xy_to_index"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_ellipsize&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.<span class="constructor">Tags</span>.ellipsize_mode&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_set_ellipsize"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_ellipsize&nbsp;:&nbsp;<span class="constructor">Pango</span>.layout&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.<span class="constructor">Tags</span>.ellipsize_mode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_pango_layout_get_ellipsize"</span><br>
+<span class="keyword">end</span></code></body></html>

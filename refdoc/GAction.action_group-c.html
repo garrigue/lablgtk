@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GAction.action_group_signals-c.html">
+<link rel="next" href="GAction.ui_manager_signals-c.html">
+<link rel="Up" href="GAction.html">
+<title>LablGTK : GAction.action_group</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GAction.action_group_signals-c.html" title="GAction.action_group_signals">Previous</a>
+&nbsp;<a class="up" href="GAction.html" title="GAction">Up</a>
+&nbsp;<a class="post" href="GAction.ui_manager_signals-c.html" title="GAction.ui_manager_signals">Next</a>
+</div>
+<h1>Class <a href="type_GAction.action_group.html">GAction.action_group</a></h1>
+
+<pre><span id="TYPEaction_group"><span class="keyword">class</span> action_group</span> : <code class="type">[> <a href="Gtk.html#TYPEaction_group">Gtk.action_group</a> ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> </code><code class="code">object</code> <a href="GAction.action_group-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkActionGroup.html">GtkActionGroup</a></small></ul>
+</div>
+<br><hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">([> <a href="Gtk.html#TYPEaction_group">Gtk.action_group</a> ] as 'a) <a href="Gobject.html#TYPEobj">Gobject.obj</a></code></pre>
+<pre><span id="METHODas_group"><span class="keyword">method</span> as_group</span> : <code class="type"><a href="Gtk.html#TYPEaction_group">Gtk.action_group</a> <a href="Gobject.html#TYPEobj">Gobject.obj</a></code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GAction.action_group_signals-c.html">action_group_signals</a></code></pre>
+<pre><span id="METHODsensitive"><span class="keyword">method</span> sensitive</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_sensitive"><span class="keyword">method</span> set_sensitive</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODvisible"><span class="keyword">method</span> visible</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_visible"><span class="keyword">method</span> set_visible</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODadd_action"><span class="keyword">method</span> add_action</span> : <code class="type">'b. (#<a href="GAction.action_skel-c.html">action_skel</a> as 'b) -> unit</code></pre>
+<pre><span id="METHODadd_action_with_accel"><span class="keyword">method</span> add_action_with_accel</span> : <code class="type">'c. ?accel:string -> (#<a href="GAction.action_skel-c.html">action_skel</a> as 'c) -> unit</code></pre>
+<pre><span id="METHODremove_action"><span class="keyword">method</span> remove_action</span> : <code class="type">'d. (#<a href="GAction.action_skel-c.html">action_skel</a> as 'd) -> unit</code></pre>
+<pre><span id="METHODget_action"><span class="keyword">method</span> get_action</span> : <code class="type">string -> <a href="GAction.action-c.html">action</a></code></pre>
+<pre><span id="METHODlist_actions"><span class="keyword">method</span> list_actions</span> : <code class="type"><a href="GAction.action-c.html">action</a> list</code></pre>
+<pre><span id="METHODname"><span class="keyword">method</span> name</span> : <code class="type">string</code></pre></body></html>

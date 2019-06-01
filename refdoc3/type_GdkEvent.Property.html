@@ -1,0 +1,14 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GdkEvent.Property</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">PROPERTY_NOTIFY</span>&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Property</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;atom&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Property</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.atom<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventProperty_atom"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;time&nbsp;:&nbsp;[&lt;&nbsp;<span class="constructor">GdkEvent</span>.timed&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int32<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;state&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Property</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_GdkEventProperty_state"</span><br>
+<span class="keyword">end</span></code></body></html>

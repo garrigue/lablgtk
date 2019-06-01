@@ -1,0 +1,167 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkText.Iter</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;copy&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_copy"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;assign&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_assign"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_buffer&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_buffer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_buffer"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_offset&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_offset"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_line&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_line"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_line_offset&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_line_offset"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_line_index&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_line_index"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_visible_line_index&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_visible_line_index"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_visible_line_offset&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_visible_line_offset"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_char&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Glib</span>.unichar<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_char"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_slice&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_slice"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_text&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_visible_slice&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_visible_slice"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_visible_text&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_visible_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_pixbuf&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_pixbuf"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_marks&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_mark&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_marks"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_toggled_tags&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_tag&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_toggled_tags"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_child_anchor&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_child_anchor&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_child_anchor"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;begins_tag&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_tag&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_begins_tag"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;ends_tag&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_tag&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_ends_tag"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;toggles_tag&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_tag&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_toggles_tag"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;has_tag&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_tag&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_has_tag"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_tags&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_tag&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_tags"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;editable&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;default:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_editable"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;can_insert&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;default:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_can_insert"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;starts_word&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_starts_word"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;ends_word&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_ends_word"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;inside_word&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_inside_word"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;starts_line&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_starts_line"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;ends_line&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_ends_line"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;starts_sentence&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_starts_sentence"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;ends_sentence&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_ends_sentence"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;inside_sentence&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_inside_sentence"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;is_cursor_position&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_is_cursor_position"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_chars_in_line&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_chars_in_line"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_bytes_in_line&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_bytes_in_line"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_language&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pango</span>.language<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_get_language"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;is_end&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_is_end"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;is_start&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_is_start"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_char&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_char"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_char&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_char"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_chars&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_chars"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_chars&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_chars"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_line&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_line"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_line&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_line"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_lines&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_lines"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_lines&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_lines"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_word_end&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_word_end"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_word_ends&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_word_ends"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_word_start&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_word_start"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_word_starts&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_word_starts"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_cursor_position&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_cursor_position"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_cursor_position&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_cursor_position"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_cursor_positions&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_cursor_positions"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_cursor_positions&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_cursor_positions"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_sentence_end&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_sentence_end"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_sentence_start&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_sentence_start"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_sentence_ends&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_sentence_ends"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_sentence_starts&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_sentence_starts"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_offset&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_set_offset"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_line&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_set_line"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_line_offset&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_set_line_offset"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_line_index&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_set_line_index"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_visible_line_index&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_set_visible_line_index"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_visible_line_offset&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_set_visible_line_offset"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_to_end&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_to_end"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_to_line_end&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_to_line_end"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_to_tag_toggle&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_tag&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_to_tag_toggle"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_to_tag_toggle&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_tag&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_to_tag_toggle"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;equal&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_equal"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;compare&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_compare"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;in_range&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_in_range"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;order&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_order"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_search&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?flags:<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.text_search_flag&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Gtk</span>.text_iter&nbsp;*&nbsp;<span class="constructor">Gtk</span>.text_iter)&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_search"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_search&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?flags:<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.text_search_flag&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Gtk</span>.text_iter&nbsp;*&nbsp;<span class="constructor">Gtk</span>.text_iter)&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_search"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;forward_find_char&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Glib</span>.unichar&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_forward_find_char"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;backward_find_char&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Glib</span>.unichar&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_text_iter_backward_find_char"</span><br>
+<span class="keyword">end</span></code></body></html>

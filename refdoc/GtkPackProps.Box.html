@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkPackProps.PrivateProps.html">
+<link rel="next" href="GtkPackProps.ButtonBox.html">
+<link rel="Up" href="GtkPackProps.html">
+<title>LablGTK : GtkPackProps.Box</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkPackProps.PrivateProps.html" title="GtkPackProps.PrivateProps">Previous</a>
+&nbsp;<a class="up" href="GtkPackProps.html" title="GtkPackProps">Up</a>
+&nbsp;<a class="post" href="GtkPackProps.ButtonBox.html" title="GtkPackProps.ButtonBox">Next</a>
+</div>
+<h1>Module <a href="type_GtkPackProps.Box.html">GtkPackProps.Box</a></h1>
+
+<pre><span id="MODULEBox"><span class="keyword">module</span> Box</span>: <code class="code">sig</code> <a href="GtkPackProps.Box.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEbox">Gtk.box</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="MODULEP"><span class="keyword">module</span> <a href="GtkPackProps.Box.P.html">P</a></span>: <code class="code">sig</code> <a href="GtkPackProps.Box.P.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">Gtk.Tags.orientation -> <a href="Gtk.html#TYPEbox">Gtk.box</a> <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> <a href="Gtk.html#TYPEbox">Gtk.box</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALpack_start"><span class="keyword">val</span> pack_start</span> : <code class="type">[> `box ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> expand:bool -> fill:bool -> padding:int -> unit</code></pre>
+<pre><span id="VALpack_end"><span class="keyword">val</span> pack_end</span> : <code class="type">[> `box ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> expand:bool -> fill:bool -> padding:int -> unit</code></pre>
+<pre><span id="VALreorder_child"><span class="keyword">val</span> reorder_child</span> : <code class="type">[> `box ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> pos:int -> unit</code></pre>
+<pre><span id="VALquery_child_packing"><span class="keyword">val</span> query_child_packing</span> : <code class="type">[> `box ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEbox_packing">Gtk.box_packing</a></code></pre>
+<pre><span id="VALset_child_packing"><span class="keyword">val</span> set_child_packing</span> : <code class="type">[> `box ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       ?expand:bool -><br>       ?fill:bool -> ?padding:int -> ?from:Gtk.Tags.pack_type -> unit</code></pre>
+<pre><span id="VALmake_params"><span class="keyword">val</span> make_params</span> : <code class="type">cont:(([> `box ] as 'a) <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> 'b) -><br>       'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> ?homogeneous:bool -> ?spacing:int -> 'b</code></pre></body></html>

@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkButton.RadioButton.html">
+<link rel="next" href="GtkButton.ColorButton.html">
+<link rel="Up" href="GtkButton.html">
+<title>LablGTK : GtkButton.Toolbar</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkButton.RadioButton.html" title="GtkButton.RadioButton">Previous</a>
+&nbsp;<a class="up" href="GtkButton.html" title="GtkButton">Up</a>
+&nbsp;<a class="post" href="GtkButton.ColorButton.html" title="GtkButton.ColorButton">Next</a>
+</div>
+<h1>Module <a href="type_GtkButton.Toolbar.html">GtkButton.Toolbar</a></h1>
+
+<pre><span id="MODULEToolbar"><span class="keyword">module</span> Toolbar</span>: <code class="code">sig</code> <a href="GtkButton.Toolbar.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span class="keyword">include</span> <a href="GtkButtonProps.Toolbar.html">GtkButtonProps.Toolbar</a></pre>
+
+<pre><span id="VALset"><span class="keyword">val</span> set</span> : <code class="type">?orientation:<a href="GtkEnums.html#TYPEorientation">GtkEnums.orientation</a> -><br>       ?style:<a href="GtkEnums.html#TYPEtoolbar_style">GtkEnums.toolbar_style</a> -> [> `orientable | `toolbar ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALunset_style"><span class="keyword">val</span> unset_style</span> : <code class="type">[> `toolbar ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALinsert"><span class="keyword">val</span> insert</span> : <code class="type">[> `toolbar ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `toolitem ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> pos:int -> unit</code></pre>
+<pre><span id="VALget_item_index"><span class="keyword">val</span> get_item_index</span> : <code class="type">[> `toolbar ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `toolitem ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int</code></pre>
+<pre><span id="VALget_n_items"><span class="keyword">val</span> get_n_items</span> : <code class="type">[> `toolbar ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int</code></pre>
+<pre><span id="VALget_nth_item"><span class="keyword">val</span> get_nth_item</span> : <code class="type">[> `toolbar ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> [ `toolitem ] <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALget_drop_index"><span class="keyword">val</span> get_drop_index</span> : <code class="type">[> `toolbar ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> int -> int</code></pre>
+<pre><span id="VALset_drop_highlight_item"><span class="keyword">val</span> set_drop_highlight_item</span> : <code class="type">[> `toolbar ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `toolitem ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> option -> int -> unit</code></pre>
+<pre><span id="VALget_relief_style"><span class="keyword">val</span> get_relief_style</span> : <code class="type">[> `toolbar ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="GtkEnums.html#TYPErelief_style">GtkEnums.relief_style</a></code></pre></body></html>

@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GToolbox.html">
+<link rel="next" href="GUtil.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GTree</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GToolbox.html" title="GToolbox">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GUtil.html" title="GUtil">Next</a>
+</div>
+<h1>Module <a href="type_GTree.html">GTree</a></h1>
+
+<pre><span id="MODULEGTree"><span class="keyword">module</span> GTree</span>: <code class="code">sig</code> <a href="GTree.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Tree and list widgets</p>
+<h4 id="3_NewGtkTreeViewModelframework">New GtkTreeView/Model framework</h4>
+<pre><code><span id="TYPEcolumn"><span class="keyword">type</span> <code class="type">'a</code> column</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcolumn.index">index</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcolumn.conv">conv</span>&nbsp;: <code class="type">'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcolumn.creator">creator</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="TYPEcolumn_list"><span class="keyword">class</span> <a href="GTree.column_list-c.html">column_list</a></span> : <code class="type"></code><code class="code">object</code> <a href="GTree.column_list-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPErow_reference"><span class="keyword">class</span> <a href="GTree.row_reference-c.html">row_reference</a></span> : <code class="type"><a href="Gtk.html#TYPErow_reference">Gtk.row_reference</a> -> model:[> `treemodel ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.row_reference-c.html">..</a> <code class="code">end</code></pre><br><h5 id="4_Models">Models</h5>
+<pre><span id="TYPEmodel_signals"><span class="keyword">class</span> <a href="GTree.model_signals-c.html">model_signals</a></span> : <code class="type">[> `treemodel ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.model_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALmodel_ids"><span class="keyword">val</span> model_ids</span> : <code class="type">(int, int) Stdlib.Hashtbl.t</code></pre>
+<pre><span id="TYPEmodel"><span class="keyword">class</span> <a href="GTree.model-c.html">model</a></span> : <code class="type">[> `treemodel ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.model-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtree_sortable_signals"><span class="keyword">class</span> <a href="GTree.tree_sortable_signals-c.html">tree_sortable_signals</a></span> : <code class="type">[> `treemodel | `treesortable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.tree_sortable_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtree_sortable"><span class="keyword">class</span> <a href="GTree.tree_sortable-c.html">tree_sortable</a></span> : <code class="type">[> `treemodel | `treesortable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.tree_sortable-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br><p>Special value for the <code class="code">#set_sort_column_id</code> method of <a href="GTree.tree_sortable-c.html"><code class="code">GTree.tree_sortable</code></a>.</p>
+
+<pre><span id="VALdefault_sort_column_id"><span class="keyword">val</span> default_sort_column_id</span> : <code class="type">int</code></pre>
+<pre><span id="VALunsorted_sort_column_id"><span class="keyword">val</span> unsorted_sort_column_id</span> : <code class="type">int</code></pre>
+<pre><span id="TYPEtree_store"><span class="keyword">class</span> <a href="GTree.tree_store-c.html">tree_store</a></span> : <code class="type"><a href="Gtk.html#TYPEtree_store">Gtk.tree_store</a> -> </code><code class="code">object</code> <a href="GTree.tree_store-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALtree_store"><span class="keyword">val</span> tree_store</span> : <code class="type"><a href="GTree.column_list-c.html">column_list</a> -> <a href="GTree.tree_store-c.html">tree_store</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTreeStore.html">GtkTreeStore</a></small></ul>
+</div>
+
+<pre><span id="TYPElist_store"><span class="keyword">class</span> <a href="GTree.list_store-c.html">list_store</a></span> : <code class="type"><a href="Gtk.html#TYPElist_store">Gtk.list_store</a> -> </code><code class="code">object</code> <a href="GTree.list_store-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALlist_store"><span class="keyword">val</span> list_store</span> : <code class="type"><a href="GTree.column_list-c.html">column_list</a> -> <a href="GTree.list_store-c.html">list_store</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkListStore.html">GtkListStore</a></small></ul>
+</div>
+
+<pre><span id="VALstore_of_list"><span class="keyword">val</span> store_of_list</span> : <code class="type">'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -> 'a list -> <a href="GTree.list_store-c.html">list_store</a> * 'a <a href="GTree.html#TYPEcolumn">column</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>Convenience function to map a caml list into a <a href="GTree.html#VALlist_store"><code class="code">GTree.list_store</code></a> with a single column</p>
+</div>
+</div>
+
+<pre><span id="TYPEmodel_sort"><span class="keyword">class</span> <a href="GTree.model_sort-c.html">model_sort</a></span> : <code class="type"><a href="Gtk.html#TYPEtree_model_sort">Gtk.tree_model_sort</a> -> </code><code class="code">object</code> <a href="GTree.model_sort-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALmodel_sort"><span class="keyword">val</span> model_sort</span> : <code class="type">#<a href="GTree.model-c.html">model</a> -> <a href="GTree.model_sort-c.html">model_sort</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTreeModelSort.html">GtkTreeModelSort</a></small></ul>
+</div>
+
+<pre><span id="TYPEmodel_filter"><span class="keyword">class</span> <a href="GTree.model_filter-c.html">model_filter</a></span> : <code class="type"><a href="Gtk.html#TYPEtree_model_filter">Gtk.tree_model_filter</a> -> </code><code class="code">object</code> <a href="GTree.model_filter-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALmodel_filter"><span class="keyword">val</span> model_filter</span> : <code class="type">?virtual_root:<a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> #<a href="GTree.model-c.html">model</a> -> <a href="GTree.model_filter-c.html">model_filter</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTreeModelFilter.html">GtkTreeModelFilter</a></small></ul>
+</div>
+
+<pre><span id="MODULEPath"><span class="keyword">module</span> <a href="GTree.Path.html">Path</a></span>: <code class="code">sig</code> <a href="GTree.Path.html">..</a> <code class="code">end</code></pre><h5 id="4_Selection">Selection</h5>
+<pre><span id="TYPEselection_signals"><span class="keyword">class</span> <a href="GTree.selection_signals-c.html">selection_signals</a></span> : <code class="type"><a href="Gtk.html#TYPEtree_selection">Gtk.tree_selection</a> -> </code><code class="code">object</code> <a href="GTree.selection_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEselection"><span class="keyword">class</span> <a href="GTree.selection-c.html">selection</a></span> : <code class="type"><a href="Gtk.html#TYPEtree_selection">Gtk.tree_selection</a> -> </code><code class="code">object</code> <a href="GTree.selection-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>The selection object for <a href="GTree.html#VALview"><code class="code">GTree.view</code></a></p>
+
+</div>
+<br><h5 id="4_Views">Views</h5>
+<pre><span id="TYPEcell_renderer"><span class="keyword">class type</span> <a href="GTree.cell_renderer-c.html">cell_renderer</a></span> = <code class="code">object</code> <a href="GTree.cell_renderer-c.html">..</a> <code class="code">end</code></pre>
+<pre><span id="TYPEcell_layout"><span class="keyword">class</span> <a href="GTree.cell_layout-c.html">cell_layout</a></span> : <code class="type">[> <a href="Gtk.html#TYPEcell_layout">Gtk.cell_layout</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_layout-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEview_column_signals"><span class="keyword">class</span> <a href="GTree.view_column_signals-c.html">view_column_signals</a></span> : <code class="type">[> `gtk | `treeviewcolumn ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.view_column_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEview_column"><span class="keyword">class</span> <a href="GTree.view_column-c.html">view_column</a></span> : <code class="type"><a href="Gtk.html#TYPEtree_view_column">Gtk.tree_view_column</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.view_column-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A visible column in a <a href="GTree.html#VALview"><code class="code">GTree.view</code></a> widget</p>
+
+</div>
+<br>
+<pre><span id="VALview_column"><span class="keyword">val</span> view_column</span> : <code class="type">?title:string -><br>       ?renderer:#<a href="GTree.cell_renderer-c.html">cell_renderer</a> * (string * 'a <a href="GTree.html#TYPEcolumn">column</a>) list -><br>       unit -> <a href="GTree.view_column-c.html">view_column</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTreeViewColumn.html">GtkTreeViewColumn</a></small></ul>
+</div>
+
+<pre><span id="TYPEview_signals"><span class="keyword">class</span> <a href="GTree.view_signals-c.html">view_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtree_view">Gtk.tree_view</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.view_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEview"><span class="keyword">class</span> <a href="GTree.view-c.html">view</a></span> : <code class="type"><a href="Gtk.html#TYPEtree_view">Gtk.tree_view</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.view-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget for displaying both trees and lists</p>
+
+</div>
+<br>
+<pre><span id="VALview"><span class="keyword">val</span> view</span> : <code class="type">?model:#<a href="GTree.model-c.html">model</a> -><br>       ?hadjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?vadjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?enable_search:bool -><br>       ?fixed_height_mode:bool -><br>       ?headers_clickable:bool -><br>       ?headers_visible:bool -><br>       ?reorderable:bool -><br>       ?rules_hint:bool -><br>       ?search_column:int -><br>       ?tooltip_column:int -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GTree.view-c.html">view</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTreeView.html">GtkTreeView</a></small></ul>
+</div>
+<div class="param_info"><code class="code">enable_search</code> : default value is <code class="code">true</code></div>
+<div class="param_info"><code class="code">fixed_height_mode</code> : default value is <code class="code">false</code></div>
+<div class="param_info"><code class="code">headers_clickable</code> : default value is <code class="code">false</code></div>
+<div class="param_info"><code class="code">headers_visible</code> : default value is <code class="code">true</code></div>
+<div class="param_info"><code class="code">reorderable</code> : default value is <code class="code">false</code></div>
+<div class="param_info"><code class="code">rules_hint</code> : default value is <code class="code">false</code></div>
+<h5 id="4_CellRenderers">Cell Renderers</h5>
+<pre><span id="TYPEcell_properties"><span class="keyword">type</span> <code class="type"></code>cell_properties</span> = <code class="type">[ `CELL_BACKGROUND of string<br>       | `CELL_BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `CELL_BACKGROUND_SET of bool<br>       | `HEIGHT of int<br>       | `IS_EXPANDED of bool<br>       | `IS_EXPANDER of bool<br>       | `MODE of Gtk.Tags.cell_renderer_mode<br>       | `VISIBLE of bool<br>       | `WIDTH of int<br>       | `XALIGN of float<br>       | `XPAD of int<br>       | `YALIGN of float<br>       | `YPAD of int ]</code> </pre>
+
+
+<pre><span id="TYPEcell_properties_pixbuf"><span class="keyword">type</span> <code class="type"></code>cell_properties_pixbuf</span> = <code class="type">[ `CELL_BACKGROUND of string<br>       | `CELL_BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `CELL_BACKGROUND_SET of bool<br>       | `HEIGHT of int<br>       | `IS_EXPANDED of bool<br>       | `IS_EXPANDER of bool<br>       | `MODE of Gtk.Tags.cell_renderer_mode<br>       | `PIXBUF of <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a><br>       | `PIXBUF_EXPANDER_CLOSED of <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a><br>       | `PIXBUF_EXPANDER_OPEN of <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a><br>       | `STOCK_DETAIL of string<br>       | `STOCK_ID of string<br>       | `STOCK_SIZE of Gtk.Tags.icon_size<br>       | `VISIBLE of bool<br>       | `WIDTH of int<br>       | `XALIGN of float<br>       | `XPAD of int<br>       | `YALIGN of float<br>       | `YPAD of int ]</code> </pre>
+
+
+<pre><span id="TYPEcell_properties_text"><span class="keyword">type</span> <code class="type"></code>cell_properties_text</span> = <code class="type">[ `BACKGROUND of string<br>       | `BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `BACKGROUND_SET of bool<br>       | `CELL_BACKGROUND of string<br>       | `CELL_BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `CELL_BACKGROUND_SET of bool<br>       | `EDITABLE of bool<br>       | `FAMILY of string<br>       | `FONT of string<br>       | `FONT_DESC of <a href="Pango.html#TYPEfont_description">Pango.font_description</a><br>       | `FOREGROUND of string<br>       | `FOREGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `FOREGROUND_SET of bool<br>       | `HEIGHT of int<br>       | `IS_EXPANDED of bool<br>       | `IS_EXPANDER of bool<br>       | `MARKUP of string<br>       | `MODE of Gtk.Tags.cell_renderer_mode<br>       | `RISE of int<br>       | `SCALE of <a href="Pango.Tags.html#TYPEscale">Pango.Tags.scale</a><br>       | `SINGLE_PARAGRAPH_MODE of bool<br>       | `SIZE of int<br>       | `SIZE_POINTS of float<br>       | `STRETCH of <a href="Pango.Tags.html#TYPEstretch">Pango.Tags.stretch</a><br>       | `STRIKETHROUGH of bool<br>       | `STYLE of <a href="Pango.Tags.html#TYPEstyle">Pango.Tags.style</a><br>       | `TEXT of string<br>       | `UNDERLINE of <a href="Pango.Tags.html#TYPEunderline">Pango.Tags.underline</a><br>       | `VARIANT of <a href="Pango.Tags.html#TYPEvariant">Pango.Tags.variant</a><br>       | `VISIBLE of bool<br>       | `WEIGHT of <a href="Pango.Tags.html#TYPEweight">Pango.Tags.weight</a><br>       | `WIDTH of int<br>       | `XALIGN of float<br>       | `XPAD of int<br>       | `YALIGN of float<br>       | `YPAD of int ]</code> </pre>
+
+
+<pre><span id="TYPEcell_properties_toggle"><span class="keyword">type</span> <code class="type"></code>cell_properties_toggle</span> = <code class="type">[ `ACTIVATABLE of bool<br>       | `ACTIVE of bool<br>       | `CELL_BACKGROUND of string<br>       | `CELL_BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `CELL_BACKGROUND_SET of bool<br>       | `HEIGHT of int<br>       | `INCONSISTENT of bool<br>       | `IS_EXPANDED of bool<br>       | `IS_EXPANDER of bool<br>       | `MODE of Gtk.Tags.cell_renderer_mode<br>       | `RADIO of bool<br>       | `VISIBLE of bool<br>       | `WIDTH of int<br>       | `XALIGN of float<br>       | `XPAD of int<br>       | `YALIGN of float<br>       | `YPAD of int ]</code> </pre>
+
+
+<pre><span id="TYPEcell_properties_progress"><span class="keyword">type</span> <code class="type"></code>cell_properties_progress</span> = <code class="type">[ `CELL_BACKGROUND of string<br>       | `CELL_BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `CELL_BACKGROUND_SET of bool<br>       | `HEIGHT of int<br>       | `IS_EXPANDED of bool<br>       | `IS_EXPANDER of bool<br>       | `MODE of Gtk.Tags.cell_renderer_mode<br>       | `TEXT of string option<br>       | `VALUE of int<br>       | `VISIBLE of bool<br>       | `WIDTH of int<br>       | `XALIGN of float<br>       | `XPAD of int<br>       | `YALIGN of float<br>       | `YPAD of int ]</code> </pre>
+
+
+<pre><span id="TYPEcell_properties_combo"><span class="keyword">type</span> <code class="type"></code>cell_properties_combo</span> = <code class="type">[ `BACKGROUND of string<br>       | `BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `BACKGROUND_SET of bool<br>       | `CELL_BACKGROUND of string<br>       | `CELL_BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `CELL_BACKGROUND_SET of bool<br>       | `EDITABLE of bool<br>       | `FAMILY of string<br>       | `FONT of string<br>       | `FONT_DESC of <a href="Pango.html#TYPEfont_description">Pango.font_description</a><br>       | `FOREGROUND of string<br>       | `FOREGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `FOREGROUND_SET of bool<br>       | `HAS_ENTRY of bool<br>       | `HEIGHT of int<br>       | `IS_EXPANDED of bool<br>       | `IS_EXPANDER of bool<br>       | `MARKUP of string<br>       | `MODE of Gtk.Tags.cell_renderer_mode<br>       | `MODEL of <a href="GTree.model-c.html">model</a> option<br>       | `RISE of int<br>       | `SCALE of <a href="Pango.Tags.html#TYPEscale">Pango.Tags.scale</a><br>       | `SINGLE_PARAGRAPH_MODE of bool<br>       | `SIZE of int<br>       | `SIZE_POINTS of float<br>       | `STRETCH of <a href="Pango.Tags.html#TYPEstretch">Pango.Tags.stretch</a><br>       | `STRIKETHROUGH of bool<br>       | `STYLE of <a href="Pango.Tags.html#TYPEstyle">Pango.Tags.style</a><br>       | `TEXT of string<br>       | `TEXT_COLUMN of string <a href="GTree.html#TYPEcolumn">column</a><br>       | `UNDERLINE of <a href="Pango.Tags.html#TYPEunderline">Pango.Tags.underline</a><br>       | `VARIANT of <a href="Pango.Tags.html#TYPEvariant">Pango.Tags.variant</a><br>       | `VISIBLE of bool<br>       | `WEIGHT of <a href="Pango.Tags.html#TYPEweight">Pango.Tags.weight</a><br>       | `WIDTH of int<br>       | `XALIGN of float<br>       | `XPAD of int<br>       | `YALIGN of float<br>       | `YPAD of int ]</code> </pre>
+
+
+<pre><span id="TYPEcell_properties_accel"><span class="keyword">type</span> <code class="type"></code>cell_properties_accel</span> = <code class="type">[ `ACCEL_MODE of <a href="GtkEnums.html#TYPEcell_renderer_accel_mode">GtkEnums.cell_renderer_accel_mode</a><br>       | `BACKGROUND of string<br>       | `BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `BACKGROUND_SET of bool<br>       | `CELL_BACKGROUND of string<br>       | `CELL_BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `CELL_BACKGROUND_SET of bool<br>       | `EDITABLE of bool<br>       | `FAMILY of string<br>       | `FONT of string<br>       | `FONT_DESC of <a href="Pango.html#TYPEfont_description">Pango.font_description</a><br>       | `FOREGROUND of string<br>       | `FOREGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `FOREGROUND_SET of bool<br>       | `HEIGHT of int<br>       | `IS_EXPANDED of bool<br>       | `IS_EXPANDER of bool<br>       | `KEY of <a href="Gdk.html#TYPEkeysym">Gdk.keysym</a><br>       | `KEYCODE of int<br>       | `MARKUP of string<br>       | `MODE of Gtk.Tags.cell_renderer_mode<br>       | `MODS of <a href="GdkEnums.html#TYPEmodifier">GdkEnums.modifier</a> list<br>       | `RISE of int<br>       | `SCALE of <a href="Pango.Tags.html#TYPEscale">Pango.Tags.scale</a><br>       | `SINGLE_PARAGRAPH_MODE of bool<br>       | `SIZE of int<br>       | `SIZE_POINTS of float<br>       | `STRETCH of <a href="Pango.Tags.html#TYPEstretch">Pango.Tags.stretch</a><br>       | `STRIKETHROUGH of bool<br>       | `STYLE of <a href="Pango.Tags.html#TYPEstyle">Pango.Tags.style</a><br>       | `TEXT of string<br>       | `UNDERLINE of <a href="Pango.Tags.html#TYPEunderline">Pango.Tags.underline</a><br>       | `VARIANT of <a href="Pango.Tags.html#TYPEvariant">Pango.Tags.variant</a><br>       | `VISIBLE of bool<br>       | `WEIGHT of <a href="Pango.Tags.html#TYPEweight">Pango.Tags.weight</a><br>       | `WIDTH of int<br>       | `XALIGN of float<br>       | `XPAD of int<br>       | `YALIGN of float<br>       | `YPAD of int ]</code> </pre>
+
+
+<pre><span id="TYPEcell_renderer_skel"><span class="keyword">class type</span> <code class="type">[['a, 'b]]</code> <a href="GTree.cell_renderer_skel-c.html">cell_renderer_skel</a></span> = <code class="code">object</code> <a href="GTree.cell_renderer_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+
+<pre><span id="TYPEcell_renderer_impl"><span class="keyword">class</span> <span class="keyword">virtual</span> <code class="type">[[[> <a href="Gtk.html#TYPEcell_renderer">Gtk.cell_renderer</a> ], 'b]]</code> <a href="GTree.cell_renderer_impl-c.html">cell_renderer_impl</a></span> : <code class="type">([> <a href="Gtk.html#TYPEcell_renderer">Gtk.cell_renderer</a> ] as 'a) <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_impl-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcell_renderer_pixbuf"><span class="keyword">class</span> <a href="GTree.cell_renderer_pixbuf-c.html">cell_renderer_pixbuf</a></span> : <code class="type"><a href="Gtk.html#TYPEcell_renderer_pixbuf">Gtk.cell_renderer_pixbuf</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_pixbuf-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcell_renderer_text_signals"><span class="keyword">class</span> <a href="GTree.cell_renderer_text_signals-c.html">cell_renderer_text_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEcell_renderer_text">Gtk.cell_renderer_text</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_text_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcell_renderer_text"><span class="keyword">class</span> <a href="GTree.cell_renderer_text-c.html">cell_renderer_text</a></span> : <code class="type"><a href="Gtk.html#TYPEcell_renderer_text">Gtk.cell_renderer_text</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_text-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcell_renderer_toggle_signals"><span class="keyword">class</span> <a href="GTree.cell_renderer_toggle_signals-c.html">cell_renderer_toggle_signals</a></span> : <code class="type"><a href="Gtk.html#TYPEcell_renderer_toggle">Gtk.cell_renderer_toggle</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_toggle_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcell_renderer_toggle"><span class="keyword">class</span> <a href="GTree.cell_renderer_toggle-c.html">cell_renderer_toggle</a></span> : <code class="type"><a href="Gtk.html#TYPEcell_renderer_toggle">Gtk.cell_renderer_toggle</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_toggle-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcell_renderer_progress"><span class="keyword">class</span> <a href="GTree.cell_renderer_progress-c.html">cell_renderer_progress</a></span> : <code class="type"><a href="Gtk.html#TYPEcell_renderer_progress">Gtk.cell_renderer_progress</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_progress-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcell_renderer_combo_signals"><span class="keyword">class</span> <a href="GTree.cell_renderer_combo_signals-c.html">cell_renderer_combo_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEcell_renderer_combo">Gtk.cell_renderer_combo</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_combo_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcell_renderer_combo"><span class="keyword">class</span> <a href="GTree.cell_renderer_combo-c.html">cell_renderer_combo</a></span> : <code class="type"><a href="Gtk.html#TYPEcell_renderer_combo">Gtk.cell_renderer_combo</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_combo-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcell_renderer_accel_signals"><span class="keyword">class</span> <a href="GTree.cell_renderer_accel_signals-c.html">cell_renderer_accel_signals</a></span> : <code class="type"><a href="Gtk.html#TYPEcell_renderer_accel">Gtk.cell_renderer_accel</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_accel_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcell_renderer_accel"><span class="keyword">class</span> <a href="GTree.cell_renderer_accel-c.html">cell_renderer_accel</a></span> : <code class="type"><a href="Gtk.html#TYPEcell_renderer_accel">Gtk.cell_renderer_accel</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.cell_renderer_accel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALcell_renderer_pixbuf"><span class="keyword">val</span> cell_renderer_pixbuf</span> : <code class="type"><a href="GTree.html#TYPEcell_properties_pixbuf">cell_properties_pixbuf</a> list -> <a href="GTree.cell_renderer_pixbuf-c.html">cell_renderer_pixbuf</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkCellRendererPixbuf.html">GtkCellRendererPixbuf</a></small></ul>
+</div>
+
+<pre><span id="VALcell_renderer_text"><span class="keyword">val</span> cell_renderer_text</span> : <code class="type"><a href="GTree.html#TYPEcell_properties_text">cell_properties_text</a> list -> <a href="GTree.cell_renderer_text-c.html">cell_renderer_text</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkCellRendererText.html">GtkCellRendererText</a></small></ul>
+</div>
+
+<pre><span id="VALcell_renderer_toggle"><span class="keyword">val</span> cell_renderer_toggle</span> : <code class="type"><a href="GTree.html#TYPEcell_properties_toggle">cell_properties_toggle</a> list -> <a href="GTree.cell_renderer_toggle-c.html">cell_renderer_toggle</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkCellRendererToggle.html">GtkCellRendererToggle</a></small></ul>
+</div>
+
+<pre><span id="VALcell_renderer_progress"><span class="keyword">val</span> cell_renderer_progress</span> : <code class="type"><a href="GTree.html#TYPEcell_properties_progress">cell_properties_progress</a> list -> <a href="GTree.cell_renderer_progress-c.html">cell_renderer_progress</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkCellRendererProgress.html">GtkCellRendererProgress</a></small></ul>
+</div>
+
+<pre><span id="VALcell_renderer_combo"><span class="keyword">val</span> cell_renderer_combo</span> : <code class="type"><a href="GTree.html#TYPEcell_properties_combo">cell_properties_combo</a> list -> <a href="GTree.cell_renderer_combo-c.html">cell_renderer_combo</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkCellRendererCombo.html">GtkCellRendererCombo</a></small></ul>
+</div>
+
+<pre><span id="VALcell_renderer_accel"><span class="keyword">val</span> cell_renderer_accel</span> : <code class="type"><a href="GTree.html#TYPEcell_properties_accel">cell_properties_accel</a> list -> <a href="GTree.cell_renderer_accel-c.html">cell_renderer_accel</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.10</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkCellRendererAccel.html">GtkCellRendererAccel</a></small></ul>
+</div>
+<h4 id="3_GtkIconView">GtkIconView</h4>
+<pre><span id="TYPEicon_view_signals"><span class="keyword">class</span> <a href="GTree.icon_view_signals-c.html">icon_view_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEicon_view">Gtk.icon_view</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.icon_view_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEicon_view"><span class="keyword">class</span> <a href="GTree.icon_view-c.html">icon_view</a></span> : <code class="type">[> <a href="Gtk.html#TYPEicon_view">Gtk.icon_view</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.icon_view-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget which displays a list of icons in a grid</p>
+
+</div>
+<br>
+<pre><span id="VALicon_view"><span class="keyword">val</span> icon_view</span> : <code class="type">?model:#<a href="GTree.model-c.html">model</a> -><br>       ?columns:int -><br>       ?orientation:<a href="GtkEnums.html#TYPEorientation">GtkEnums.orientation</a> -><br>       ?selection_mode:<a href="GtkEnums.html#TYPEselection_mode">GtkEnums.selection_mode</a> -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GTree.icon_view-c.html">icon_view</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>A widget which displays a list of icons in a grid</p>
+</div>
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkIconView.html">GtkIconView</a></small></ul>
+</div>
+
+<pre><span id="TYPEcustom_tree_model_type"><span class="keyword">class type</span> <span class="keyword">virtual</span> <code class="type">[['obj, 'row, 'a, 'b, 'c]]</code> <a href="GTree.custom_tree_model_type-c.html">custom_tree_model_type</a></span> = <code class="code">object</code> <a href="GTree.custom_tree_model_type-c.html">..</a> <code class="code">end</code></pre>
+<pre><span id="TYPEcustom_tree_model"><span class="keyword">class</span> <span class="keyword">virtual</span> <code class="type">[['row, 'a, 'b, 'c]]</code> <a href="GTree.custom_tree_model-c.html">custom_tree_model</a></span> : <code class="type"><a href="GTree.column_list-c.html">column_list</a> -> </code><code class="type">[[<a href="Gtk.html#TYPEtree_model_custom">Gtk.tree_model_custom</a>, 'row, 'a, 'b, 'c]]</code> <code class="type"><a href="GTree.custom_tree_model_type-c.html">custom_tree_model_type</a></code></pre><div class="info">
+<p>A base class to inherit from to make a custom tree model.</p>
+
+</div>
+<br></body></html>

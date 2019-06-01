@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkBase.Bin.html">
+<link rel="next" href="GtkBase.Selection.html">
+<link rel="Up" href="GtkBase.html">
+<title>LablGTK : GtkBase.Clipboard</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkBase.Bin.html" title="GtkBase.Bin">Previous</a>
+&nbsp;<a class="up" href="GtkBase.html" title="GtkBase">Up</a>
+&nbsp;<a class="post" href="GtkBase.Selection.html" title="GtkBase.Selection">Next</a>
+</div>
+<h1>Module <a href="type_GtkBase.Clipboard.html">GtkBase.Clipboard</a></h1>
+
+<pre><span id="MODULEClipboard"><span class="keyword">module</span> Clipboard</span>: <code class="code">sig</code> <a href="GtkBase.Clipboard.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALget"><span class="keyword">val</span> get</span> : <code class="type"><a href="Gdk.html#TYPEatom">Gdk.atom</a> -> <a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a></code></pre>
+<pre><span id="VALclear"><span class="keyword">val</span> clear</span> : <code class="type"><a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a> -> unit</code></pre>
+<pre><span id="VALset_text"><span class="keyword">val</span> set_text</span> : <code class="type"><a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a> -> string -> unit</code></pre>
+<pre><span id="VALset_image"><span class="keyword">val</span> set_image</span> : <code class="type"><a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> unit</code></pre>
+<pre><span id="VALwait_for_contents"><span class="keyword">val</span> wait_for_contents</span> : <code class="type"><a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a> -> target:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> <a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a></code></pre>
+<pre><span id="VALwait_for_text"><span class="keyword">val</span> wait_for_text</span> : <code class="type"><a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a> -> string option</code></pre>
+<pre><span id="VALwait_for_image"><span class="keyword">val</span> wait_for_image</span> : <code class="type"><a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> option</code></pre>
+<pre><span id="VALwait_for_targets"><span class="keyword">val</span> wait_for_targets</span> : <code class="type"><a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a> -> <a href="Gdk.html#TYPEatom">Gdk.atom</a> list</code></pre>
+<pre><span id="VALrequest_contents"><span class="keyword">val</span> request_contents</span> : <code class="type"><a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a> -><br>       target:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> callback:(<a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> unit) -> unit</code></pre>
+<pre><span id="VALrequest_text"><span class="keyword">val</span> request_text</span> : <code class="type"><a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a> -> callback:(string option -> unit) -> unit</code></pre></body></html>

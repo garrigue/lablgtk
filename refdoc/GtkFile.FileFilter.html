@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="next" href="GtkFile.FileChooser.html">
+<link rel="Up" href="GtkFile.html">
+<title>LablGTK : GtkFile.FileFilter</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="GtkFile.html" title="GtkFile">Up</a>
+&nbsp;<a class="post" href="GtkFile.FileChooser.html" title="GtkFile.FileChooser">Next</a>
+</div>
+<h1>Module <a href="type_GtkFile.FileFilter.html">GtkFile.FileFilter</a></h1>
+
+<pre><span id="MODULEFileFilter"><span class="keyword">module</span> FileFilter</span>: <code class="code">sig</code> <a href="GtkFile.FileFilter.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">unit -> <a href="Gtk.html#TYPEfile_filter">Gtk.file_filter</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALset_name"><span class="keyword">val</span> set_name</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_filter">Gtk.file_filter</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALget_name"><span class="keyword">val</span> get_name</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_filter">Gtk.file_filter</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string</code></pre>
+<pre><span id="VALadd_mime_type"><span class="keyword">val</span> add_mime_type</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_filter">Gtk.file_filter</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALadd_pattern"><span class="keyword">val</span> add_pattern</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_filter">Gtk.file_filter</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALadd_custom"><span class="keyword">val</span> add_custom</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_filter">Gtk.file_filter</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       <a href="GtkEnums.html#TYPEfile_filter_flags">GtkEnums.file_filter_flags</a> list -><br>       callback:((<a href="GtkEnums.html#TYPEfile_filter_flags">GtkEnums.file_filter_flags</a> * string) list -> bool) -> unit</code></pre></body></html>

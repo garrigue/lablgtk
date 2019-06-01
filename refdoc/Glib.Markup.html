@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Glib.Utf8.html">
+<link rel="Up" href="Glib.html">
+<title>LablGTK : Glib.Markup</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Glib.Utf8.html" title="Glib.Utf8">Previous</a>
+&nbsp;<a class="up" href="Glib.html" title="Glib">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Glib.Markup.html">Glib.Markup</a></h1>
+
+<pre><span id="MODULEMarkup"><span class="keyword">module</span> Markup</span>: <code class="code">sig</code> <a href="Glib.Markup.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/glib/stable/glib-Simple-XML-Subset-Parser.html">glib-Simple-XML-Subset-Parser</a></small></ul>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.BAD_UTF8"><span class="constructor">BAD_UTF8</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.EMPTY"><span class="constructor">EMPTY</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.PARSE"><span class="constructor">PARSE</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.UNKNOWN_ELEMENT"><span class="constructor">UNKNOWN_ELEMENT</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.UNKNOWN_ATTRIBUTE"><span class="constructor">UNKNOWN_ATTRIBUTE</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.INVALID_CONTENT"><span class="constructor">INVALID_CONTENT</span></span></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="EXCEPTIONError"><span class="keyword">exception</span> Error</span> <span class="keyword">of</span> <code class="type"><a href="Glib.Markup.html#TYPEerror">error</a> * string</code></pre>
+
+<pre><span id="VALescape_text"><span class="keyword">val</span> escape_text</span> : <code class="type">string -> string</code></pre></body></html>

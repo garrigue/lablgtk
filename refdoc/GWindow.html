@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GUtil.html">
+<link rel="next" href="Gaux.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GWindow</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GUtil.html" title="GUtil">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Gaux.html" title="Gaux">Next</a>
+</div>
+<h1>Module <a href="type_GWindow.html">GWindow</a></h1>
+
+<pre><span id="MODULEGWindow"><span class="keyword">module</span> GWindow</span>: <code class="code">sig</code> <a href="GWindow.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Windows</p>
+<h4 id="3_GtkWindow">GtkWindow</h4>
+<pre><span id="TYPEwindow_skel"><span class="keyword">class</span> <a href="GWindow.window_skel-c.html">window_skel</a></span> : <code class="type">[> <a href="Gtk.html#TYPEwindow">Gtk.window</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.window_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEwindow"><span class="keyword">class</span> <a href="GWindow.window-c.html">window</a></span> : <code class="type">[> <a href="Gtk.html#TYPEwindow">Gtk.window</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.window-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Toplevel widget which can contain other widgets</p>
+
+</div>
+<br>
+<pre><span id="VALwindow"><span class="keyword">val</span> window</span> : <code class="type">?kind:Gtk.Tags.window_type -><br>       ?title:string -><br>       ?decorated:bool -><br>       ?deletable:bool -><br>       ?focus_on_map:bool -><br>       ?icon:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -><br>       ?icon_name:string -><br>       ?modal:bool -><br>       ?position:Gtk.Tags.window_position -><br>       ?resizable:bool -><br>       ?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -><br>       ?type_hint:<a href="Gdk.Tags.html#TYPEwindow_type_hint">Gdk.Tags.window_type_hint</a> -><br>       ?urgency_hint:bool -><br>       ?wmclass:string * string -><br>       ?border_width:int -><br>       ?width:int -> ?height:int -> ?show:bool -> unit -> <a href="GWindow.window-c.html">window</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkWindow.html">GtkWindow</a></small></ul>
+</div>
+<div class="param_info"><code class="code">kind</code> : default value is <code class="code">`TOPLEVEL</code></div>
+<div class="param_info"><code class="code">modal</code> : default value is <code class="code">false</code></div>
+<div class="param_info"><code class="code">position</code> : default value is <code class="code">`NONE</code></div>
+<div class="param_info"><code class="code">resizable</code> : default value is <code class="code">true</code></div>
+<div class="param_info"><code class="code">type_hint</code> : default value is <code class="code">`NORMAL</code></div>
+
+<pre><span id="VALtoplevel"><span class="keyword">val</span> toplevel</span> : <code class="type">#<a href="GObj.widget-c.html">GObj.widget</a> -> <a href="GWindow.window-c.html">window</a> option</code></pre><div class="info ">
+<div class="info-desc">
+<p>return the toplevel window of this widget, if existing</p>
+</div>
+</div>
+<h4 id="3_GtkDialog">GtkDialog</h4>
+<pre><span id="TYPEdialog_signals"><span class="keyword">class</span> <code class="type">['a]</code> <a href="GWindow.dialog_signals-c.html">dialog_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEdialog">Gtk.dialog</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> decode:(int -> 'a) -> </code><code class="code">object</code> <a href="GWindow.dialog_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEdialog_skel"><span class="keyword">class</span> <code class="type">[[> `DELETE_EVENT ]]</code> <a href="GWindow.dialog_skel-c.html">dialog_skel</a></span> : <code class="type">[> <a href="Gtk.html#TYPEdialog">Gtk.dialog</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.dialog_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEdialog_ext"><span class="keyword">class</span> <code class="type">[[> `DELETE_EVENT ]]</code> <a href="GWindow.dialog_ext-c.html">dialog_ext</a></span> : <code class="type">[> <a href="Gtk.html#TYPEdialog">Gtk.dialog</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.dialog_ext-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Create popup windows</p>
+
+</div>
+<br>
+<pre><span id="TYPEdialog"><span class="keyword">class</span> <code class="type">[[> `DELETE_EVENT ]]</code> <a href="GWindow.dialog-c.html">dialog</a></span> : <code class="type">[> <a href="Gtk.html#TYPEdialog">Gtk.dialog</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.dialog-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Create popup windows</p>
+
+</div>
+<br>
+<pre><span id="VALdialog"><span class="keyword">val</span> dialog</span> : <code class="type">?no_separator:bool -><br>       ?parent:#<a href="GWindow.window_skel-c.html">window_skel</a> -><br>       ?destroy_with_parent:bool -><br>       ?title:string -><br>       ?decorated:bool -><br>       ?deletable:bool -><br>       ?focus_on_map:bool -><br>       ?icon:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -><br>       ?icon_name:string -><br>       ?modal:bool -><br>       ?position:Gtk.Tags.window_position -><br>       ?resizable:bool -><br>       ?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -><br>       ?type_hint:<a href="Gdk.Tags.html#TYPEwindow_type_hint">Gdk.Tags.window_type_hint</a> -><br>       ?urgency_hint:bool -><br>       ?wmclass:string * string -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -> ?show:bool -> unit -> [> `DELETE_EVENT ] <a href="GWindow.dialog-c.html">dialog</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkDialog.html">GtkDialog</a></small></ul>
+</div>
+<div class="param_info"><code class="code">no_separator</code> : default value is <code class="code">false</code></div>
+<div class="param_info"><code class="code">destroy_with_parent</code> : default value is <code class="code">false</code></div>
+
+<pre><span id="TYPEany_response"><span class="keyword">type</span> <code class="type"></code>any_response</span> = <code class="type">[ `ACCEPT<br>       | `APPLY<br>       | `CANCEL<br>       | `CLOSE<br>       | `DELETE_EVENT<br>       | `HELP<br>       | `NO<br>       | `NONE<br>       | `OK<br>       | `OTHER of int<br>       | `REJECT<br>       | `YES ]</code> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>Variation for safe typing</p>
+</div>
+</div>
+
+
+<pre><span id="TYPEdialog_any"><span class="keyword">class</span> <a href="GWindow.dialog_any-c.html">dialog_any</a></span> : <code class="type">[> <a href="Gtk.html#TYPEdialog">Gtk.dialog</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="type">[<a href="GWindow.html#TYPEany_response">any_response</a>]</code> <code class="type"><a href="GWindow.dialog-c.html">dialog</a></code></pre><br><h4 id="3_GtkMessageDialog">GtkMessageDialog</h4>
+<pre><span id="TYPEbuttons"><span class="keyword">type</span> <code class="type">'a</code> buttons</span> </pre>
+
+
+<pre><span id="MODULEButtons"><span class="keyword">module</span> <a href="GWindow.Buttons.html">Buttons</a></span>: <code class="code">sig</code> <a href="GWindow.Buttons.html">..</a> <code class="code">end</code></pre>
+<pre><span id="TYPEmessage_dialog"><span class="keyword">class type</span> <code class="type">[[> `DELETE_EVENT ]]</code> <a href="GWindow.message_dialog-c.html">message_dialog</a></span> = <code class="code">object</code> <a href="GWindow.message_dialog-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Convenient message window</p>
+
+</div>
+
+<pre><span id="VALmessage_dialog"><span class="keyword">val</span> message_dialog</span> : <code class="type">buttons:([> `DELETE_EVENT ] as 'a) <a href="GWindow.html#TYPEbuttons">buttons</a> -><br>       ?message_type:Gtk.Tags.message_type -><br>       ?message:string -><br>       ?use_markup:bool -><br>       ?parent:#<a href="GWindow.window_skel-c.html">window_skel</a> -><br>       ?destroy_with_parent:bool -><br>       ?title:string -><br>       ?decorated:bool -><br>       ?deletable:bool -><br>       ?focus_on_map:bool -><br>       ?icon:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -><br>       ?icon_name:string -><br>       ?modal:bool -><br>       ?position:Gtk.Tags.window_position -><br>       ?resizable:bool -><br>       ?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -><br>       ?type_hint:<a href="Gdk.Tags.html#TYPEwindow_type_hint">Gdk.Tags.window_type_hint</a> -><br>       ?urgency_hint:bool -><br>       ?wmclass:string * string -><br>       ?border_width:int -><br>       ?width:int -> ?height:int -> ?show:bool -> unit -> 'a <a href="GWindow.message_dialog-c.html">message_dialog</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkMessageDialog.html">GtkMessageDialog</a></small></ul>
+</div>
+<h4 id="3_GtkAboutDialog">GtkAboutDialog</h4>
+<pre><span id="TYPEabout_dialog"><span class="keyword">class</span> <a href="GWindow.about_dialog-c.html">about_dialog</a></span> : <code class="type">[> <a href="Gtk.html#TYPEabout_dialog">Gtk.about_dialog</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.about_dialog-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALabout_dialog"><span class="keyword">val</span> about_dialog</span> : <code class="type">?name:string -><br>       ?authors:string list -><br>       ?comments:string -><br>       ?copyright:string -><br>       ?license:string -><br>       ?logo:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -><br>       ?logo_icon_name:string -><br>       ?translator_credits:string -><br>       ?version:string -><br>       ?website:string -><br>       ?website_label:string -><br>       ?wrap_license:bool -><br>       ?parent:#<a href="GWindow.window_skel-c.html">window_skel</a> -><br>       ?destroy_with_parent:bool -><br>       ?title:string -><br>       ?decorated:bool -><br>       ?deletable:bool -><br>       ?focus_on_map:bool -><br>       ?icon:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -><br>       ?icon_name:string -><br>       ?modal:bool -><br>       ?position:Gtk.Tags.window_position -><br>       ?resizable:bool -><br>       ?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -><br>       ?type_hint:<a href="Gdk.Tags.html#TYPEwindow_type_hint">Gdk.Tags.window_type_hint</a> -><br>       ?urgency_hint:bool -><br>       ?wmclass:string * string -><br>       ?border_width:int -><br>       ?width:int -> ?height:int -> ?show:bool -> unit -> <a href="GWindow.about_dialog-c.html">about_dialog</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>Display information about an application.</p>
+
+<p>In GTK+ 2.6.x and 2.8.x, a default handler is already connected to
+    the <code class="code">response</code> signal. It simply hides the dialog. This is no longer
+    the case since GTK+ 2.10.x though.
+    You could use it like this:</p>
+<pre class="codepre"><code class="code">let about_dialog = ref (fun () -&gt; raise Not_found)
+let show_dialog () =
+  try !about_dialog ()
+  with Not_found -&gt;
+    let dialog = GWindow.about_dialog ~name:"..." (* etc. *) () in
+    about_dialog := dialog#present ;
+    dialog#show () </code></pre></div>
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkAboutDialog.html">GtkAboutDialog</a></small></ul>
+</div>
+<h4 id="3_FileChooserDialog">File Chooser Dialog</h4>
+<pre><span id="TYPEfile_chooser_dialog_signals"><span class="keyword">class</span> <code class="type">['a]</code> <a href="GWindow.file_chooser_dialog_signals-c.html">file_chooser_dialog_signals</a></span> : <code class="type">[> `bin | `container | `dialog | `filechooser | `giu | `widget | `window ]<br>       <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> decode:(int -> 'a) -> </code><code class="code">object</code> <a href="GWindow.file_chooser_dialog_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEfile_chooser_dialog"><span class="keyword">class</span> <code class="type">[[> `DELETE_EVENT ]]</code> <a href="GWindow.file_chooser_dialog-c.html">file_chooser_dialog</a></span> : <code class="type">[> `bin | `container | `dialog | `filechooser | `giu | `widget | `window ]<br>       <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.file_chooser_dialog-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALfile_chooser_dialog"><span class="keyword">val</span> file_chooser_dialog</span> : <code class="type">action:<a href="GtkEnums.html#TYPEfile_chooser_action">GtkEnums.file_chooser_action</a> -><br>       ?filename:string -><br>       ?parent:#<a href="GWindow.window_skel-c.html">window_skel</a> -><br>       ?destroy_with_parent:bool -><br>       ?title:string -><br>       ?decorated:bool -><br>       ?deletable:bool -><br>       ?focus_on_map:bool -><br>       ?icon:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -><br>       ?icon_name:string -><br>       ?modal:bool -><br>       ?position:Gtk.Tags.window_position -><br>       ?resizable:bool -><br>       ?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -><br>       ?type_hint:<a href="Gdk.Tags.html#TYPEwindow_type_hint">Gdk.Tags.window_type_hint</a> -><br>       ?urgency_hint:bool -><br>       ?wmclass:string * string -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?show:bool -> unit -> [> `DELETE_EVENT ] <a href="GWindow.file_chooser_dialog-c.html">file_chooser_dialog</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkFileChooserDialog.html">GtkFileChooserDialog</a></small></ul>
+</div>
+<h4 id="3_GtkPlug">GtkPlug</h4>
+<pre><span id="TYPEplug_signals"><span class="keyword">class</span> <a href="GWindow.plug_signals-c.html">plug_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEplug">Gtk.plug</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.plug_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEplug"><span class="keyword">class</span> <a href="GWindow.plug-c.html">plug</a></span> : <code class="type"><a href="Gtk.html#TYPEplug">Gtk.plug</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.plug-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Toplevel for embedding into other processes</p>
+
+</div>
+<br><h4 id="3_GtkSocket">GtkSocket</h4>
+<pre><span id="TYPEsocket_signals"><span class="keyword">class</span> <a href="GWindow.socket_signals-c.html">socket_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEsocket">Gtk.socket</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.socket_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEsocket"><span class="keyword">class</span> <a href="GWindow.socket-c.html">socket</a></span> : <code class="type"><a href="Gtk.html#TYPEsocket">Gtk.socket</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GWindow.socket-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Container for widgets from other processes</p>
+
+</div>
+<br>
+<pre><span id="VALsocket"><span class="keyword">val</span> socket</span> : <code class="type">?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GWindow.socket-c.html">socket</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkSocket.html">GtkSocket</a></small></ul>
+</div>
+</body></html>

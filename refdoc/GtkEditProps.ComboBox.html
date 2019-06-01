@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkEditProps.Combo.html">
+<link rel="next" href="GtkEditProps.ComboBoxText.html">
+<link rel="Up" href="GtkEditProps.html">
+<title>LablGTK : GtkEditProps.ComboBox</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkEditProps.Combo.html" title="GtkEditProps.Combo">Previous</a>
+&nbsp;<a class="up" href="GtkEditProps.html" title="GtkEditProps">Up</a>
+&nbsp;<a class="post" href="GtkEditProps.ComboBoxText.html" title="GtkEditProps.ComboBoxText">Next</a>
+</div>
+<h1>Module <a href="type_GtkEditProps.ComboBox.html">GtkEditProps.ComboBox</a></h1>
+
+<pre><span id="MODULEComboBox"><span class="keyword">module</span> ComboBox</span>: <code class="code">sig</code> <a href="GtkEditProps.ComboBox.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEcombo_box">Gtk.combo_box</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="MODULEP"><span class="keyword">module</span> <a href="GtkEditProps.ComboBox.P.html">P</a></span>: <code class="code">sig</code> <a href="GtkEditProps.ComboBox.P.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULES"><span class="keyword">module</span> <a href="GtkEditProps.ComboBox.S.html">S</a></span>: <code class="code">sig</code> <a href="GtkEditProps.ComboBox.S.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type"><a href="Gtk.html#TYPEcombo_box">Gtk.combo_box</a> <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> <a href="Gtk.html#TYPEcombo_box">Gtk.combo_box</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALget_active_iter"><span class="keyword">val</span> get_active_iter</span> : <code class="type">[> `combobox ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> option</code></pre>
+<pre><span id="VALset_active_iter"><span class="keyword">val</span> set_active_iter</span> : <code class="type">[> `combobox ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> option -> unit</code></pre>
+<pre><span id="VALset_row_separator_func"><span class="keyword">val</span> set_row_separator_func</span> : <code class="type">[> `combobox ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       (<a href="Gtk.html#TYPEtree_model">Gtk.tree_model</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool) option -> unit</code></pre>
+<pre><span id="VALmake_params"><span class="keyword">val</span> make_params</span> : <code class="type">cont:(([> `combobox ] as 'a) <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> 'b) -><br>       'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list -><br>       ?model:<a href="Gtk.html#TYPEtree_model">Gtk.tree_model</a> -><br>       ?active:int -><br>       ?add_tearoffs:bool -><br>       ?focus_on_click:bool -><br>       ?entry_text_column:int -><br>       ?has_entry:bool -> ?has_frame:bool -> ?wrap_width:int -> 'b</code></pre></body></html>

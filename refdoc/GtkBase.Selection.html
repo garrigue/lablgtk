@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkBase.Clipboard.html">
+<link rel="next" href="GtkBase.DnD.html">
+<link rel="Up" href="GtkBase.html">
+<title>LablGTK : GtkBase.Selection</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkBase.Clipboard.html" title="GtkBase.Clipboard">Previous</a>
+&nbsp;<a class="up" href="GtkBase.html" title="GtkBase">Up</a>
+&nbsp;<a class="post" href="GtkBase.DnD.html" title="GtkBase.DnD">Next</a>
+</div>
+<h1>Module <a href="type_GtkBase.Selection.html">GtkBase.Selection</a></h1>
+
+<pre><span id="MODULESelection"><span class="keyword">module</span> Selection</span>: <code class="code">sig</code> <a href="GtkBase.Selection.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALselection"><span class="keyword">val</span> selection</span> : <code class="type"><a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> <a href="Gdk.html#TYPEatom">Gdk.atom</a></code></pre>
+<pre><span id="VALtarget"><span class="keyword">val</span> target</span> : <code class="type"><a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> <a href="Gdk.html#TYPEatom">Gdk.atom</a></code></pre>
+<pre><span id="VALseltype"><span class="keyword">val</span> seltype</span> : <code class="type"><a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> <a href="Gdk.html#TYPEatom">Gdk.atom</a></code></pre>
+<pre><span id="VALformat"><span class="keyword">val</span> format</span> : <code class="type"><a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> int</code></pre>
+<pre><span id="VALget_data"><span class="keyword">val</span> get_data</span> : <code class="type"><a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> string</code></pre>
+<pre><span id="VALset"><span class="keyword">val</span> set</span> : <code class="type"><a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -><br>       typ:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> format:int -> data:string option -> unit</code></pre>
+<pre><span id="VALcopy"><span class="keyword">val</span> copy</span> : <code class="type"><a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> <a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a></code></pre>
+<pre><span id="VALowner_set"><span class="keyword">val</span> owner_set</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> sel:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> time:int32 -> bool</code></pre>
+<pre><span id="VALadd_target"><span class="keyword">val</span> add_target</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> sel:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> target:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> info:int -> unit</code></pre>
+<pre><span id="VALconvert"><span class="keyword">val</span> convert</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> sel:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> target:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> time:int32 -> bool</code></pre>
+<pre><span id="VALclear_targets"><span class="keyword">val</span> clear_targets</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> sel:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> unit</code></pre></body></html>

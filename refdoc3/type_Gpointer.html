@@ -1,0 +1,48 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : Gpointer</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;optaddr<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;optaddr&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gpointer</span>.optaddr<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;optstring<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;raw_null&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.optstring<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;optstring&nbsp;:&nbsp;string&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.optstring<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;boxed<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;boxed_null&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.boxed<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;peek_string&nbsp;:&nbsp;?pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?len:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.boxed&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;peek_int&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.boxed&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;poke_int&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.boxed&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;peek_nativeint&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.boxed&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;nativeint<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;poke_nativeint&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.boxed&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;nativeint&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;optboxed<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;optboxed&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gpointer</span>.optboxed<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;may_box&nbsp;:&nbsp;f:(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b&nbsp;<span class="constructor">Gpointer</span>.optboxed<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;variant_table&nbsp;<span class="keyword">constraint</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;=&nbsp;[&gt;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;decode_variant&nbsp;:&nbsp;([&gt;&nbsp;&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gpointer</span>.variant_table&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;encode_variant&nbsp;:&nbsp;([&gt;&nbsp;&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gpointer</span>.variant_table&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;decode_flags&nbsp;:&nbsp;([&gt;&nbsp;&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gpointer</span>.variant_table&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;encode_flags&nbsp;:&nbsp;([&gt;&nbsp;&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gpointer</span>.variant_table&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Null</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;stable<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;stable_copy&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gpointer</span>.stable<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;region<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;length&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_addr&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;nativeint<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sub&nbsp;:&nbsp;?pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?len:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.region<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_byte&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;set_byte&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;blit&nbsp;:&nbsp;src:<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dst:<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;region_of_bytes&nbsp;:&nbsp;bytes&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.region<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;bytes_of_region&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bytes<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;bigarray&nbsp;=&nbsp;(int,&nbsp;<span class="constructor">Bigarray</span>.int8_unsigned_elt,&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array1</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;region_of_bigarray&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gpointer</span>.bigarray&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.region<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;unsafe_create_region&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path:int&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_length:(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.region<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;unsafe_get_byte&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gpointer_get_char"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;unsafe_set_byte&nbsp;:&nbsp;<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gpointer_set_char"</span><br>
+<span class="keyword">end</span></code></body></html>

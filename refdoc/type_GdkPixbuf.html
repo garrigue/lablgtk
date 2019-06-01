@@ -1,0 +1,105 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GdkPixbuf</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;pixbuf&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span>pixbuf&nbsp;]&nbsp;<span class="constructor">Gobject</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;colorspace&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">RGB</span>&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;alpha_mode&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">BILEVEL</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">FULL</span>&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;interpolation&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">BILINEAR</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">HYPER</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">NEAREST</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">TILES</span>&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;gdkpixbuferror&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">ERROR_CORRUPT_IMAGE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">ERROR_INSUFFICIENT_MEMORY</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">ERROR_BAD_OPTION</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">ERROR_UNKNOWN_TYPE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">ERROR_UNSUPPORTED_OPERATION</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">ERROR_FAILED</span><br>
+&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">GdkPixbufError</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">GdkPixbuf</span>.gdkpixbuferror&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_marshal_use_rle&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_set_marshal_use_rle"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;width:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;height:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?bits:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?colorspace:<span class="constructor">GdkPixbuf</span>.colorspace&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?has_alpha:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;copy&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_copy"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;subpixbuf&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;src_x:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;src_y:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;width:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;height:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_new_subpixbuf"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;from_file&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_new_from_file"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_file_info&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;*&nbsp;int&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_get_file_info"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;from_file_at_size&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;width:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;height:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_new_from_file_at_size"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;from_xpm_data&nbsp;:&nbsp;string&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_new_from_xpm_data"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;from_data&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;width:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;height:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?bits:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?rowstride:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?has_alpha:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.region&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_n_channels&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_get_n_channels"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_has_alpha&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_get_has_alpha"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_bits_per_sample&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_get_bits_per_sample"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_width&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_get_width"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_height&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_get_height"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_rowstride&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_get_rowstride"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_pixels&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.region<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;add_alpha&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?transparent:int&nbsp;*&nbsp;int&nbsp;*&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fill&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int32&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;saturate_and_pixelate&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dest:<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;saturation:float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pixelate:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;copy_area&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dest:<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dest_x:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dest_y:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?width:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?height:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?src_x:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?src_y:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;scale&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dest:<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dest_x:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dest_y:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?width:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?height:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ofs_x:float&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ofs_y:float&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?scale_x:float&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?scale_y:float&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?interp:<span class="constructor">GdkPixbuf</span>.interpolation&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;composite&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dest:<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;alpha:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dest_x:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?dest_y:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?width:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?height:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ofs_x:float&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ofs_y:float&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?scale_x:float&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?scale_y:float&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?interp:<span class="constructor">GdkPixbuf</span>.interpolation&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;save&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filename:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;typ:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?options:(string&nbsp;*&nbsp;string)&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_save"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;save_to_callback&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;typ:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?options:(string&nbsp;*&nbsp;string)&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gdk_pixbuf_save_to_callback"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;save_to_buffer&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;typ:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?options:(string&nbsp;*&nbsp;string)&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Stdlib</span>.<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+<span class="keyword">end</span></code></body></html>

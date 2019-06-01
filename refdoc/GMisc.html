@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GMenu.html">
+<link rel="next" href="GObj.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GMisc</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GMenu.html" title="GMenu">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GObj.html" title="GObj">Next</a>
+</div>
+<h1>Module <a href="type_GMisc.html">GMisc</a></h1>
+
+<pre><span id="MODULEGMisc"><span class="keyword">module</span> GMisc</span>: <code class="code">sig</code> <a href="GMisc.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Miscellaneous widgets</p>
+
+<pre><span id="VALseparator"><span class="keyword">val</span> separator</span> : <code class="type">Gtk.Tags.orientation -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GObj.widget_full-c.html">GObj.widget_full</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkSeparator.html">GtkSeparator</a></small><small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkHSeparator.html">GtkHSeparator</a></small><small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkVSeparator.html">GtkVSeparator</a></small></ul>
+</div>
+<h4 id="3_Statusbar">Statusbar</h4>
+<pre><span id="TYPEstatusbar_context"><span class="keyword">class</span> <a href="GMisc.statusbar_context-c.html">statusbar_context</a></span> : <code class="type"><a href="Gtk.html#TYPEstatusbar">Gtk.statusbar</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEstatusbar_context">Gtk.statusbar_context</a> -> </code><code class="code">object</code> <a href="GMisc.statusbar_context-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPEstatusbar"><span class="keyword">class</span> <a href="GMisc.statusbar-c.html">statusbar</a></span> : <code class="type"><a href="Gtk.html#TYPEstatusbar">Gtk.statusbar</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.statusbar-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Report messages of minor importance to the user</p>
+
+</div>
+<br>
+<pre><span id="VALstatusbar"><span class="keyword">val</span> statusbar</span> : <code class="type">?has_resize_grip:bool -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GMisc.statusbar-c.html">statusbar</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkStatusbar.html">GtkStatusbar</a></small></ul>
+</div>
+<h4 id="3_Statusicon">Status icon</h4>
+<pre><span id="TYPEstatus_icon_signals"><span class="keyword">class</span> <a href="GMisc.status_icon_signals-c.html">status_icon_signals</a></span> : <code class="type"><a href="Gtk.html#TYPEstatus_icon">Gtk.status_icon</a> <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> </code><code class="code">object</code> <a href="GMisc.status_icon_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEstatus_icon"><span class="keyword">class</span> <a href="GMisc.status_icon-c.html">status_icon</a></span> : <code class="type"><a href="Gtk.html#TYPEgtk_status_icon">Gtk.gtk_status_icon</a> -> </code><code class="code">object</code> <a href="GMisc.status_icon-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Display an icon in the system tray.</p>
+
+</div>
+<br>
+<pre><span id="VALstatus_icon"><span class="keyword">val</span> status_icon</span> : <code class="type">?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -> ?visible:bool -> unit -> <a href="GMisc.status_icon-c.html">status_icon</a></code></pre>
+<pre><span id="VALstatus_icon_from_pixbuf"><span class="keyword">val</span> status_icon_from_pixbuf</span> : <code class="type">?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -> ?visible:bool -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> <a href="GMisc.status_icon-c.html">status_icon</a></code></pre>
+<pre><span id="VALstatus_icon_from_file"><span class="keyword">val</span> status_icon_from_file</span> : <code class="type">?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -> ?visible:bool -> string -> <a href="GMisc.status_icon-c.html">status_icon</a></code></pre>
+<pre><span id="VALstatus_icon_from_stock"><span class="keyword">val</span> status_icon_from_stock</span> : <code class="type">?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -> ?visible:bool -> string -> <a href="GMisc.status_icon-c.html">status_icon</a></code></pre>
+<pre><span id="VALstatus_icon_from_icon_name"><span class="keyword">val</span> status_icon_from_icon_name</span> : <code class="type">?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -> ?visible:bool -> string -> <a href="GMisc.status_icon-c.html">status_icon</a></code></pre><h4 id="3_Calendar">Calendar</h4>
+<pre><span id="TYPEcalendar_signals"><span class="keyword">class</span> <a href="GMisc.calendar_signals-c.html">calendar_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEcalendar">Gtk.calendar</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.calendar_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcalendar"><span class="keyword">class</span> <a href="GMisc.calendar-c.html">calendar</a></span> : <code class="type"><a href="Gtk.html#TYPEcalendar">Gtk.calendar</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.calendar-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Display a calendar and/or allow the user to select a date</p>
+
+</div>
+<br>
+<pre><span id="VALcalendar"><span class="keyword">val</span> calendar</span> : <code class="type">?options:Gtk.Tags.calendar_display_options list -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GMisc.calendar-c.html">calendar</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkCalendar.html">GtkCalendar</a></small></ul>
+</div>
+<h4 id="3_DrawingArea">Drawing Area</h4>
+<pre><span id="TYPEdrawing_area"><span class="keyword">class</span> <a href="GMisc.drawing_area-c.html">drawing_area</a></span> : <code class="type">[> <a href="Gtk.html#TYPEdrawing_area">Gtk.drawing_area</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.drawing_area-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget for custom user interface elements</p>
+
+</div>
+<br>
+<pre><span id="VALdrawing_area"><span class="keyword">val</span> drawing_area</span> : <code class="type">?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GMisc.drawing_area-c.html">drawing_area</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkDrawingArea.html">GtkDrawingArea</a></small></ul>
+</div>
+<h4 id="3_Misc">Misc. Widgets</h4>
+<pre><span id="TYPEmisc"><span class="keyword">class</span> <a href="GMisc.misc-c.html">misc</a></span> : <code class="type">[> <a href="Gtk.html#TYPEmisc">Gtk.misc</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.misc-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A base class for widgets with alignments and padding</p>
+
+</div>
+<br>
+<pre><span id="TYPEarrow"><span class="keyword">class</span> <a href="GMisc.arrow-c.html">arrow</a></span> : <code class="type">[> <a href="Gtk.html#TYPEarrow">Gtk.arrow</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.arrow-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Produces an arrow pointing in one of the four cardinal directions</p>
+
+</div>
+<br>
+<pre><span id="VALarrow"><span class="keyword">val</span> arrow</span> : <code class="type">?kind:Gtk.Tags.arrow_type -><br>       ?shadow:Gtk.Tags.shadow_type -><br>       ?xalign:float -><br>       ?yalign:float -><br>       ?xpad:int -><br>       ?ypad:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GMisc.arrow-c.html">arrow</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkArrow.html">GtkArrow</a></small></ul>
+</div>
+<div class="param_info"><code class="code">kind</code> : default value is <code class="code">`RIGHT</code></div>
+<div class="param_info"><code class="code">shadow</code> : default value is <code class="code">`OUT</code></div>
+
+<pre><span id="TYPEimage_type"><span class="keyword">type</span> <code class="type"></code>image_type</span> = <code class="type">[ `ANIMATION<br>       | `EMPTY<br>       | `GICON<br>       | `ICON_NAME<br>       | `ICON_SET<br>       | `PIXBUF<br>       | `STOCK<br>       | `SURFACE ]</code> </pre>
+
+
+<pre><span id="TYPEimage"><span class="keyword">class</span> <a href="GMisc.image-c.html">image</a></span> : <code class="type">[> <a href="Gtk.html#TYPEimage">Gtk.image</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.image-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget displaying an image</p>
+
+</div>
+<br>
+<pre><span id="VALimage"><span class="keyword">val</span> image</span> : <code class="type">?file:string -><br>       ?icon_name:string -><br>       ?icon_set:<a href="Gtk.html#TYPEicon_set">Gtk.icon_set</a> -><br>       ?icon_size:Gtk.Tags.icon_size -><br>       ?pixbuf:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -><br>       ?pixel_size:int -><br>       ?resource:string -><br>       ?stock:<a href="GtkStock.html#TYPEid">GtkStock.id</a> -><br>       ?use_fallback:bool -><br>       ?xalign:float -><br>       ?yalign:float -><br>       ?xpad:int -><br>       ?ypad:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GMisc.image-c.html">image</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkImage.html">GtkImage</a></small></ul>
+</div>
+<h5 id="4_Labels">Labels</h5>
+<pre><span id="TYPElabel_skel"><span class="keyword">class</span> <a href="GMisc.label_skel-c.html">label_skel</a></span> : <code class="type">[> <a href="Gtk.html#TYPElabel">Gtk.label</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.label_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPElabel"><span class="keyword">class</span> <a href="GMisc.label-c.html">label</a></span> : <code class="type"><a href="Gtk.html#TYPElabel">Gtk.label</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.label-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget that displays a small to medium amount of text</p>
+
+</div>
+<br>
+<pre><span id="VALlabel"><span class="keyword">val</span> label</span> : <code class="type">?text:string -><br>       ?markup:string -><br>       ?use_underline:bool -><br>       ?mnemonic_widget:#<a href="GObj.widget-c.html">GObj.widget</a> -><br>       ?justify:Gtk.Tags.justification -><br>       ?line_wrap:bool -><br>       ?pattern:string -><br>       ?selectable:bool -><br>       ?ellipsize:<a href="PangoEnums.html#TYPEellipsize_mode">PangoEnums.ellipsize_mode</a> -><br>       ?xalign:float -><br>       ?yalign:float -><br>       ?xpad:int -><br>       ?ypad:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GMisc.label-c.html">label</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkLabel.html">GtkLabel</a></small></ul>
+</div>
+<div class="param_info"><code class="code">markup</code> : overrides <code class="code">text</code> if both are present</div>
+<div class="param_info"><code class="code">use_underline</code> : default value is <code class="code">false</code></div>
+<div class="param_info"><code class="code">justify</code> : default value is <code class="code">`LEFT</code></div>
+<div class="param_info"><code class="code">line_wrap</code> : default values is <code class="code">false</code></div>
+<div class="param_info"><code class="code">selectable</code> : default value is <code class="code">false</code></div>
+
+<pre><span id="VALlabel_cast"><span class="keyword">val</span> label_cast</span> : <code class="type">< as_widget : 'a <a href="Gtk.html#TYPEobj">Gtk.obj</a>; .. > -> <a href="GMisc.label-c.html">label</a></code></pre><h4 id="3_Colorandfontselection">Color and font selection</h4><p>Deprecated since 3.0</p>
+
+<pre><span id="TYPEcolor_selection"><span class="keyword">class</span> <a href="GMisc.color_selection-c.html">color_selection</a></span> : <code class="type"><a href="Gtk.html#TYPEcolor_selection">Gtk.color_selection</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.color_selection-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget used to select a color</p>
+
+</div>
+<br>
+<pre><span id="VALcolor_selection"><span class="keyword">val</span> color_selection</span> : <code class="type">?alpha:int -><br>       ?color:<a href="Gdk.html#TYPEcolor">Gdk.color</a> -><br>       ?has_opacity_control:bool -><br>       ?has_palette:bool -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GMisc.color_selection-c.html">color_selection</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkColorSelection.html">GtkColorSelection</a></small></ul>
+</div>
+
+<pre><span id="TYPEfont_selection"><span class="keyword">class</span> <a href="GMisc.font_selection-c.html">font_selection</a></span> : <code class="type"><a href="Gtk.html#TYPEfont_selection">Gtk.font_selection</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GMisc.font_selection-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget for selecting fonts.</p>
+
+</div>
+<br>
+<pre><span id="VALfont_selection"><span class="keyword">val</span> font_selection</span> : <code class="type">?font_name:string -><br>       ?preview_text:string -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GMisc.font_selection-c.html">font_selection</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkFontSelection.html">GtkFontSelection</a></small></ul>
+</div>
+</body></html>

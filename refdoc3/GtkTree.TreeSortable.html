@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkTree.TreeModelSort.html">
+<link rel="next" href="GtkTree.TreeModelFilter.html">
+<link rel="Up" href="GtkTree.html">
+<title>LablGTK : GtkTree.TreeSortable</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkTree.TreeModelSort.html" title="GtkTree.TreeModelSort">Previous</a>
+&nbsp;<a class="up" href="GtkTree.html" title="GtkTree">Up</a>
+&nbsp;<a class="post" href="GtkTree.TreeModelFilter.html" title="GtkTree.TreeModelFilter">Next</a>
+</div>
+<h1>Module <a href="type_GtkTree.TreeSortable.html">GtkTree.TreeSortable</a></h1>
+
+<pre><span id="MODULETreeSortable"><span class="keyword">module</span> TreeSortable</span>: <code class="type"><a href="GtkTreeProps.TreeSortable.html">GtkTreeProps.TreeSortable</a></code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEtree_sortable">Gtk.tree_sortable</a></code></pre>
+<pre><span id="MODULES"><span class="keyword">module</span> <a href="GtkTreeProps.TreeSortable.S.html">S</a></span>: <code class="code">sig</code> <a href="GtkTreeProps.TreeSortable.S.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALsort_column_changed"><span class="keyword">val</span> sort_column_changed</span> : <code class="type">[> `treesortable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALget_sort_column_id"><span class="keyword">val</span> get_sort_column_id</span> : <code class="type">[> `treesortable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> (int * Gtk.Tags.sort_type) option</code></pre>
+<pre><span id="VALset_sort_column_id"><span class="keyword">val</span> set_sort_column_id</span> : <code class="type">[> `treesortable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> Gtk.Tags.sort_type -> unit</code></pre>
+<pre><span id="VALset_sort_func"><span class="keyword">val</span> set_sort_func</span> : <code class="type">[> `treesortable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       int -><br>       ([ `treemodel ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> int) -> unit</code></pre>
+<pre><span id="VALset_default_sort_func"><span class="keyword">val</span> set_default_sort_func</span> : <code class="type">[> `treesortable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       ([ `treemodel ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> int) -> unit</code></pre>
+<pre><span id="VALhas_default_sort_func"><span class="keyword">val</span> has_default_sort_func</span> : <code class="type">[> `treesortable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre></body></html>

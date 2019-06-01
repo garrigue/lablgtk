@@ -1,0 +1,91 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GText.iter</title>
+</head>
+<body>
+<code class="code"><span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keyword">object</span><br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;as_iter&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_char&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_chars&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_cursor_position&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_cursor_positions&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_find_char&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?limit:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Glib</span>.unichar&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_line&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_lines&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_search&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?flags:<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.text_search_flag&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?limit:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">GText</span>.iter&nbsp;*&nbsp;<span class="constructor">GText</span>.iter)&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_sentence_start&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_sentence_starts&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_to_tag_toggle&nbsp;:&nbsp;<span class="constructor">GText</span>.tag&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_word_start&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;backward_word_starts&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;begins_tag&nbsp;:&nbsp;<span class="constructor">GText</span>.tag&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;buffer&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_buffer<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;bytes_in_line&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;can_insert&nbsp;:&nbsp;default:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;char&nbsp;:&nbsp;<span class="constructor">Glib</span>.unichar<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;chars_in_line&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;compare&nbsp;:&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;contents&nbsp;:&nbsp;<span class="constructor">GText</span>.contents<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;copy&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;editable&nbsp;:&nbsp;default:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;ends_line&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;ends_sentence&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;ends_tag&nbsp;:&nbsp;<span class="constructor">GText</span>.tag&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;ends_word&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;equal&nbsp;:&nbsp;<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_char&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_chars&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_cursor_position&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_cursor_positions&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_find_char&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?limit:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Glib</span>.unichar&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_line&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_lines&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_search&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?flags:<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.text_search_flag&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?limit:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">GText</span>.iter&nbsp;*&nbsp;<span class="constructor">GText</span>.iter)&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_sentence_end&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_sentence_ends&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_to_end&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_to_line_end&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_to_tag_toggle&nbsp;:&nbsp;<span class="constructor">GText</span>.tag&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_word_end&nbsp;:&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;forward_word_ends&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_slice&nbsp;:&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_text&nbsp;:&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_toggled_tags&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.tag&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_visible_slice&nbsp;:&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_visible_text&nbsp;:&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;has_tag&nbsp;:&nbsp;<span class="constructor">GText</span>.tag&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;in_range&nbsp;:&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;inside_sentence&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;inside_word&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;is_cursor_position&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;is_end&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;is_start&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;language&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;line&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;line_index&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;line_offset&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;marks&nbsp;:&nbsp;<span class="constructor">Gtk</span>.text_mark&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;nocopy&nbsp;:&nbsp;<span class="constructor">GText</span>.nocopy_iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;offset&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_line&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_line_index&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_line_offset&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_offset&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_visible_line_index&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_visible_line_offset&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GText</span>.iter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;starts_line&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;starts_sentence&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;starts_word&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;tags&nbsp;:&nbsp;<span class="constructor">GText</span>.tag&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;toggles_tag&nbsp;:&nbsp;<span class="constructor">GText</span>.tag&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;visible_line_index&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;visible_line_offset&nbsp;:&nbsp;int<br>
+<span class="keyword">end</span></code></body></html>

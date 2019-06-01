@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkData.AccelMap.html">
+<link rel="next" href="GtkData.Adjustment.html">
+<link rel="Up" href="GtkData.html">
+<title>LablGTK : GtkData.Style</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkData.AccelMap.html" title="GtkData.AccelMap">Previous</a>
+&nbsp;<a class="up" href="GtkData.html" title="GtkData">Up</a>
+&nbsp;<a class="post" href="GtkData.Adjustment.html" title="GtkData.Adjustment">Next</a>
+</div>
+<h1>Module <a href="type_GtkData.Style.html">GtkData.Style</a></h1>
+
+<pre><span id="MODULEStyle"><span class="keyword">module</span> Style</span>: <code class="code">sig</code> <a href="GtkData.Style.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">unit -> <a href="Gtk.html#TYPEstyle">Gtk.style</a></code></pre>
+<pre><span id="VALcopy"><span class="keyword">val</span> copy</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> <a href="Gtk.html#TYPEstyle">Gtk.style</a></code></pre>
+<pre><span id="VALattach"><span class="keyword">val</span> attach</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> <a href="Gdk.html#TYPEwindow">Gdk.window</a> -> <a href="Gtk.html#TYPEstyle">Gtk.style</a></code></pre>
+<pre><span id="VALdetach"><span class="keyword">val</span> detach</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> unit</code></pre>
+<pre><span id="VALset_window_background"><span class="keyword">val</span> set_window_background</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> <a href="Gdk.html#TYPEwindow">Gdk.window</a> -> Gtk.Tags.state_type -> unit</code></pre>
+<pre><span id="VALget_bg"><span class="keyword">val</span> get_bg</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a></code></pre>
+<pre><span id="VALset_bg"><span class="keyword">val</span> set_bg</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre>
+<pre><span id="VALget_fg"><span class="keyword">val</span> get_fg</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a></code></pre>
+<pre><span id="VALset_fg"><span class="keyword">val</span> set_fg</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre>
+<pre><span id="VALget_light"><span class="keyword">val</span> get_light</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a></code></pre>
+<pre><span id="VALset_light"><span class="keyword">val</span> set_light</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre>
+<pre><span id="VALget_dark"><span class="keyword">val</span> get_dark</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a></code></pre>
+<pre><span id="VALset_dark"><span class="keyword">val</span> set_dark</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre>
+<pre><span id="VALget_mid"><span class="keyword">val</span> get_mid</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a></code></pre>
+<pre><span id="VALset_mid"><span class="keyword">val</span> set_mid</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre>
+<pre><span id="VALget_base"><span class="keyword">val</span> get_base</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a></code></pre>
+<pre><span id="VALset_base"><span class="keyword">val</span> set_base</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre>
+<pre><span id="VALget_text"><span class="keyword">val</span> get_text</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a></code></pre>
+<pre><span id="VALset_text"><span class="keyword">val</span> set_text</span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre></body></html>

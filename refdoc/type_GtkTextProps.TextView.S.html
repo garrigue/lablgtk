@@ -1,0 +1,28 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkTextProps.TextView.S</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;copy_clipboard&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cut_clipboard&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;delete_from_cursor&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;<span class="constructor">GtkEnums</span>.delete_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;insert_at_cursor&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;move_cursor&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;<span class="constructor">GtkEnums</span>.movement_step&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;extend:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;move_focus&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;<span class="constructor">GtkEnums</span>.direction_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;page_horizontally&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;extend:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;paste_clipboard&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;populate_popup&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;<span class="constructor">Gtk</span>.menu&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;set_anchor&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;set_scroll_adjustments&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.adjustment&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.adjustment&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;toggle_overwrite&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>textview&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+<span class="keyword">end</span></code></body></html>

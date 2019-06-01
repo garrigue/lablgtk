@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GMisc.html">
+<link rel="next" href="GPack.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GObj</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GMisc.html" title="GMisc">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GPack.html" title="GPack">Next</a>
+</div>
+<h1>Module <a href="type_GObj.html">GObj</a></h1>
+
+<pre><span id="MODULEGObj"><span class="keyword">module</span> GObj</span>: <code class="code">sig</code> <a href="GObj.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Base classes for objects and widgets</p>
+<h4 id="3_GObject">GObject</h4>
+<pre><span id="TYPEgobject_ops"><span class="keyword">class</span> <a href="GObj.gobject_ops-c.html">gobject_ops</a></span> : <code class="type">'a <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.gobject_ops-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPEgobject_signals"><span class="keyword">class</span> <code class="type">['a]</code> <a href="GObj.gobject_signals-c.html">gobject_signals</a></span> : <code class="type">'a <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.gobject_signals-c.html">..</a> <code class="code">end</code></pre><br><h4 id="3_GtkObject">GtkObject</h4>
+<pre><span id="TYPEobjvar"><span class="keyword">class type</span> <code class="type">['a]</code> <a href="GObj.objvar-c.html">objvar</a></span> = <code class="code">object</code> <a href="GObj.objvar-c.html">..</a> <code class="code">end</code></pre>
+<pre><span id="TYPEgtkobj"><span class="keyword">class</span> <a href="GObj.gtkobj-c.html">gtkobj</a></span> : <code class="type">'a <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.gtkobj-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPEgtkobj_signals"><span class="keyword">class type</span> <a href="GObj.gtkobj_signals-c.html">gtkobj_signals</a></span> = <code class="code">object</code> <a href="GObj.gtkobj_signals-c.html">..</a> <code class="code">end</code></pre><h4 id="3_GtkWidget">GtkWidget</h4>
+<pre><span id="TYPEevent_signals"><span class="keyword">class</span> <a href="GObj.event_signals-c.html">event_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.event_signals-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPEevent_ops"><span class="keyword">class</span> <a href="GObj.event_ops-c.html">event_ops</a></span> : <code class="type">[> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.event_ops-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPEstyle"><span class="keyword">class</span> <a href="GObj.style-c.html">style</a></span> : <code class="type"><a href="Gtk.html#TYPEstyle">Gtk.style</a> -> </code><code class="code">object</code> <a href="GObj.style-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEselection_data"><span class="keyword">class</span> <a href="GObj.selection_data-c.html">selection_data</a></span> : <code class="type"><a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> </code><code class="code">object</code> <a href="GObj.selection_data-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEselection_context"><span class="keyword">class</span> <a href="GObj.selection_context-c.html">selection_context</a></span> : <code class="type"><a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> </code><code class="code">object</code> <a href="GObj.selection_context-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEdrag_ops"><span class="keyword">class</span> <a href="GObj.drag_ops-c.html">drag_ops</a></span> : <code class="type"><a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.drag_ops-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPEmisc_ops"><span class="keyword">class</span> <a href="GObj.misc_ops-c.html">misc_ops</a></span> : <code class="type"><a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.misc_ops-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEwidget"><span class="keyword">class</span> <a href="GObj.widget-c.html">widget</a></span> : <code class="type">[> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.widget-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEmisc_signals"><span class="keyword">class</span> <a href="GObj.misc_signals-c.html">misc_signals</a></span> : <code class="type"><a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.misc_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEdrag_context"><span class="keyword">class</span> <a href="GObj.drag_context-c.html">drag_context</a></span> : <code class="type"><a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> </code><code class="code">object</code> <a href="GObj.drag_context-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEdrag_signals"><span class="keyword">class</span> <a href="GObj.drag_signals-c.html">drag_signals</a></span> : <code class="type"><a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.drag_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEwidget_impl"><span class="keyword">class</span> <code class="type">[[> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> ]]</code> <a href="GObj.widget_impl-c.html">widget_impl</a></span> : <code class="type">([> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> ] as 'a) <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.widget_impl-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEwidget_signals"><span class="keyword">class type</span> <a href="GObj.widget_signals-c.html">widget_signals</a></span> = <code class="code">object</code> <a href="GObj.widget_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+
+<pre><span id="TYPEwidget_signals_impl"><span class="keyword">class</span> <a href="GObj.widget_signals_impl-c.html">widget_signals_impl</a></span> : <code class="type">[> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.widget_signals_impl-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEwidget_full"><span class="keyword">class</span> <a href="GObj.widget_full-c.html">widget_full</a></span> : <code class="type">[> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GObj.widget_full-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALas_widget"><span class="keyword">val</span> as_widget</span> : <code class="type"><a href="GObj.widget-c.html">widget</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkWidget.html">GtkWidget</a></small></ul>
+</div>
+
+<pre><span id="VALpack_return"><span class="keyword">val</span> pack_return</span> : <code class="type">(#<a href="GObj.widget-c.html">widget</a> as 'a) -><br>       packing:(<a href="GObj.widget-c.html">widget</a> -> unit) option -> show:bool option -> 'a</code></pre>
+<pre><span id="VALconv_widget"><span class="keyword">val</span> conv_widget</span> : <code class="type"><a href="GObj.widget-c.html">widget</a> <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a></code></pre>
+<pre><span id="VALconv_widget_option"><span class="keyword">val</span> conv_widget_option</span> : <code class="type"><a href="GObj.widget-c.html">widget</a> option <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a></code></pre></body></html>

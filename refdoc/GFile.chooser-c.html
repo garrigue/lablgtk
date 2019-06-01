@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GFile.chooser_signals-c.html">
+<link rel="Up" href="GFile.html">
+<title>LablGTK : GFile.chooser</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GFile.chooser_signals-c.html" title="GFile.chooser_signals">Previous</a>
+&nbsp;<a class="up" href="GFile.html" title="GFile">Up</a>
+&nbsp;</div>
+<h1>Class type <a href="type_GFile.chooser.html">GFile.chooser</a></h1>
+
+<pre><span id="TYPEchooser"><span class="keyword">class type</span> chooser</span> = <code class="code">object</code> <a href="GFile.chooser-c.html">..</a> <code class="code">end</code></pre><div class="info classtype top">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkFileChooser.html">GtkFileChooser</a></small></ul>
+</div>
+<hr width="100%">
+
+<pre><span id="METHODset_action"><span class="keyword">method</span> set_action</span> : <code class="type">Gtk.Tags.file_chooser_action -> unit</code></pre>
+<pre><span id="METHODaction"><span class="keyword">method</span> action</span> : <code class="type">Gtk.Tags.file_chooser_action</code></pre>
+<pre><span id="METHODset_create_folders"><span class="keyword">method</span> set_create_folders</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODcreate_folders"><span class="keyword">method</span> create_folders</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_local_only"><span class="keyword">method</span> set_local_only</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODlocal_only"><span class="keyword">method</span> local_only</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_select_multiple"><span class="keyword">method</span> set_select_multiple</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODselect_multiple"><span class="keyword">method</span> select_multiple</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_current_name"><span class="keyword">method</span> set_current_name</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODshow_hidden"><span class="keyword">method</span> show_hidden</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_show_hidden"><span class="keyword">method</span> set_show_hidden</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_filename"><span class="keyword">method</span> set_filename</span> : <code class="type">string -> bool</code></pre>
+<pre><span id="METHODfilename"><span class="keyword">method</span> filename</span> : <code class="type">string option</code></pre>
+<pre><span id="METHODselect_filename"><span class="keyword">method</span> select_filename</span> : <code class="type">string -> bool</code></pre>
+<pre><span id="METHODunselect_filename"><span class="keyword">method</span> unselect_filename</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODget_filenames"><span class="keyword">method</span> get_filenames</span> : <code class="type">string list</code></pre>
+<pre><span id="METHODset_current_folder"><span class="keyword">method</span> set_current_folder</span> : <code class="type">string -> bool</code></pre>
+<pre><span id="METHODcurrent_folder"><span class="keyword">method</span> current_folder</span> : <code class="type">string option</code></pre>
+<pre><span id="METHODset_uri"><span class="keyword">method</span> set_uri</span> : <code class="type">string -> bool</code></pre>
+<pre><span id="METHODuri"><span class="keyword">method</span> uri</span> : <code class="type">string option</code></pre>
+<pre><span id="METHODselect_uri"><span class="keyword">method</span> select_uri</span> : <code class="type">string -> bool</code></pre>
+<pre><span id="METHODunselect_uri"><span class="keyword">method</span> unselect_uri</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODget_uris"><span class="keyword">method</span> get_uris</span> : <code class="type">string list</code></pre>
+<pre><span id="METHODset_current_folder_uri"><span class="keyword">method</span> set_current_folder_uri</span> : <code class="type">string -> bool</code></pre>
+<pre><span id="METHODcurrent_folder_uri"><span class="keyword">method</span> current_folder_uri</span> : <code class="type">string</code></pre>
+<pre><span id="METHODselect_all"><span class="keyword">method</span> select_all</span> : <code class="type">unit</code></pre>
+<pre><span id="METHODunselect_all"><span class="keyword">method</span> unselect_all</span> : <code class="type">unit</code></pre>
+<pre><span id="METHODset_preview_widget"><span class="keyword">method</span> set_preview_widget</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a> -> unit</code></pre>
+<pre><span id="METHODpreview_widget"><span class="keyword">method</span> preview_widget</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a></code></pre>
+<pre><span id="METHODset_preview_widget_active"><span class="keyword">method</span> set_preview_widget_active</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODpreview_widget_active"><span class="keyword">method</span> preview_widget_active</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODpreview_filename"><span class="keyword">method</span> preview_filename</span> : <code class="type">string option</code></pre>
+<pre><span id="METHODpreview_uri"><span class="keyword">method</span> preview_uri</span> : <code class="type">string option</code></pre>
+<pre><span id="METHODset_use_preview_label"><span class="keyword">method</span> set_use_preview_label</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODuse_preview_label"><span class="keyword">method</span> use_preview_label</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_extra_widget"><span class="keyword">method</span> set_extra_widget</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a> -> unit</code></pre>
+<pre><span id="METHODextra_widget"><span class="keyword">method</span> extra_widget</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a></code></pre>
+<pre><span id="METHODadd_filter"><span class="keyword">method</span> add_filter</span> : <code class="type"><a href="GFile.filter-c.html">filter</a> -> unit</code></pre>
+<pre><span id="METHODremove_filter"><span class="keyword">method</span> remove_filter</span> : <code class="type"><a href="GFile.filter-c.html">filter</a> -> unit</code></pre>
+<pre><span id="METHODlist_filters"><span class="keyword">method</span> list_filters</span> : <code class="type"><a href="GFile.filter-c.html">filter</a> list</code></pre>
+<pre><span id="METHODset_filter"><span class="keyword">method</span> set_filter</span> : <code class="type"><a href="GFile.filter-c.html">filter</a> -> unit</code></pre>
+<pre><span id="METHODfilter"><span class="keyword">method</span> filter</span> : <code class="type"><a href="GFile.filter-c.html">filter</a></code></pre>
+<pre><span id="METHODadd_shortcut_folder"><span class="keyword">method</span> add_shortcut_folder</span> : <code class="type">string -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>GtkFile.FileChooser.Error</code> if operation fails</li>
+</ul>
+</div>
+
+<pre><span id="METHODremove_shortcut_folder"><span class="keyword">method</span> remove_shortcut_folder</span> : <code class="type">string -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>GtkFile.FileChooser.Error</code> if operation fails</li>
+</ul>
+</div>
+
+<pre><span id="METHODlist_shortcut_folders"><span class="keyword">method</span> list_shortcut_folders</span> : <code class="type">string list</code></pre>
+<pre><span id="METHODadd_shortcut_folder_uri"><span class="keyword">method</span> add_shortcut_folder_uri</span> : <code class="type">string -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>GtkFile.FileChooser.Error</code> if operation fails</li>
+</ul>
+</div>
+
+<pre><span id="METHODremove_shortcut_folder_uri"><span class="keyword">method</span> remove_shortcut_folder_uri</span> : <code class="type">string -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>GtkFile.FileChooser.Error</code> if operation fails</li>
+</ul>
+</div>
+
+<pre><span id="METHODlist_shortcut_folder_uris"><span class="keyword">method</span> list_shortcut_folder_uris</span> : <code class="type">string list</code></pre>
+<pre><span id="METHODdo_overwrite_confirmation"><span class="keyword">method</span> do_overwrite_confirmation</span> : <code class="type">bool</code></pre><div class="info ">
+<div class="info-desc">
+<p>since Gtk 2.8</p>
+</div>
+</div>
+
+<pre><span id="METHODset_do_overwrite_confirmation"><span class="keyword">method</span> set_do_overwrite_confirmation</span> : <code class="type">bool -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>since Gtk 2.8</p>
+</div>
+</div>
+</body></html>

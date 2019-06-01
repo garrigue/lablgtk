@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GMain.Idle.html">
+<link rel="next" href="GMain.Gc_custom.html">
+<link rel="Up" href="GMain.html">
+<title>LablGTK : GMain.Io</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GMain.Idle.html" title="GMain.Idle">Previous</a>
+&nbsp;<a class="up" href="GMain.html" title="GMain">Up</a>
+&nbsp;<a class="post" href="GMain.Gc_custom.html" title="GMain.Gc_custom">Next</a>
+</div>
+<h1>Module <a href="type_GMain.Io.html">GMain.Io</a></h1>
+
+<pre><span id="MODULEIo"><span class="keyword">module</span> Io</span>: <code class="code">sig</code> <a href="GMain.Io.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEchannel"><span class="keyword">type</span> <code class="type"></code>channel</span> = <code class="type"><a href="Glib.Io.html#TYPEchannel">Glib.Io.channel</a></code> </pre>
+
+
+<pre><span id="TYPEcondition"><span class="keyword">type</span> <code class="type"></code>condition</span> = <code class="type">[ `ERR | `HUP | `IN | `NVAL | `OUT | `PRI ]</code> </pre>
+
+
+<pre><span id="TYPEid"><span class="keyword">type</span> <code class="type"></code>id</span> </pre>
+
+
+<pre><span id="VALchannel_of_descr"><span class="keyword">val</span> channel_of_descr</span> : <code class="type">Unix.file_descr -> <a href="GMain.Io.html#TYPEchannel">channel</a></code></pre>
+<pre><span id="VALadd_watch"><span class="keyword">val</span> add_watch</span> : <code class="type">cond:<a href="GMain.Io.html#TYPEcondition">condition</a> list -><br>       callback:(<a href="GMain.Io.html#TYPEcondition">condition</a> list -> bool) -><br>       ?prio:int -> <a href="GMain.Io.html#TYPEchannel">channel</a> -> <a href="GMain.Io.html#TYPEid">id</a></code></pre>
+<pre><span id="VALremove"><span class="keyword">val</span> remove</span> : <code class="type"><a href="GMain.Io.html#TYPEid">id</a> -> unit</code></pre>
+<pre><span id="VALread"><span class="keyword">val</span> read</span> : <code class="type"><a href="GMain.Io.html#TYPEchannel">channel</a> -> buf:bytes -> pos:int -> len:int -> int</code></pre>
+<pre><span id="VALread_chars"><span class="keyword">val</span> read_chars</span> : <code class="type"><a href="GMain.Io.html#TYPEchannel">channel</a> -> buf:bytes -> pos:int -> len:int -> int</code></pre></body></html>

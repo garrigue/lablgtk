@@ -1,0 +1,54 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GSourceView3.source_buffer_signals</title>
+</head>
+<body>
+<code class="code"><span class="constructor">GtkSourceView3_types</span>.source_buffer&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keyword">object</span>&nbsp;(<span class="keywordsign">'</span>a)<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;after&nbsp;:&nbsp;<span class="keywordsign">'</span>a<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;apply_tag&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">GText</span>.tag&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;begin_user_action&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;changed&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;<span class="keyword">private</span>&nbsp;connect&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>c.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">GtkSourceView3_types</span>.source_buffer,&nbsp;<span class="keywordsign">'</span>c)&nbsp;<span class="constructor">GtkSignal</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback:<span class="keywordsign">'</span>c&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;delete_range&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;end_user_action&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;highlight_updated&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_child_anchor&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_child_anchor&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_pixbuf&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_text&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;mark_deleted&nbsp;:&nbsp;callback:(<span class="constructor">Gtk</span>.text_mark&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;mark_set&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.text_mark&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;modified_changed&nbsp;:&nbsp;callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;<span class="keyword">private</span>&nbsp;notify&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>c.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">GtkSourceView3_types</span>.source_buffer,&nbsp;<span class="keywordsign">'</span>c)&nbsp;<span class="constructor">Gobject</span>.property&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="keywordsign">'</span>c&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_can_redo&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_can_undo&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_cursor_position&nbsp;:&nbsp;callback:(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_has_selection&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_highlight_matching_brackets&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_highlight_syntax&nbsp;:&nbsp;callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_max_undo_levels&nbsp;:&nbsp;callback:(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;notify_tag_table&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">Gtk</span>.text_tag_table&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_tag&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">GText</span>.tag&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:<span class="constructor">GText</span>.iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;source_mark_updated&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="constructor">GtkSourceView3_types</span>.source_mark&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.id<br>
+<span class="keyword">end</span></code></body></html>

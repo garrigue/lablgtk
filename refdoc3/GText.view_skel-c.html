@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GText.view_signals-c.html">
+<link rel="next" href="GText.view-c.html">
+<link rel="Up" href="GText.html">
+<title>LablGTK : GText.view_skel</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GText.view_signals-c.html" title="GText.view_signals">Previous</a>
+&nbsp;<a class="up" href="GText.html" title="GText">Up</a>
+&nbsp;<a class="post" href="GText.view-c.html" title="GText.view">Next</a>
+</div>
+<h1>Class <a href="type_GText.view_skel.html">GText.view_skel</a></h1>
+
+<pre><span id="TYPEview_skel"><span class="keyword">class</span> view_skel</span> : <code class="type">[> <a href="Gtk.html#TYPEtext_view">Gtk.text_view</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.view_skel-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<div class="info-desc">
+<p>Widget that displays a <a href="GText.html#VALbuffer"><code class="code">GText.buffer</code></a></p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTextView.html">GtkTextView</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GObj.widget-c.html"><code class="code">GObj.widget</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">([> <a href="Gtk.html#TYPEtext_view">Gtk.text_view</a> ] as 'a) <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODas_view"><span class="keyword">method</span> as_view</span> : <code class="type"><a href="Gtk.html#TYPEtext_view">Gtk.text_view</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODaccepts_tab"><span class="keyword">method</span> accepts_tab</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODadd_child_at_anchor"><span class="keyword">method</span> add_child_at_anchor</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a> -> <a href="GText.child_anchor-c.html">child_anchor</a> -> unit</code></pre>
+<pre><span id="METHODadd_child_in_window"><span class="keyword">method</span> add_child_in_window</span> : <code class="type">child:<a href="GObj.widget-c.html">GObj.widget</a> -><br>       which_window:Gtk.Tags.text_window_type -> x:int -> y:int -> unit</code></pre>
+<pre><span id="METHODbackward_display_line"><span class="keyword">method</span> backward_display_line</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> bool</code></pre>
+<pre><span id="METHODbackward_display_line_start"><span class="keyword">method</span> backward_display_line_start</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> bool</code></pre>
+<pre><span id="METHODbottom_margin"><span class="keyword">method</span> bottom_margin</span> : <code class="type">int</code></pre>
+<pre><span id="METHODbuffer"><span class="keyword">method</span> buffer</span> : <code class="type"><a href="GText.buffer-c.html">buffer</a></code></pre>
+<pre><span id="METHODbuffer_to_window_coords"><span class="keyword">method</span> buffer_to_window_coords</span> : <code class="type">tag:Gtk.Tags.text_window_type -> x:int -> y:int -> int * int</code></pre>
+<pre><span id="METHODcursor_visible"><span class="keyword">method</span> cursor_visible</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODeditable"><span class="keyword">method</span> editable</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODevent"><span class="keyword">method</span> event</span> : <code class="type"><a href="GObj.event_ops-c.html">GObj.event_ops</a></code></pre>
+<pre><span id="METHODforward_display_line"><span class="keyword">method</span> forward_display_line</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> bool</code></pre>
+<pre><span id="METHODforward_display_line_end"><span class="keyword">method</span> forward_display_line_end</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> bool</code></pre>
+<pre><span id="METHODget_border_window_size"><span class="keyword">method</span> get_border_window_size</span> : <code class="type">[ `BOTTOM | `LEFT | `RIGHT | `TOP ] -> int</code></pre>
+<pre><span id="METHODget_iter_at_location"><span class="keyword">method</span> get_iter_at_location</span> : <code class="type">x:int -> y:int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODget_iter_location"><span class="keyword">method</span> get_iter_location</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> <a href="Gdk.Rectangle.html#TYPEt">Gdk.Rectangle.t</a></code></pre>
+<pre><span id="METHODget_line_at_y"><span class="keyword">method</span> get_line_at_y</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a> * int</code></pre>
+<pre><span id="METHODget_line_yrange"><span class="keyword">method</span> get_line_yrange</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> int * int</code></pre>
+<pre><span id="METHODget_window"><span class="keyword">method</span> get_window</span> : <code class="type">Gtk.Tags.text_window_type -> <a href="Gdk.html#TYPEwindow">Gdk.window</a> option</code></pre>
+<pre><span id="METHODget_window_type"><span class="keyword">method</span> get_window_type</span> : <code class="type"><a href="Gdk.html#TYPEwindow">Gdk.window</a> -> Gtk.Tags.text_window_type</code></pre>
+<pre><span id="METHODim_module"><span class="keyword">method</span> im_module</span> : <code class="type">string</code></pre>
+<pre><span id="METHODindent"><span class="keyword">method</span> indent</span> : <code class="type">int</code></pre>
+<pre><span id="METHODinput_hints"><span class="keyword">method</span> input_hints</span> : <code class="type"><a href="GtkEnums.html#TYPEinput_hints">GtkEnums.input_hints</a></code></pre>
+<pre><span id="METHODinput_purpose"><span class="keyword">method</span> input_purpose</span> : <code class="type"><a href="GtkEnums.html#TYPEinput_purpose">GtkEnums.input_purpose</a></code></pre>
+<pre><span id="METHODjustification"><span class="keyword">method</span> justification</span> : <code class="type">Gtk.Tags.justification</code></pre>
+<pre><span id="METHODleft_margin"><span class="keyword">method</span> left_margin</span> : <code class="type">int</code></pre>
+<pre><span id="METHODmisc"><span class="keyword">method</span> misc</span> : <code class="type"><a href="GObj.misc_ops-c.html">GObj.misc_ops</a></code></pre>
+<pre><span id="METHODmonospace"><span class="keyword">method</span> monospace</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODmove_child"><span class="keyword">method</span> move_child</span> : <code class="type">child:<a href="GObj.widget-c.html">GObj.widget</a> -> x:int -> y:int -> unit</code></pre>
+<pre><span id="METHODmove_mark_onscreen"><span class="keyword">method</span> move_mark_onscreen</span> : <code class="type"><a href="GText.html#TYPEmark">mark</a> -> bool</code></pre>
+<pre><span id="METHODmove_visually"><span class="keyword">method</span> move_visually</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> int -> bool</code></pre>
+<pre><span id="METHODoverwrite"><span class="keyword">method</span> overwrite</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODpixels_above_lines"><span class="keyword">method</span> pixels_above_lines</span> : <code class="type">int</code></pre>
+<pre><span id="METHODpixels_below_lines"><span class="keyword">method</span> pixels_below_lines</span> : <code class="type">int</code></pre>
+<pre><span id="METHODpixels_inside_wrap"><span class="keyword">method</span> pixels_inside_wrap</span> : <code class="type">int</code></pre>
+<pre><span id="METHODplace_cursor_onscreen"><span class="keyword">method</span> place_cursor_onscreen</span> : <code class="type">unit -> bool</code></pre>
+<pre><span id="METHODpopulate_all"><span class="keyword">method</span> populate_all</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODright_margin"><span class="keyword">method</span> right_margin</span> : <code class="type">int</code></pre>
+<pre><span id="METHODscroll_mark_onscreen"><span class="keyword">method</span> scroll_mark_onscreen</span> : <code class="type"><a href="GText.html#TYPEmark">mark</a> -> unit</code></pre>
+<pre><span id="METHODscroll_to_iter"><span class="keyword">method</span> scroll_to_iter</span> : <code class="type">?within_margin:float -><br>       ?use_align:bool -> ?xalign:float -> ?yalign:float -> <a href="GText.iter-c.html">iter</a> -> bool</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">use_align</code> : default value is <code class="code">false</code></div>
+
+<pre><span id="METHODscroll_to_mark"><span class="keyword">method</span> scroll_to_mark</span> : <code class="type">?within_margin:float -><br>       ?use_align:bool -> ?xalign:float -> ?yalign:float -> <a href="GText.html#TYPEmark">mark</a> -> unit</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">use_align</code> : default value is <code class="code">false</code></div>
+
+<pre><span id="METHODset_accepts_tab"><span class="keyword">method</span> set_accepts_tab</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_border_window_size"><span class="keyword">method</span> set_border_window_size</span> : <code class="type">typ:[ `BOTTOM | `LEFT | `RIGHT | `TOP ] -> size:int -> unit</code></pre>
+<pre><span id="METHODset_buffer"><span class="keyword">method</span> set_buffer</span> : <code class="type"><a href="GText.buffer-c.html">buffer</a> -> unit</code></pre>
+<pre><span id="METHODset_bottom_margin"><span class="keyword">method</span> set_bottom_margin</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_cursor_visible"><span class="keyword">method</span> set_cursor_visible</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_editable"><span class="keyword">method</span> set_editable</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_im_module"><span class="keyword">method</span> set_im_module</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_indent"><span class="keyword">method</span> set_indent</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_input_hints"><span class="keyword">method</span> set_input_hints</span> : <code class="type"><a href="GtkEnums.html#TYPEinput_hints">GtkEnums.input_hints</a> -> unit</code></pre>
+<pre><span id="METHODset_input_purpose"><span class="keyword">method</span> set_input_purpose</span> : <code class="type"><a href="GtkEnums.html#TYPEinput_purpose">GtkEnums.input_purpose</a> -> unit</code></pre>
+<pre><span id="METHODset_justification"><span class="keyword">method</span> set_justification</span> : <code class="type">Gtk.Tags.justification -> unit</code></pre>
+<pre><span id="METHODset_left_margin"><span class="keyword">method</span> set_left_margin</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_monospace"><span class="keyword">method</span> set_monospace</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_overwrite"><span class="keyword">method</span> set_overwrite</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_pixels_above_lines"><span class="keyword">method</span> set_pixels_above_lines</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_pixels_below_lines"><span class="keyword">method</span> set_pixels_below_lines</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_pixels_inside_wrap"><span class="keyword">method</span> set_pixels_inside_wrap</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_populate_all"><span class="keyword">method</span> set_populate_all</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_right_margin"><span class="keyword">method</span> set_right_margin</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_top_margin"><span class="keyword">method</span> set_top_margin</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_wrap_mode"><span class="keyword">method</span> set_wrap_mode</span> : <code class="type">Gtk.Tags.wrap_mode -> unit</code></pre>
+<pre><span id="METHODstarts_display_line"><span class="keyword">method</span> starts_display_line</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> bool</code></pre>
+<pre><span id="METHODtop_margin"><span class="keyword">method</span> top_margin</span> : <code class="type">int</code></pre>
+<pre><span id="METHODvisible_rect"><span class="keyword">method</span> visible_rect</span> : <code class="type"><a href="Gdk.Rectangle.html#TYPEt">Gdk.Rectangle.t</a></code></pre>
+<pre><span id="METHODwindow_to_buffer_coords"><span class="keyword">method</span> window_to_buffer_coords</span> : <code class="type">tag:Gtk.Tags.text_window_type -> x:int -> y:int -> int * int</code></pre>
+<pre><span id="METHODwrap_mode"><span class="keyword">method</span> wrap_mode</span> : <code class="type">Gtk.Tags.wrap_mode</code></pre></body></html>

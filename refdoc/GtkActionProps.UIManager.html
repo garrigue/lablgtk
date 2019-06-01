@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkActionProps.RadioAction.html">
+<link rel="next" href="GtkActionProps.ActionGroup.html">
+<link rel="Up" href="GtkActionProps.html">
+<title>LablGTK : GtkActionProps.UIManager</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkActionProps.RadioAction.html" title="GtkActionProps.RadioAction">Previous</a>
+&nbsp;<a class="up" href="GtkActionProps.html" title="GtkActionProps">Up</a>
+&nbsp;<a class="post" href="GtkActionProps.ActionGroup.html" title="GtkActionProps.ActionGroup">Next</a>
+</div>
+<h1>Module <a href="type_GtkActionProps.UIManager.html">GtkActionProps.UIManager</a></h1>
+
+<pre><span id="MODULEUIManager"><span class="keyword">module</span> UIManager</span>: <code class="code">sig</code> <a href="GtkActionProps.UIManager.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEui_manager">Gtk.ui_manager</a> <a href="Gobject.html#TYPEobj">Gobject.obj</a></code></pre>
+<pre><span id="MODULEP"><span class="keyword">module</span> <a href="GtkActionProps.UIManager.P.html">P</a></span>: <code class="code">sig</code> <a href="GtkActionProps.UIManager.P.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULES"><span class="keyword">module</span> <a href="GtkActionProps.UIManager.S.html">S</a></span>: <code class="code">sig</code> <a href="GtkActionProps.UIManager.S.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type"><a href="Gtk.html#TYPEui_manager">Gtk.ui_manager</a> <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> <a href="Gtk.html#TYPEui_manager">Gtk.ui_manager</a> <a href="Gobject.html#TYPEobj">Gobject.obj</a></code></pre>
+<pre><span id="VALinsert_action_group"><span class="keyword">val</span> insert_action_group</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEaction_group">Gtk.action_group</a> <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> int -> unit</code></pre>
+<pre><span id="VALremove_action_group"><span class="keyword">val</span> remove_action_group</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEaction_group">Gtk.action_group</a> <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> unit</code></pre>
+<pre><span id="VALget_action_groups"><span class="keyword">val</span> get_action_groups</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEaction_group">Gtk.action_group</a> <a href="Gobject.html#TYPEobj">Gobject.obj</a> list</code></pre>
+<pre><span id="VALget_accel_group"><span class="keyword">val</span> get_accel_group</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a></code></pre>
+<pre><span id="VALget_widget"><span class="keyword">val</span> get_widget</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> string -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALget_toplevels"><span class="keyword">val</span> get_toplevels</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -><br>       <a href="GtkEnums.html#TYPEui_manager_item_type">GtkEnums.ui_manager_item_type</a> list -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> list</code></pre>
+<pre><span id="VALget_action"><span class="keyword">val</span> get_action</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> string -> <a href="Gtk.html#TYPEaction">Gtk.action</a> <a href="Gobject.html#TYPEobj">Gobject.obj</a></code></pre>
+<pre><span id="VALadd_ui_from_string"><span class="keyword">val</span> add_ui_from_string</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> string -> int</code></pre>
+<pre><span id="VALadd_ui_from_file"><span class="keyword">val</span> add_ui_from_file</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> string -> int</code></pre>
+<pre><span id="VALnew_merge_id"><span class="keyword">val</span> new_merge_id</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> int</code></pre>
+<pre><span id="VALadd_ui"><span class="keyword">val</span> add_ui</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -><br>       int -><br>       path:string -><br>       name:string -><br>       action:string option -> <a href="GtkEnums.html#TYPEui_manager_item_type">GtkEnums.ui_manager_item_type</a> -> top:bool -> unit</code></pre>
+<pre><span id="VALremove_ui"><span class="keyword">val</span> remove_ui</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> int -> unit</code></pre>
+<pre><span id="VALensure_update"><span class="keyword">val</span> ensure_update</span> : <code class="type">[> `uimanager ] <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> unit</code></pre></body></html>

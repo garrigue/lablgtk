@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="next" href="GtkTree.TreeView.Dnd.html">
+<link rel="Up" href="GtkTree.TreeView.html">
+<title>LablGTK : GtkTree.TreeView.Tooltip</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="GtkTree.TreeView.html" title="GtkTree.TreeView">Up</a>
+&nbsp;<a class="post" href="GtkTree.TreeView.Dnd.html" title="GtkTree.TreeView.Dnd">Next</a>
+</div>
+<h1>Module <a href="type_GtkTree.TreeView.Tooltip.html">GtkTree.TreeView.Tooltip</a></h1>
+
+<pre><span id="MODULETooltip"><span class="keyword">module</span> Tooltip</span>: <code class="code">sig</code> <a href="GtkTree.TreeView.Tooltip.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.12</li>
+</ul>
+</div>
+<hr width="100%">
+
+<pre><span id="VALset_cell"><span class="keyword">val</span> set_cell</span> : <code class="type">[> `treeview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       <a href="Gtk.html#TYPEtooltip">Gtk.tooltip</a> -><br>       ?path:<a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -><br>       ?col:<a href="Gtk.html#TYPEtree_view_column">Gtk.tree_view_column</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       ?cell:[> `cellrenderer ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit -> unit</code></pre>
+<pre><span id="VALset_row"><span class="keyword">val</span> set_row</span> : <code class="type">[> `treeview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtooltip">Gtk.tooltip</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="VALget_context"><span class="keyword">val</span> get_context</span> : <code class="type">[> `treeview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       x:int -><br>       y:int -><br>       kbd:bool -><br>       int * int * (<a href="Gtk.html#TYPEtree_model">Gtk.tree_model</a> * <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> * <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a>) option</code></pre>
+<pre><span id="VALget_column"><span class="keyword">val</span> get_column</span> : <code class="type">[> `treeview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int</code></pre>
+<pre><span id="VALset_column"><span class="keyword">val</span> set_column</span> : <code class="type">[> `treeview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> unit</code></pre></body></html>

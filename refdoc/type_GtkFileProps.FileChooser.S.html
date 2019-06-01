@@ -1,0 +1,15 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkFileProps.FileChooser.S</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;current_folder_changed&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>filechooser&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;file_activated&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>filechooser&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;selection_changed&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>filechooser&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;update_preview&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>filechooser&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;confirm_overwrite&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>filechooser&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkEnums</span>.file_chooser_confirmation)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+<span class="keyword">end</span></code></body></html>

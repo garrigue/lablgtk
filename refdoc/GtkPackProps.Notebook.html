@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkPackProps.Layout.html">
+<link rel="next" href="GtkPackProps.Table.html">
+<link rel="Up" href="GtkPackProps.html">
+<title>LablGTK : GtkPackProps.Notebook</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkPackProps.Layout.html" title="GtkPackProps.Layout">Previous</a>
+&nbsp;<a class="up" href="GtkPackProps.html" title="GtkPackProps">Up</a>
+&nbsp;<a class="post" href="GtkPackProps.Table.html" title="GtkPackProps.Table">Next</a>
+</div>
+<h1>Module <a href="type_GtkPackProps.Notebook.html">GtkPackProps.Notebook</a></h1>
+
+<pre><span id="MODULENotebook"><span class="keyword">module</span> Notebook</span>: <code class="code">sig</code> <a href="GtkPackProps.Notebook.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEnotebook">Gtk.notebook</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="MODULEP"><span class="keyword">module</span> <a href="GtkPackProps.Notebook.P.html">P</a></span>: <code class="code">sig</code> <a href="GtkPackProps.Notebook.P.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULES"><span class="keyword">module</span> <a href="GtkPackProps.Notebook.S.html">S</a></span>: <code class="code">sig</code> <a href="GtkPackProps.Notebook.S.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type"><a href="Gtk.html#TYPEnotebook">Gtk.notebook</a> <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> <a href="Gtk.html#TYPEnotebook">Gtk.notebook</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALinsert_page_menu"><span class="keyword">val</span> insert_page_menu</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       tab_label:[> `widget ] <a href="Gtk.html#TYPEoptobj">Gtk.optobj</a> -><br>       menu_label:[> `widget ] <a href="Gtk.html#TYPEoptobj">Gtk.optobj</a> -> ?pos:int -> int</code></pre>
+<pre><span id="VALremove_page"><span class="keyword">val</span> remove_page</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> unit</code></pre>
+<pre><span id="VALget_current_page"><span class="keyword">val</span> get_current_page</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int</code></pre>
+<pre><span id="VALget_nth_page"><span class="keyword">val</span> get_nth_page</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALpage_num"><span class="keyword">val</span> page_num</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int</code></pre>
+<pre><span id="VALnext_page"><span class="keyword">val</span> next_page</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALprev_page"><span class="keyword">val</span> prev_page</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALget_tab_label"><span class="keyword">val</span> get_tab_label</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALset_tab_label"><span class="keyword">val</span> set_tab_label</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALget_menu_label"><span class="keyword">val</span> get_menu_label</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALset_menu_label"><span class="keyword">val</span> set_menu_label</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALreorder_child"><span class="keyword">val</span> reorder_child</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> unit</code></pre>
+<pre><span id="VALset_tab_reorderable"><span class="keyword">val</span> set_tab_reorderable</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool -> unit</code></pre>
+<pre><span id="VALget_tab_reorderable"><span class="keyword">val</span> get_tab_reorderable</span> : <code class="type">[> `notebook ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre>
+<pre><span id="VALmake_params"><span class="keyword">val</span> make_params</span> : <code class="type">cont:(([> `notebook ] as 'a) <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> 'b) -><br>       'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list -><br>       ?enable_popup:bool -><br>       ?group_name:string -><br>       ?scrollable:bool -><br>       ?show_border:bool -> ?show_tabs:bool -> ?tab_pos:<a href="GtkEnums.html#TYPEposition_type">GtkEnums.position_type</a> -> 'b</code></pre></body></html>

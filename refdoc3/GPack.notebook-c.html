@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GPack.notebook_signals-c.html">
+<link rel="next" href="GPack.paned-c.html">
+<link rel="Up" href="GPack.html">
+<title>LablGTK : GPack.notebook</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GPack.notebook_signals-c.html" title="GPack.notebook_signals">Previous</a>
+&nbsp;<a class="up" href="GPack.html" title="GPack">Up</a>
+&nbsp;<a class="post" href="GPack.paned-c.html" title="GPack.paned">Next</a>
+</div>
+<h1>Class <a href="type_GPack.notebook.html">GPack.notebook</a></h1>
+
+<pre><span id="TYPEnotebook"><span class="keyword">class</span> notebook</span> : <code class="type"><a href="Gtk.html#TYPEnotebook">Gtk.notebook</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.notebook-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<div class="info-desc">
+<p>A tabbed notebook container</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkNotebook.html">GtkNotebook</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GContainer.container-c.html"><code class="code">GContainer.container</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type"><a href="Gtk.html#TYPEnotebook">Gtk.notebook</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODas_notebook"><span class="keyword">method</span> as_notebook</span> : <code class="type"><a href="Gtk.html#TYPEnotebook">Gtk.notebook</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODevent"><span class="keyword">method</span> event</span> : <code class="type"><a href="GObj.event_ops-c.html">GObj.event_ops</a></code></pre>
+<pre><span id="METHODappend_page"><span class="keyword">method</span> append_page</span> : <code class="type">?tab_label:<a href="GObj.widget-c.html">GObj.widget</a> -> ?menu_label:<a href="GObj.widget-c.html">GObj.widget</a> -> <a href="GObj.widget-c.html">GObj.widget</a> -> int</code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GPack.notebook_signals-c.html">notebook_signals</a></code></pre>
+<pre><span id="METHODcurrent_page"><span class="keyword">method</span> current_page</span> : <code class="type">int</code></pre>
+<pre><span id="METHODget_menu_label"><span class="keyword">method</span> get_menu_label</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a> -> <a href="GObj.widget-c.html">GObj.widget</a></code></pre>
+<pre><span id="METHODget_nth_page"><span class="keyword">method</span> get_nth_page</span> : <code class="type">int -> <a href="GObj.widget-c.html">GObj.widget</a></code></pre>
+<pre><span id="METHODget_tab_label"><span class="keyword">method</span> get_tab_label</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a> -> <a href="GObj.widget-c.html">GObj.widget</a></code></pre>
+<pre><span id="METHODget_tab_reorderable"><span class="keyword">method</span> get_tab_reorderable</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a> -> bool</code></pre>
+<pre><span id="METHODgoto_page"><span class="keyword">method</span> goto_page</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODinsert_page"><span class="keyword">method</span> insert_page</span> : <code class="type">?tab_label:<a href="GObj.widget-c.html">GObj.widget</a> -><br>       ?menu_label:<a href="GObj.widget-c.html">GObj.widget</a> -> ?pos:int -> <a href="GObj.widget-c.html">GObj.widget</a> -> int</code></pre>
+<pre><span id="METHODnext_page"><span class="keyword">method</span> next_page</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODpage_num"><span class="keyword">method</span> page_num</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a> -> int</code></pre>
+<pre><span id="METHODprepend_page"><span class="keyword">method</span> prepend_page</span> : <code class="type">?tab_label:<a href="GObj.widget-c.html">GObj.widget</a> -> ?menu_label:<a href="GObj.widget-c.html">GObj.widget</a> -> <a href="GObj.widget-c.html">GObj.widget</a> -> int</code></pre>
+<pre><span id="METHODprevious_page"><span class="keyword">method</span> previous_page</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODremove_page"><span class="keyword">method</span> remove_page</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODreorder_child"><span class="keyword">method</span> reorder_child</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a> -> int -> unit</code></pre>
+<pre><span id="METHODset_enable_popup"><span class="keyword">method</span> set_enable_popup</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_group_name"><span class="keyword">method</span> set_group_name</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_page"><span class="keyword">method</span> set_page</span> : <code class="type">?tab_label:<a href="GObj.widget-c.html">GObj.widget</a> -> ?menu_label:<a href="GObj.widget-c.html">GObj.widget</a> -> <a href="GObj.widget-c.html">GObj.widget</a> -> unit</code></pre>
+<pre><span id="METHODset_scrollable"><span class="keyword">method</span> set_scrollable</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_show_border"><span class="keyword">method</span> set_show_border</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_show_tabs"><span class="keyword">method</span> set_show_tabs</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_tab_reorderable"><span class="keyword">method</span> set_tab_reorderable</span> : <code class="type"><a href="GObj.widget-c.html">GObj.widget</a> -> bool -> unit</code></pre>
+<pre><span id="METHODset_tab_pos"><span class="keyword">method</span> set_tab_pos</span> : <code class="type">Gtk.Tags.position_type -> unit</code></pre>
+<pre><span id="METHODgroup_name"><span class="keyword">method</span> group_name</span> : <code class="type">string</code></pre>
+<pre><span id="METHODenable_popup"><span class="keyword">method</span> enable_popup</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODscrollable"><span class="keyword">method</span> scrollable</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODshow_border"><span class="keyword">method</span> show_border</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODshow_tabs"><span class="keyword">method</span> show_tabs</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODtab_pos"><span class="keyword">method</span> tab_pos</span> : <code class="type">Gtk.Tags.position_type</code></pre></body></html>

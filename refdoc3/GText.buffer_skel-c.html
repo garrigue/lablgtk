@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GText.buffer_signals-c.html">
+<link rel="next" href="GText.buffer-c.html">
+<link rel="Up" href="GText.html">
+<title>LablGTK : GText.buffer_skel</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GText.buffer_signals-c.html" title="GText.buffer_signals">Previous</a>
+&nbsp;<a class="up" href="GText.html" title="GText">Up</a>
+&nbsp;<a class="post" href="GText.buffer-c.html" title="GText.buffer">Next</a>
+</div>
+<h1>Class <a href="type_GText.buffer_skel.html">GText.buffer_skel</a></h1>
+
+<pre><span id="TYPEbuffer_skel"><span class="keyword">class</span> buffer_skel</span> : <code class="type">[> `textbuffer ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.buffer_skel-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<div class="info-desc">
+<p>Stores attributed text for display in a <a href="GText.html#VALview"><code class="code">GText.view</code></a></p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTextBuffer.html">GtkTextBuffer</a></small></ul>
+</div>
+<br><hr width="100%">
+
+<pre><span id="METHODas_buffer"><span class="keyword">method</span> as_buffer</span> : <code class="type"><a href="Gtk.html#TYPEtext_buffer">Gtk.text_buffer</a></code></pre>
+<pre><span id="METHODadd_selection_clipboard"><span class="keyword">method</span> add_selection_clipboard</span> : <code class="type"><a href="GData.clipboard-c.html">GData.clipboard</a> -> unit</code></pre>
+<pre><span id="METHODapply_tag"><span class="keyword">method</span> apply_tag</span> : <code class="type"><a href="GText.tag-c.html">tag</a> -> start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> unit</code></pre>
+<pre><span id="METHODapply_tag_by_name"><span class="keyword">method</span> apply_tag_by_name</span> : <code class="type">string -> start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> unit</code></pre>
+<pre><span id="METHODbegin_user_action"><span class="keyword">method</span> begin_user_action</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODbounds"><span class="keyword">method</span> bounds</span> : <code class="type"><a href="GText.iter-c.html">iter</a> * <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODchar_count"><span class="keyword">method</span> char_count</span> : <code class="type">int</code></pre>
+<pre><span id="METHODcopy_clipboard"><span class="keyword">method</span> copy_clipboard</span> : <code class="type"><a href="GData.clipboard-c.html">GData.clipboard</a> -> unit</code></pre>
+<pre><span id="METHODcreate_child_anchor"><span class="keyword">method</span> create_child_anchor</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> <a href="GText.child_anchor-c.html">child_anchor</a></code></pre>
+<pre><span id="METHODcreate_mark"><span class="keyword">method</span> create_mark</span> : <code class="type">?name:string -> ?left_gravity:bool -> <a href="GText.iter-c.html">iter</a> -> <a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a></code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">left_gravity</code> : default value is <code class="code">true</code></div>
+
+<pre><span id="METHODcreate_tag"><span class="keyword">method</span> create_tag</span> : <code class="type">?name:string -> <a href="GText.html#TYPEtag_property">tag_property</a> list -> <a href="GText.tag-c.html">tag</a></code></pre>
+<pre><span id="METHODcut_clipboard"><span class="keyword">method</span> cut_clipboard</span> : <code class="type">?default_editable:bool -> <a href="GData.clipboard-c.html">GData.clipboard</a> -> unit</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">default_editable</code> : default value is <code class="code">true</code></div>
+
+<pre><span id="METHODdelete"><span class="keyword">method</span> delete</span> : <code class="type">start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> unit</code></pre>
+<pre><span id="METHODdelete_interactive"><span class="keyword">method</span> delete_interactive</span> : <code class="type">start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> ?default_editable:bool -> unit -> bool</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">default_editable</code> : default value is <code class="code">true</code></div>
+
+<pre><span id="METHODdelete_mark"><span class="keyword">method</span> delete_mark</span> : <code class="type"><a href="GText.html#TYPEmark">mark</a> -> unit</code></pre>
+<pre><span id="METHODdelete_selection"><span class="keyword">method</span> delete_selection</span> : <code class="type">?interactive:bool -> ?default_editable:bool -> unit -> bool</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">interactive</code> : default value is <code class="code">true</code></div>
+<div class="param_info"><code class="code">default_editable</code> : default value is <code class="code">true</code></div>
+
+<pre><span id="METHODend_iter"><span class="keyword">method</span> end_iter</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODend_user_action"><span class="keyword">method</span> end_user_action</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODget_iter"><span class="keyword">method</span> get_iter</span> : <code class="type"><a href="GText.html#TYPEposition">position</a> -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODget_iter_at_char"><span class="keyword">method</span> get_iter_at_char</span> : <code class="type">?line:int -> int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODget_iter_at_byte"><span class="keyword">method</span> get_iter_at_byte</span> : <code class="type">line:int -> int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODget_iter_at_mark"><span class="keyword">method</span> get_iter_at_mark</span> : <code class="type"><a href="GText.html#TYPEmark">mark</a> -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODget_mark"><span class="keyword">method</span> get_mark</span> : <code class="type"><a href="GText.html#TYPEmark">mark</a> -> <a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a></code></pre>
+<pre><span id="METHODget_oid"><span class="keyword">method</span> get_oid</span> : <code class="type">int</code></pre>
+<pre><span id="METHODget_text"><span class="keyword">method</span> get_text</span> : <code class="type">?start:<a href="GText.iter-c.html">iter</a> -><br>       ?stop:<a href="GText.iter-c.html">iter</a> -> ?slice:bool -> ?visible:bool -> unit -> string</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">slice</code> : default value is <code class="code">false</code></div>
+<div class="param_info"><code class="code">visible</code> : default value is <code class="code">false</code></div>
+
+<pre><span id="METHODinsert"><span class="keyword">method</span> insert</span> : <code class="type">?iter:<a href="GText.iter-c.html">iter</a> -><br>       ?tag_names:string list -> ?tags:<a href="GText.tag-c.html">tag</a> list -> string -> unit</code></pre>
+<pre><span id="METHODinsert_child_anchor"><span class="keyword">method</span> insert_child_anchor</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> <a href="GText.child_anchor-c.html">child_anchor</a> -> unit</code></pre>
+<pre><span id="METHODinsert_interactive"><span class="keyword">method</span> insert_interactive</span> : <code class="type">?iter:<a href="GText.iter-c.html">iter</a> -> ?default_editable:bool -> string -> bool</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">default_editable</code> : default value is <code class="code">true</code></div>
+
+<pre><span id="METHODinsert_pixbuf"><span class="keyword">method</span> insert_pixbuf</span> : <code class="type">iter:<a href="GText.iter-c.html">iter</a> -> pixbuf:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> unit</code></pre>
+<pre><span id="METHODinsert_range"><span class="keyword">method</span> insert_range</span> : <code class="type">iter:<a href="GText.iter-c.html">iter</a> -> start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> unit</code></pre>
+<pre><span id="METHODinsert_range_interactive"><span class="keyword">method</span> insert_range_interactive</span> : <code class="type">iter:<a href="GText.iter-c.html">iter</a> -><br>       start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> ?default_editable:bool -> unit -> bool</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">default_editable</code> : default value is <code class="code">true</code></div>
+
+<pre><span id="METHODline_count"><span class="keyword">method</span> line_count</span> : <code class="type">int</code></pre>
+<pre><span id="METHODmodified"><span class="keyword">method</span> modified</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODmove_mark"><span class="keyword">method</span> move_mark</span> : <code class="type"><a href="GText.html#TYPEmark">mark</a> -> where:<a href="GText.iter-c.html">iter</a> -> unit</code></pre>
+<pre><span id="METHODpaste_clipboard"><span class="keyword">method</span> paste_clipboard</span> : <code class="type">?iter:<a href="GText.iter-c.html">iter</a> -> ?default_editable:bool -> <a href="GData.clipboard-c.html">GData.clipboard</a> -> unit</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">default_editable</code> : default value is <code class="code">true</code></div>
+
+<pre><span id="METHODplace_cursor"><span class="keyword">method</span> place_cursor</span> : <code class="type">where:<a href="GText.iter-c.html">iter</a> -> unit</code></pre>
+<pre><span id="METHODselect_range"><span class="keyword">method</span> select_range</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> <a href="GText.iter-c.html">iter</a> -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+</ul>
+</div>
+
+<pre><span id="METHODremove_all_tags"><span class="keyword">method</span> remove_all_tags</span> : <code class="type">start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> unit</code></pre>
+<pre><span id="METHODremove_selection_clipboard"><span class="keyword">method</span> remove_selection_clipboard</span> : <code class="type"><a href="GData.clipboard-c.html">GData.clipboard</a> -> unit</code></pre>
+<pre><span id="METHODremove_tag"><span class="keyword">method</span> remove_tag</span> : <code class="type"><a href="GText.tag-c.html">tag</a> -> start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> unit</code></pre>
+<pre><span id="METHODremove_tag_by_name"><span class="keyword">method</span> remove_tag_by_name</span> : <code class="type">string -> start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> unit</code></pre>
+<pre><span id="METHODselection_bounds"><span class="keyword">method</span> selection_bounds</span> : <code class="type"><a href="GText.iter-c.html">iter</a> * <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODset_modified"><span class="keyword">method</span> set_modified</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_text"><span class="keyword">method</span> set_text</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODstart_iter"><span class="keyword">method</span> start_iter</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODtag_table"><span class="keyword">method</span> tag_table</span> : <code class="type"><a href="Gtk.html#TYPEtext_tag_table">Gtk.text_tag_table</a></code></pre>
+<pre><span id="METHODhas_selection"><span class="keyword">method</span> has_selection</span> : <code class="type">bool</code></pre><div class="info ">
+<div class="info-desc">
+<p>since Gtk 2.10</p>
+</div>
+</div>
+
+<pre><span id="METHODcursor_position"><span class="keyword">method</span> cursor_position</span> : <code class="type">int</code></pre><div class="info ">
+<div class="info-desc">
+<p>since Gtk 2.10</p>
+</div>
+</div>
+</body></html>

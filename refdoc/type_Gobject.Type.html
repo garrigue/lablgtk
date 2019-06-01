@@ -1,0 +1,20 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : Gobject.Type</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;init&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;name&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;from_name&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_type<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parent&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_type<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;depth&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_a&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fundamental&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.fundamental_type<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_fundamental&nbsp;:&nbsp;<span class="constructor">Gobject</span>.fundamental_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_type<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;interface_prerequisites&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_type&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;register_static&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parent:<span class="constructor">Gobject</span>.g_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;name:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_type<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;caml&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_type<br>
+<span class="keyword">end</span></code></body></html>

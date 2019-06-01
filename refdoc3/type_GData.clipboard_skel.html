@@ -1,0 +1,17 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GData.clipboard_skel</title>
+</head>
+<body>
+<code class="code"><span class="constructor">Gtk</span>.clipboard&nbsp;<span class="constructor">Stdlib</span>.<span class="constructor">Lazy</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keyword">object</span><br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;as_clipboard&nbsp;:&nbsp;<span class="constructor">Gtk</span>.clipboard<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;clear&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_contents&nbsp;:&nbsp;target:<span class="constructor">Gdk</span>.atom&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GObj</span>.selection_data<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;image&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_image&nbsp;:&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_text&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;targets&nbsp;:&nbsp;<span class="constructor">Gdk</span>.atom&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;text&nbsp;:&nbsp;string&nbsp;option<br>
+<span class="keyword">end</span></code></body></html>

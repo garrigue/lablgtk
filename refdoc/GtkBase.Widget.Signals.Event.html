@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="Up" href="GtkBase.Widget.Signals.html">
+<title>LablGTK : GtkBase.Widget.Signals.Event</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="GtkBase.Widget.Signals.html" title="GtkBase.Widget.Signals">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_GtkBase.Widget.Signals.Event.html">GtkBase.Widget.Signals.Event</a></h1>
+
+<pre><span id="MODULEEvent"><span class="keyword">module</span> Event</span>: <code class="code">sig</code> <a href="GtkBase.Widget.Signals.Event.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALmarshal"><span class="keyword">val</span> marshal</span> : <code class="type">([< <a href="Gdk.Tags.html#TYPEevent_type">Gdk.Tags.event_type</a> ] <a href="Gdk.html#TYPEevent">Gdk.event</a> -> bool) -> <a href="Gobject.Closure.html#TYPEargv">Gobject.Closure.argv</a> -> unit</code></pre>
+<pre><span id="VALany"><span class="keyword">val</span> any</span> : <code class="type">([> `widget ], <a href="Gdk.Tags.html#TYPEevent_type">Gdk.Tags.event_type</a> <a href="Gdk.html#TYPEevent">Gdk.event</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALbutton_press"><span class="keyword">val</span> button_press</span> : <code class="type">([> `widget ], <a href="GdkEvent.Button.html#TYPEt">GdkEvent.Button.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALbutton_release"><span class="keyword">val</span> button_release</span> : <code class="type">([> `widget ], <a href="GdkEvent.Button.html#TYPEt">GdkEvent.Button.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALmotion_notify"><span class="keyword">val</span> motion_notify</span> : <code class="type">([> `widget ], <a href="GdkEvent.Motion.html#TYPEt">GdkEvent.Motion.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALdelete"><span class="keyword">val</span> delete</span> : <code class="type">([> `widget ], [ `DELETE ] <a href="Gdk.html#TYPEevent">Gdk.event</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALdestroy"><span class="keyword">val</span> destroy</span> : <code class="type">([> `widget ], [ `DESTROY ] <a href="Gdk.html#TYPEevent">Gdk.event</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALexpose"><span class="keyword">val</span> expose</span> : <code class="type">([> `widget ], <a href="GdkEvent.Expose.html#TYPEt">GdkEvent.Expose.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALkey_press"><span class="keyword">val</span> key_press</span> : <code class="type">([> `widget ], <a href="GdkEvent.Key.html#TYPEt">GdkEvent.Key.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALkey_release"><span class="keyword">val</span> key_release</span> : <code class="type">([> `widget ], <a href="GdkEvent.Key.html#TYPEt">GdkEvent.Key.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALenter_notify"><span class="keyword">val</span> enter_notify</span> : <code class="type">([> `widget ], <a href="GdkEvent.Crossing.html#TYPEt">GdkEvent.Crossing.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALleave_notify"><span class="keyword">val</span> leave_notify</span> : <code class="type">([> `widget ], <a href="GdkEvent.Crossing.html#TYPEt">GdkEvent.Crossing.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALconfigure"><span class="keyword">val</span> configure</span> : <code class="type">([> `widget ], <a href="GdkEvent.Configure.html#TYPEt">GdkEvent.Configure.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALfocus_in"><span class="keyword">val</span> focus_in</span> : <code class="type">([> `widget ], <a href="GdkEvent.Focus.html#TYPEt">GdkEvent.Focus.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALfocus_out"><span class="keyword">val</span> focus_out</span> : <code class="type">([> `widget ], <a href="GdkEvent.Focus.html#TYPEt">GdkEvent.Focus.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALmap"><span class="keyword">val</span> map</span> : <code class="type">([> `widget ], [ `MAP ] <a href="Gdk.html#TYPEevent">Gdk.event</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALunmap"><span class="keyword">val</span> unmap</span> : <code class="type">([> `widget ], [ `UNMAP ] <a href="Gdk.html#TYPEevent">Gdk.event</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALproperty_notify"><span class="keyword">val</span> property_notify</span> : <code class="type">([> `widget ], <a href="GdkEvent.Property.html#TYPEt">GdkEvent.Property.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALscroll"><span class="keyword">val</span> scroll</span> : <code class="type">([> `widget ], <a href="GdkEvent.Scroll.html#TYPEt">GdkEvent.Scroll.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALselection_clear"><span class="keyword">val</span> selection_clear</span> : <code class="type">([> `widget ], <a href="GdkEvent.Selection.html#TYPEt">GdkEvent.Selection.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALselection_request"><span class="keyword">val</span> selection_request</span> : <code class="type">([> `widget ], <a href="GdkEvent.Selection.html#TYPEt">GdkEvent.Selection.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALselection_notify"><span class="keyword">val</span> selection_notify</span> : <code class="type">([> `widget ], <a href="GdkEvent.Selection.html#TYPEt">GdkEvent.Selection.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALproximity_in"><span class="keyword">val</span> proximity_in</span> : <code class="type">([> `widget ], <a href="GdkEvent.Proximity.html#TYPEt">GdkEvent.Proximity.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALproximity_out"><span class="keyword">val</span> proximity_out</span> : <code class="type">([> `widget ], <a href="GdkEvent.Proximity.html#TYPEt">GdkEvent.Proximity.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALvisibility_notify"><span class="keyword">val</span> visibility_notify</span> : <code class="type">([> `widget ], <a href="GdkEvent.Visibility.html#TYPEt">GdkEvent.Visibility.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALwindow_state"><span class="keyword">val</span> window_state</span> : <code class="type">([> `widget ], <a href="GdkEvent.WindowState.html#TYPEt">GdkEvent.WindowState.t</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre></body></html>

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GEdit.combo_box_signals-c.html">
+<link rel="next" href="GEdit.combo_box_entry-c.html">
+<link rel="Up" href="GEdit.html">
+<title>LablGTK : GEdit.combo_box</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GEdit.combo_box_signals-c.html" title="GEdit.combo_box_signals">Previous</a>
+&nbsp;<a class="up" href="GEdit.html" title="GEdit">Up</a>
+&nbsp;<a class="post" href="GEdit.combo_box_entry-c.html" title="GEdit.combo_box_entry">Next</a>
+</div>
+<h1>Class <a href="type_GEdit.combo_box.html">GEdit.combo_box</a></h1>
+
+<pre><span id="TYPEcombo_box"><span class="keyword">class</span> combo_box</span> : <code class="type">[> <a href="Gtk.html#TYPEcombo_box">Gtk.combo_box</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.combo_box-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkComboBox.html">GtkComboBox</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GContainer.bin-c.html"><code class="code">GContainer.bin</code></a></li>
+<li><a href="GTree.cell_layout-c.html"><code class="code">GTree.cell_layout</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">([> <a href="Gtk.html#TYPEcombo_box">Gtk.combo_box</a> ] as 'a) <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODevent"><span class="keyword">method</span> event</span> : <code class="type"><a href="GObj.event_ops-c.html">GObj.event_ops</a></code></pre>
+<pre><span id="METHODactive"><span class="keyword">method</span> active</span> : <code class="type">int</code></pre>
+<pre><span id="METHODactive_iter"><span class="keyword">method</span> active_iter</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> option</code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GEdit.combo_box_signals-c.html">combo_box_signals</a></code></pre>
+<pre><span id="METHODmodel"><span class="keyword">method</span> model</span> : <code class="type"><a href="GTree.model-c.html">GTree.model</a></code></pre>
+<pre><span id="METHODset_active"><span class="keyword">method</span> set_active</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_active_iter"><span class="keyword">method</span> set_active_iter</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> option -> unit</code></pre>
+<pre><span id="METHODset_column_span_column"><span class="keyword">method</span> set_column_span_column</span> : <code class="type">int <a href="GTree.html#TYPEcolumn">GTree.column</a> -> unit</code></pre>
+<pre><span id="METHODset_model"><span class="keyword">method</span> set_model</span> : <code class="type"><a href="GTree.model-c.html">GTree.model</a> -> unit</code></pre>
+<pre><span id="METHODset_row_span_column"><span class="keyword">method</span> set_row_span_column</span> : <code class="type">int <a href="GTree.html#TYPEcolumn">GTree.column</a> -> unit</code></pre>
+<pre><span id="METHODset_wrap_width"><span class="keyword">method</span> set_wrap_width</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODwrap_width"><span class="keyword">method</span> wrap_width</span> : <code class="type">int</code></pre>
+<pre><span id="METHODadd_tearoffs"><span class="keyword">method</span> add_tearoffs</span> : <code class="type">bool</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODset_add_tearoffs"><span class="keyword">method</span> set_add_tearoffs</span> : <code class="type">bool -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODfocus_on_click"><span class="keyword">method</span> focus_on_click</span> : <code class="type">bool</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODset_focus_on_click"><span class="keyword">method</span> set_focus_on_click</span> : <code class="type">bool -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODentry_text_column"><span class="keyword">method</span> entry_text_column</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_entry_text_column"><span class="keyword">method</span> set_entry_text_column</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODhas_entry"><span class="keyword">method</span> has_entry</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_has_entry"><span class="keyword">method</span> set_has_entry</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODhas_frame"><span class="keyword">method</span> has_frame</span> : <code class="type">bool</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODset_has_frame"><span class="keyword">method</span> set_has_frame</span> : <code class="type">bool -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODset_row_separator_func"><span class="keyword">method</span> set_row_separator_func</span> : <code class="type">(<a href="GTree.model-c.html">GTree.model</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool) option -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+</body></html>

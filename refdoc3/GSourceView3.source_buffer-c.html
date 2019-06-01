@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GSourceView3.source_buffer_signals-c.html">
+<link rel="next" href="GSourceView3.source_view_signals-c.html">
+<link rel="Up" href="GSourceView3.html">
+<title>LablGTK : GSourceView3.source_buffer</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GSourceView3.source_buffer_signals-c.html" title="GSourceView3.source_buffer_signals">Previous</a>
+&nbsp;<a class="up" href="GSourceView3.html" title="GSourceView3">Up</a>
+&nbsp;<a class="post" href="GSourceView3.source_view_signals-c.html" title="GSourceView3.source_view_signals">Next</a>
+</div>
+<h1>Class <a href="type_GSourceView3.source_buffer.html">GSourceView3.source_buffer</a></h1>
+
+<pre><span id="TYPEsource_buffer"><span class="keyword">class</span> source_buffer</span> : <code class="type">GtkSourceView3_types.source_buffer <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GSourceView3.source_buffer-c.html">..</a> <code class="code">end</code></pre><br><b>Inherits</b><ul>
+<li><a href="GText.buffer_skel-c.html"><code class="code">GText.buffer_skel</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">GtkSourceView3_types.source_buffer <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODas_source_buffer"><span class="keyword">method</span> as_source_buffer</span> : <code class="type">GtkSourceView3_types.source_buffer <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GSourceView3.source_buffer_signals-c.html">source_buffer_signals</a></code></pre>
+<pre><span id="METHODmisc"><span class="keyword">method</span> misc</span> : <code class="type"><a href="GObj.gobject_ops-c.html">GObj.gobject_ops</a></code></pre>
+<pre><span id="METHODhighlight_syntax"><span class="keyword">method</span> highlight_syntax</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_highlight_syntax"><span class="keyword">method</span> set_highlight_syntax</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODlanguage"><span class="keyword">method</span> language</span> : <code class="type"><a href="GSourceView3.source_language-c.html">source_language</a> option</code></pre>
+<pre><span id="METHODset_language"><span class="keyword">method</span> set_language</span> : <code class="type"><a href="GSourceView3.source_language-c.html">source_language</a> option -> unit</code></pre>
+<pre><span id="METHODhighlight_matching_brackets"><span class="keyword">method</span> highlight_matching_brackets</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_highlight_matching_brackets"><span class="keyword">method</span> set_highlight_matching_brackets</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODstyle_scheme"><span class="keyword">method</span> style_scheme</span> : <code class="type"><a href="GSourceView3.source_style_scheme-c.html">source_style_scheme</a> option</code></pre>
+<pre><span id="METHODset_style_scheme"><span class="keyword">method</span> set_style_scheme</span> : <code class="type"><a href="GSourceView3.source_style_scheme-c.html">source_style_scheme</a> option -> unit</code></pre>
+<pre><span id="METHODmax_undo_levels"><span class="keyword">method</span> max_undo_levels</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_max_undo_levels"><span class="keyword">method</span> set_max_undo_levels</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODundo"><span class="keyword">method</span> undo</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODredo"><span class="keyword">method</span> redo</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODcan_undo"><span class="keyword">method</span> can_undo</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODcan_redo"><span class="keyword">method</span> can_redo</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODbegin_not_undoable_action"><span class="keyword">method</span> begin_not_undoable_action</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODend_not_undoable_action"><span class="keyword">method</span> end_not_undoable_action</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODcreate_source_mark"><span class="keyword">method</span> create_source_mark</span> : <code class="type">?name:string -> ?category:string -> <a href="GText.iter-c.html">GText.iter</a> -> <a href="GSourceView3.source_mark-c.html">source_mark</a></code></pre>
+<pre><span id="METHODsource_marks_at_line"><span class="keyword">method</span> source_marks_at_line</span> : <code class="type">?category:string -> int -> <a href="GSourceView3.source_mark-c.html">source_mark</a> list</code></pre>
+<pre><span id="METHODsource_marks_at_iter"><span class="keyword">method</span> source_marks_at_iter</span> : <code class="type">?category:string -> <a href="GText.iter-c.html">GText.iter</a> -> <a href="GSourceView3.source_mark-c.html">source_mark</a> list</code></pre>
+<pre><span id="METHODremove_source_marks"><span class="keyword">method</span> remove_source_marks</span> : <code class="type">?category:string -> start:<a href="GText.iter-c.html">GText.iter</a> -> stop:<a href="GText.iter-c.html">GText.iter</a> -> unit -> unit</code></pre>
+<pre><span id="METHODforward_iter_to_source_mark"><span class="keyword">method</span> forward_iter_to_source_mark</span> : <code class="type">?category:string -> <a href="GText.iter-c.html">GText.iter</a> -> bool</code></pre>
+<pre><span id="METHODbackward_iter_to_source_mark"><span class="keyword">method</span> backward_iter_to_source_mark</span> : <code class="type">?category:string -> <a href="GText.iter-c.html">GText.iter</a> -> bool</code></pre>
+<pre><span id="METHODiter_has_context_class"><span class="keyword">method</span> iter_has_context_class</span> : <code class="type"><a href="GText.iter-c.html">GText.iter</a> -> string -> bool</code></pre>
+<pre><span id="METHODiter_forward_to_context_class_toggle"><span class="keyword">method</span> iter_forward_to_context_class_toggle</span> : <code class="type"><a href="GText.iter-c.html">GText.iter</a> -> string -> bool</code></pre>
+<pre><span id="METHODiter_backward_to_context_class_toggle"><span class="keyword">method</span> iter_backward_to_context_class_toggle</span> : <code class="type"><a href="GText.iter-c.html">GText.iter</a> -> string -> bool</code></pre>
+<pre><span id="METHODensure_highlight"><span class="keyword">method</span> ensure_highlight</span> : <code class="type">start:<a href="GText.iter-c.html">GText.iter</a> -> stop:<a href="GText.iter-c.html">GText.iter</a> -> unit</code></pre>
+<pre><span id="METHODundo_manager"><span class="keyword">method</span> undo_manager</span> : <code class="type"><a href="GSourceView3.source_undo_manager-c.html">source_undo_manager</a></code></pre>
+<pre><span id="METHODset_undo_manager"><span class="keyword">method</span> set_undo_manager</span> : <code class="type"><a href="GSourceView3.source_undo_manager-c.html">source_undo_manager</a> -> unit</code></pre></body></html>

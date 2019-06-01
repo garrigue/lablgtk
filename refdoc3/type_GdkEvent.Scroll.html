@@ -1,0 +1,20 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GdkEvent.Scroll</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">SCROLL</span>&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Scroll</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;time&nbsp;:&nbsp;[&lt;&nbsp;<span class="constructor">GdkEvent</span>.timed&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int32<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;x&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Scroll</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;=&nbsp;<span class="string">"ml_GdkEventScroll_x"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;y&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Scroll</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;=&nbsp;<span class="string">"ml_GdkEventScroll_y"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;state&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Scroll</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_GdkEventScroll_state"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;direction&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Scroll</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.scroll_direction<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventScroll_direction"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;device&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Scroll</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.device<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventScroll_device"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;x_root&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Scroll</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;=&nbsp;<span class="string">"ml_GdkEventScroll_x_root"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;y_root&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Scroll</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;=&nbsp;<span class="string">"ml_GdkEventScroll_y_root"</span><br>
+<span class="keyword">end</span></code></body></html>

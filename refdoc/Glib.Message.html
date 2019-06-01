@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Glib.Io.html">
+<link rel="next" href="Glib.Convert.html">
+<link rel="Up" href="Glib.html">
+<title>LablGTK : Glib.Message</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Glib.Io.html" title="Glib.Io">Previous</a>
+&nbsp;<a class="up" href="Glib.html" title="Glib">Up</a>
+&nbsp;<a class="post" href="Glib.Convert.html" title="Glib.Convert">Next</a>
+</div>
+<h1>Module <a href="type_Glib.Message.html">Glib.Message</a></h1>
+
+<pre><span id="MODULEMessage"><span class="keyword">module</span> Message</span>: <code class="code">sig</code> <a href="Glib.Message.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/glib/stable/glib-Message-Logging.html">glib-Message-Logging</a></small></ul>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPElog_level"><span class="keyword">type</span> <code class="type"></code>log_level</span> = <code class="type">[ `CRITICAL<br>       | `DEBUG<br>       | `ERROR<br>       | `FLAG_FATAL<br>       | `FLAG_RECURSION<br>       | `INFO<br>       | `MESSAGE<br>       | `WARNING ]</code> </pre>
+
+
+<pre><span id="VALlog_level"><span class="keyword">val</span> log_level</span> : <code class="type">[< `CRITICAL<br>        | `CUSTOM of int<br>        | `DEBUG<br>        | `ERROR<br>        | `FLAG_FATAL<br>        | `FLAG_RECURSION<br>        | `INFO<br>        | `MESSAGE<br>        | `WARNING ] -><br>       int</code></pre>
+<pre><span id="TYPElog_handler"><span class="keyword">type</span> <code class="type"></code>log_handler</span> </pre>
+
+
+<pre><span id="VALset_log_handler"><span class="keyword">val</span> set_log_handler</span> : <code class="type">?domain:string -><br>       levels:<a href="Glib.Message.html#TYPElog_level">log_level</a> list -><br>       (level:int -> string -> unit) -> <a href="Glib.Message.html#TYPElog_handler">log_handler</a></code></pre>
+<pre><span id="VALremove_log_handler"><span class="keyword">val</span> remove_log_handler</span> : <code class="type"><a href="Glib.Message.html#TYPElog_handler">log_handler</a> -> unit</code></pre>
+<pre><span id="VALset_always_fatal"><span class="keyword">val</span> set_always_fatal</span> : <code class="type"><a href="Glib.Message.html#TYPElog_level">log_level</a> list -> unit</code></pre>
+<pre><span id="VALset_fatal_mask"><span class="keyword">val</span> set_fatal_mask</span> : <code class="type">?domain:string -><br>       [ `CRITICAL<br>       | `CUSTOM of int<br>       | `DEBUG<br>       | `ERROR<br>       | `FLAG_FATAL<br>       | `FLAG_RECURSION<br>       | `INFO<br>       | `MESSAGE<br>       | `WARNING ] list -> unit</code></pre>
+<pre><span id="VALlog"><span class="keyword">val</span> log</span> : <code class="type">?domain:string -><br>       [ `CRITICAL<br>       | `CUSTOM of int<br>       | `DEBUG<br>       | `ERROR<br>       | `FLAG_FATAL<br>       | `FLAG_RECURSION<br>       | `INFO<br>       | `MESSAGE<br>       | `WARNING ] -> ('a, unit, string, unit) Stdlib.format4 -> 'a</code></pre></body></html>

@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GText.nocopy_iter-c.html">
+<link rel="next" href="GText.tag_table_signals-c.html">
+<link rel="Up" href="GText.html">
+<title>LablGTK : GText.iter</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GText.nocopy_iter-c.html" title="GText.nocopy_iter">Previous</a>
+&nbsp;<a class="up" href="GText.html" title="GText">Up</a>
+&nbsp;<a class="post" href="GText.tag_table_signals-c.html" title="GText.tag_table_signals">Next</a>
+</div>
+<h1>Class <a href="type_GText.iter.html">GText.iter</a></h1>
+
+<pre><span id="TYPEiter"><span class="keyword">class</span> iter</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> </code><code class="code">object</code> <a href="GText.iter-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/gtk-GtkTextIter.html">gtk-GtkTextIter</a></small></ul>
+</div>
+<br><hr width="100%">
+
+<pre><span id="METHODas_iter"><span class="keyword">method</span> as_iter</span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a></code></pre>
+<pre><span id="METHODcopy"><span class="keyword">method</span> copy</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODnocopy"><span class="keyword">method</span> nocopy</span> : <code class="type"><a href="GText.nocopy_iter-c.html">nocopy_iter</a></code></pre>
+<pre><span id="METHODbackward_char"><span class="keyword">method</span> backward_char</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_chars"><span class="keyword">method</span> backward_chars</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_cursor_position"><span class="keyword">method</span> backward_cursor_position</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_cursor_positions"><span class="keyword">method</span> backward_cursor_positions</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_find_char"><span class="keyword">method</span> backward_find_char</span> : <code class="type">?limit:<a href="GText.iter-c.html">iter</a> -> (<a href="Glib.html#TYPEunichar">Glib.unichar</a> -> bool) -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_line"><span class="keyword">method</span> backward_line</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_lines"><span class="keyword">method</span> backward_lines</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_search"><span class="keyword">method</span> backward_search</span> : <code class="type">?flags:Gtk.Tags.text_search_flag list -><br>       ?limit:<a href="GText.iter-c.html">iter</a> -> string -> (<a href="GText.iter-c.html">iter</a> * <a href="GText.iter-c.html">iter</a>) option</code></pre>
+<pre><span id="METHODbackward_sentence_start"><span class="keyword">method</span> backward_sentence_start</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_sentence_starts"><span class="keyword">method</span> backward_sentence_starts</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_to_tag_toggle"><span class="keyword">method</span> backward_to_tag_toggle</span> : <code class="type"><a href="GText.tag-c.html">tag</a> option -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_word_start"><span class="keyword">method</span> backward_word_start</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbackward_word_starts"><span class="keyword">method</span> backward_word_starts</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODbegins_tag"><span class="keyword">method</span> begins_tag</span> : <code class="type"><a href="GText.tag-c.html">tag</a> option -> bool</code></pre>
+<pre><span id="METHODbuffer"><span class="keyword">method</span> buffer</span> : <code class="type"><a href="Gtk.html#TYPEtext_buffer">Gtk.text_buffer</a></code></pre>
+<pre><span id="METHODbytes_in_line"><span class="keyword">method</span> bytes_in_line</span> : <code class="type">int</code></pre>
+<pre><span id="METHODcan_insert"><span class="keyword">method</span> can_insert</span> : <code class="type">default:bool -> bool</code></pre>
+<pre><span id="METHODchar"><span class="keyword">method</span> char</span> : <code class="type"><a href="Glib.html#TYPEunichar">Glib.unichar</a></code></pre>
+<pre><span id="METHODchars_in_line"><span class="keyword">method</span> chars_in_line</span> : <code class="type">int</code></pre>
+<pre><span id="METHODcompare"><span class="keyword">method</span> compare</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> int</code></pre>
+<pre><span id="METHODcontents"><span class="keyword">method</span> contents</span> : <code class="type"><a href="GText.html#TYPEcontents">contents</a></code></pre>
+<pre><span id="METHODeditable"><span class="keyword">method</span> editable</span> : <code class="type">default:bool -> bool</code></pre>
+<pre><span id="METHODends_line"><span class="keyword">method</span> ends_line</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODends_sentence"><span class="keyword">method</span> ends_sentence</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODends_tag"><span class="keyword">method</span> ends_tag</span> : <code class="type"><a href="GText.tag-c.html">tag</a> option -> bool</code></pre>
+<pre><span id="METHODends_word"><span class="keyword">method</span> ends_word</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODequal"><span class="keyword">method</span> equal</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> bool</code></pre>
+<pre><span id="METHODforward_char"><span class="keyword">method</span> forward_char</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_chars"><span class="keyword">method</span> forward_chars</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_cursor_position"><span class="keyword">method</span> forward_cursor_position</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_cursor_positions"><span class="keyword">method</span> forward_cursor_positions</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_find_char"><span class="keyword">method</span> forward_find_char</span> : <code class="type">?limit:<a href="GText.iter-c.html">iter</a> -> (<a href="Glib.html#TYPEunichar">Glib.unichar</a> -> bool) -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_line"><span class="keyword">method</span> forward_line</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_lines"><span class="keyword">method</span> forward_lines</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_search"><span class="keyword">method</span> forward_search</span> : <code class="type">?flags:Gtk.Tags.text_search_flag list -><br>       ?limit:<a href="GText.iter-c.html">iter</a> -> string -> (<a href="GText.iter-c.html">iter</a> * <a href="GText.iter-c.html">iter</a>) option</code></pre>
+<pre><span id="METHODforward_sentence_end"><span class="keyword">method</span> forward_sentence_end</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_sentence_ends"><span class="keyword">method</span> forward_sentence_ends</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_to_end"><span class="keyword">method</span> forward_to_end</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_to_line_end"><span class="keyword">method</span> forward_to_line_end</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_to_tag_toggle"><span class="keyword">method</span> forward_to_tag_toggle</span> : <code class="type"><a href="GText.tag-c.html">tag</a> option -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_word_end"><span class="keyword">method</span> forward_word_end</span> : <code class="type"><a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODforward_word_ends"><span class="keyword">method</span> forward_word_ends</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODget_slice"><span class="keyword">method</span> get_slice</span> : <code class="type">stop:<a href="GText.iter-c.html">iter</a> -> string</code></pre>
+<pre><span id="METHODget_text"><span class="keyword">method</span> get_text</span> : <code class="type">stop:<a href="GText.iter-c.html">iter</a> -> string</code></pre>
+<pre><span id="METHODget_toggled_tags"><span class="keyword">method</span> get_toggled_tags</span> : <code class="type">bool -> <a href="GText.tag-c.html">tag</a> list</code></pre>
+<pre><span id="METHODget_visible_slice"><span class="keyword">method</span> get_visible_slice</span> : <code class="type">stop:<a href="GText.iter-c.html">iter</a> -> string</code></pre>
+<pre><span id="METHODget_visible_text"><span class="keyword">method</span> get_visible_text</span> : <code class="type">stop:<a href="GText.iter-c.html">iter</a> -> string</code></pre>
+<pre><span id="METHODhas_tag"><span class="keyword">method</span> has_tag</span> : <code class="type"><a href="GText.tag-c.html">tag</a> -> bool</code></pre>
+<pre><span id="METHODin_range"><span class="keyword">method</span> in_range</span> : <code class="type">start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> bool</code></pre>
+<pre><span id="METHODinside_sentence"><span class="keyword">method</span> inside_sentence</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODinside_word"><span class="keyword">method</span> inside_word</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODis_cursor_position"><span class="keyword">method</span> is_cursor_position</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODis_end"><span class="keyword">method</span> is_end</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODis_start"><span class="keyword">method</span> is_start</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODlanguage"><span class="keyword">method</span> language</span> : <code class="type">string</code></pre>
+<pre><span id="METHODline"><span class="keyword">method</span> line</span> : <code class="type">int</code></pre>
+<pre><span id="METHODline_index"><span class="keyword">method</span> line_index</span> : <code class="type">int</code></pre>
+<pre><span id="METHODline_offset"><span class="keyword">method</span> line_offset</span> : <code class="type">int</code></pre>
+<pre><span id="METHODmarks"><span class="keyword">method</span> marks</span> : <code class="type"><a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a> list</code></pre>
+<pre><span id="METHODoffset"><span class="keyword">method</span> offset</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_line"><span class="keyword">method</span> set_line</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODset_line_index"><span class="keyword">method</span> set_line_index</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODset_line_offset"><span class="keyword">method</span> set_line_offset</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODset_offset"><span class="keyword">method</span> set_offset</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODset_visible_line_index"><span class="keyword">method</span> set_visible_line_index</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODset_visible_line_offset"><span class="keyword">method</span> set_visible_line_offset</span> : <code class="type">int -> <a href="GText.iter-c.html">iter</a></code></pre>
+<pre><span id="METHODstarts_line"><span class="keyword">method</span> starts_line</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODstarts_sentence"><span class="keyword">method</span> starts_sentence</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODstarts_word"><span class="keyword">method</span> starts_word</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODtags"><span class="keyword">method</span> tags</span> : <code class="type"><a href="GText.tag-c.html">tag</a> list</code></pre>
+<pre><span id="METHODtoggles_tag"><span class="keyword">method</span> toggles_tag</span> : <code class="type"><a href="GText.tag-c.html">tag</a> option -> bool</code></pre>
+<pre><span id="METHODvisible_line_index"><span class="keyword">method</span> visible_line_index</span> : <code class="type">int</code></pre>
+<pre><span id="METHODvisible_line_offset"><span class="keyword">method</span> visible_line_offset</span> : <code class="type">int</code></pre></body></html>

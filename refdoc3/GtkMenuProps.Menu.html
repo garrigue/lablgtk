@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkMenuProps.MenuBar.html">
+<link rel="Up" href="GtkMenuProps.html">
+<title>LablGTK : GtkMenuProps.Menu</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkMenuProps.MenuBar.html" title="GtkMenuProps.MenuBar">Previous</a>
+&nbsp;<a class="up" href="GtkMenuProps.html" title="GtkMenuProps">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_GtkMenuProps.Menu.html">GtkMenuProps.Menu</a></h1>
+
+<pre><span id="MODULEMenu"><span class="keyword">module</span> Menu</span>: <code class="code">sig</code> <a href="GtkMenuProps.Menu.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEmenu">Gtk.menu</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="MODULEP"><span class="keyword">module</span> <a href="GtkMenuProps.Menu.P.html">P</a></span>: <code class="code">sig</code> <a href="GtkMenuProps.Menu.P.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULES"><span class="keyword">module</span> <a href="GtkMenuProps.Menu.S.html">S</a></span>: <code class="code">sig</code> <a href="GtkMenuProps.Menu.S.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type"><a href="Gtk.html#TYPEmenu">Gtk.menu</a> <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> <a href="Gtk.html#TYPEmenu">Gtk.menu</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALpopup"><span class="keyword">val</span> popup</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       [> `menushell ] <a href="Gtk.html#TYPEoptobj">Gtk.optobj</a> -><br>       [> `menuitem ] <a href="Gtk.html#TYPEoptobj">Gtk.optobj</a> -> button:int -> time:int32 -> unit</code></pre>
+<pre><span id="VALpopup_at"><span class="keyword">val</span> popup_at</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       ?button:int -><br>       ?time:int32 -> (x:int -> y:int -> pushed_in:bool -> int * int * bool) -> unit</code></pre>
+<pre><span id="VALpopdown"><span class="keyword">val</span> popdown</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALget_active"><span class="keyword">val</span> get_active</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALset_active"><span class="keyword">val</span> set_active</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> unit</code></pre>
+<pre><span id="VALset_accel_group"><span class="keyword">val</span> set_accel_group</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> unit</code></pre>
+<pre><span id="VALget_accel_group"><span class="keyword">val</span> get_accel_group</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a></code></pre>
+<pre><span id="VALset_accel_path"><span class="keyword">val</span> set_accel_path</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALattach_to_widget"><span class="keyword">val</span> attach_to_widget</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALget_attach_widget"><span class="keyword">val</span> get_attach_widget</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALdetach"><span class="keyword">val</span> detach</span> : <code class="type">[> `menu ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre></body></html>

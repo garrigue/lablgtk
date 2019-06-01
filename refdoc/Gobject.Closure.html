@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Gobject.Value.html">
+<link rel="next" href="Gobject.Data.html">
+<link rel="Up" href="Gobject.html">
+<title>LablGTK : Gobject.Closure</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Gobject.Value.html" title="Gobject.Value">Previous</a>
+&nbsp;<a class="up" href="Gobject.html" title="Gobject">Up</a>
+&nbsp;<a class="post" href="Gobject.Data.html" title="Gobject.Data">Next</a>
+</div>
+<h1>Module <a href="type_Gobject.Closure.html">Gobject.Closure</a></h1>
+
+<pre><span id="MODULEClosure"><span class="keyword">module</span> Closure</span>: <code class="code">sig</code> <a href="Gobject.Closure.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEargs"><span class="keyword">type</span> <code class="type"></code>args</span> </pre>
+
+
+<pre><code><span id="TYPEargv"><span class="keyword">type</span> <code class="type"></code>argv</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTargv.result">result</span>&nbsp;: <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTargv.nargs">nargs</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTargv.args">args</span>&nbsp;: <code class="type"><a href="Gobject.Closure.html#TYPEargs">args</a></code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">(<a href="Gobject.Closure.html#TYPEargv">argv</a> -> unit) -> <a href="Gobject.html#TYPEg_closure">Gobject.g_closure</a></code></pre>
+<pre><span id="VALnth"><span class="keyword">val</span> nth</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">argv</a> -> pos:int -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a></code></pre>
+<pre><span id="VALresult"><span class="keyword">val</span> result</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">argv</a> -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a></code></pre>
+<pre><span id="VALget_result_type"><span class="keyword">val</span> get_result_type</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">argv</a> -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a></code></pre>
+<pre><span id="VALget_type"><span class="keyword">val</span> get_type</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">argv</a> -> pos:int -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a></code></pre>
+<pre><span id="VALget"><span class="keyword">val</span> get</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">argv</a> -> pos:int -> <a href="Gobject.html#TYPEdata_get">Gobject.data_get</a></code></pre>
+<pre><span id="VALset_result"><span class="keyword">val</span> set_result</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">argv</a> -> 'a <a href="Gobject.html#TYPEdata_set">Gobject.data_set</a> -> unit</code></pre>
+<pre><span id="VALget_args"><span class="keyword">val</span> get_args</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">argv</a> -> <a href="Gobject.html#TYPEdata_get">Gobject.data_get</a> list</code></pre>
+<pre><span id="VALget_pointer"><span class="keyword">val</span> get_pointer</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">argv</a> -> pos:int -> <a href="Gpointer.html#TYPEboxed">Gpointer.boxed</a></code></pre>
+<pre><span id="VALget_nativeint"><span class="keyword">val</span> get_nativeint</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">argv</a> -> pos:int -> nativeint</code></pre>
+<pre><span id="VALget_int32"><span class="keyword">val</span> get_int32</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">argv</a> -> pos:int -> int32</code></pre></body></html>

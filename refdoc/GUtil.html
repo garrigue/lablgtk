@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GTree.html">
+<link rel="next" href="GWindow.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GUtil</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GTree.html" title="GTree">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GWindow.html" title="GWindow">Next</a>
+</div>
+<h1>Module <a href="type_GUtil.html">GUtil</a></h1>
+
+<pre><span id="MODULEGUtil"><span class="keyword">module</span> GUtil</span>: <code class="code">sig</code> <a href="GUtil.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<h4 id="3_UtilityclassesforprogrammingwithGTKobjects">Utility classes for programming with GTK objects</h4></div>
+</div>
+<hr width="100%">
+
+<pre><span id="VALprint_widget"><span class="keyword">val</span> print_widget</span> : <code class="type">Stdlib.Format.formatter -> #<a href="GObj.widget-c.html">GObj.widget</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>A nice function to use with <code class="code">#install_printer</code></p>
+</div>
+</div>
+<p>The memo class provides an easy way to remember the real class of
+   a widget.
+   Insert all widgets of class in one single <code class="code">t memo</code>, and you can then
+   recover their original ML object with <code class="code">#find</code>.</p>
+
+<pre><span id="TYPEmemo"><span class="keyword">class</span> <code class="type">[< get_oid : int; .. >]</code> <a href="GUtil.memo-c.html">memo</a></span> : <code class="type">unit -> </code><code class="code">object</code> <a href="GUtil.memo-c.html">..</a> <code class="code">end</code></pre><br><h5 id="4_TheMLsignalmechanism">The ML signal mechanism</h5><p>It allows one to add GTK-like signals to arbitrary objects.</p>
+
+<pre><span id="VALnext_callback_id"><span class="keyword">val</span> next_callback_id</span> : <code class="type">unit -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="TYPEsignal"><span class="keyword">class</span> <code class="type">['a]</code> <a href="GUtil.signal-c.html">signal</a></span> : <code class="type">unit -> </code><code class="code">object</code> <a href="GUtil.signal-c.html">..</a> <code class="code">end</code></pre><br><p>As with GTK signals, you can use <code class="code">GtkSignal.stop_emit</code> inside a
+   callback to prevent other callbacks from being called.</p>
+
+<pre><span id="TYPEml_signals"><span class="keyword">class</span> <span class="keyword">virtual</span> <a href="GUtil.ml_signals-c.html">ml_signals</a></span> : <code class="type">(<a href="GtkSignal.html#TYPEid">GtkSignal.id</a> -> bool) list -> </code><code class="code">object</code> <a href="GUtil.ml_signals-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPEadd_ml_signals"><span class="keyword">class</span> <span class="keyword">virtual</span> <a href="GUtil.add_ml_signals-c.html">add_ml_signals</a></span> : <code class="type">'a <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> (<a href="GtkSignal.html#TYPEid">GtkSignal.id</a> -> bool) list -> </code><code class="code">object</code> <a href="GUtil.add_ml_signals-c.html">..</a> <code class="code">end</code></pre><br><p>To add ML signals to a LablGTK object:</p>
+<pre class="codepre"><code class="code">   class mywidget_signals obj ~mysignal1 ~mysignal2 = object
+     inherit somewidget_signals obj
+     inherit add_ml_signals obj [mysignal1#disconnect; mysignal2#disconnect]
+     method mysignal1 = mysignal1#connect ~after
+     method mysignal2 = mysignal2#connect ~after
+   end
+
+   class mywidget obj = object (self)
+     inherit somewidget obj
+     val mysignal1 = new signal obj
+     val mysignal2 = new signal obj
+     method connect = new mywidget_signals obj ~mysignal1 ~mysignal2
+     method call1 = mysignal1#call
+     method call2 = mysignal2#call
+   end
+</code></pre><p>You can also add ML signals to an arbitrary object; just inherit
+   from <code class="code">ml_signals</code> in place of <code class="code">widget_signals</code>+<code class="code">add_ml_signals</code>.</p>
+<pre class="codepre"><code class="code"> 
+  class mysignals ~mysignal1 ~mysignal2 = object
+     inherit ml_signals [mysignal1#disconnect; mysignal2#disconnect]
+     method mysignal1 = mysignal1#connect ~after
+     method mysignal2 = mysignal2#connect ~after
+   end
+</code></pre><h5 id="4_Propagatingstatemodifications">Propagating state modifications</h5><p>The variable class provides an easy way to propagate state modifications.
+   A new variable is created by <code class="code">new variable init</code>. The <code class="code">#set</code> method just
+   calls the <code class="code">set</code> signal, which by default only calls <code class="code">real_set</code>.
+   <code class="code">real_set</code> sets the variable and calls <code class="code">changed</code> when needed.
+   Deep equality is used to compare values, but check is only done if
+   there are callbacks for <code class="code">changed</code>.</p>
+
+<pre><span id="TYPEvariable_signals"><span class="keyword">class</span> <code class="type">['a]</code> <a href="GUtil.variable_signals-c.html">variable_signals</a></span> : <code class="type">set:'a <a href="GUtil.signal-c.html">signal</a> -> changed:'a <a href="GUtil.signal-c.html">signal</a> -> </code><code class="code">object</code> <a href="GUtil.variable_signals-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPEvariable"><span class="keyword">class</span> <code class="type">['a]</code> <a href="GUtil.variable-c.html">variable</a></span> : <code class="type">'a -> </code><code class="code">object</code> <a href="GUtil.variable-c.html">..</a> <code class="code">end</code></pre><br></body></html>

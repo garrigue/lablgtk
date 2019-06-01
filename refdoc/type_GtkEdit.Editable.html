@@ -1,0 +1,42 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkEdit.Editable</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.editable&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">S</span>&nbsp;=&nbsp;<span class="constructor">GtkEditProps</span>.<span class="constructor">Editable</span>.<span class="constructor">S</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;select_region&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_select_region"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_selection_bounds&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(int&nbsp;*&nbsp;int)&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_get_selection_bounds"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;insert_text&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_insert_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;delete_text&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_delete_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_chars&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;start:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;stop:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_get_chars"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cut_clipboard&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_cut_clipboard"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;copy_clipboard&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_copy_clipboard"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;paste_clipboard&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_paste_clipboard"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;delete_selection&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_delete_selection"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_position&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_get_position"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_position&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_set_position"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_editable&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_get_editable"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_editable&nbsp;:&nbsp;[&gt;&nbsp;<span class="keywordsign">`</span>editable&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_editable_set_editable"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;marshal_insert&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="constructor">Stdlib</span>.ref&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+<span class="keyword">end</span></code></body></html>

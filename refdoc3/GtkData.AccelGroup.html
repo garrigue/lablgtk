@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="next" href="GtkData.AccelMap.html">
+<link rel="Up" href="GtkData.html">
+<title>LablGTK : GtkData.AccelGroup</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="GtkData.html" title="GtkData">Up</a>
+&nbsp;<a class="post" href="GtkData.AccelMap.html" title="GtkData.AccelMap">Next</a>
+</div>
+<h1>Module <a href="type_GtkData.AccelGroup.html">GtkData.AccelGroup</a></h1>
+
+<pre><span id="MODULEAccelGroup"><span class="keyword">module</span> AccelGroup</span>: <code class="code">sig</code> <a href="GtkData.AccelGroup.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">unit -> <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a></code></pre>
+<pre><span id="VALlock"><span class="keyword">val</span> lock</span> : <code class="type"><a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> unit</code></pre>
+<pre><span id="VALunlock"><span class="keyword">val</span> unlock</span> : <code class="type"><a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> unit</code></pre>
+<pre><span id="VALconnect"><span class="keyword">val</span> connect</span> : <code class="type"><a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -><br>       key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -><br>       ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -><br>       ?flags:Gtk.Tags.accel_flag list -> callback:<a href="Gobject.html#TYPEg_closure">Gobject.g_closure</a> -> unit</code></pre>
+<pre><span id="VALconnect"><span class="keyword">val</span> connect</span> : <code class="type">key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -><br>       ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -><br>       ?flags:Gtk.Tags.accel_flag list -><br>       callback:(unit -> unit) -> <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> unit</code></pre>
+<pre><span id="VALdisconnect"><span class="keyword">val</span> disconnect</span> : <code class="type"><a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> bool</code></pre>
+<pre><span id="VALdisconnect"><span class="keyword">val</span> disconnect</span> : <code class="type">key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> bool</code></pre>
+<pre><span id="VALgroups_activate"><span class="keyword">val</span> groups_activate</span> : <code class="type">'a <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> bool</code></pre>
+<pre><span id="VALgroups_activate"><span class="keyword">val</span> groups_activate</span> : <code class="type">key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> 'a <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre>
+<pre><span id="VALvalid"><span class="keyword">val</span> valid</span> : <code class="type">key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> bool</code></pre>
+<pre><span id="VALset_default_mod_mask"><span class="keyword">val</span> set_default_mod_mask</span> : <code class="type"><a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list option -> unit</code></pre>
+<pre><span id="VALparse"><span class="keyword">val</span> parse</span> : <code class="type">string -> <a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> * <a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list</code></pre>
+<pre><span id="VALname"><span class="keyword">val</span> name</span> : <code class="type">key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> string</code></pre>
+<pre><span id="VALget_label"><span class="keyword">val</span> get_label</span> : <code class="type">key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> string</code></pre></body></html>

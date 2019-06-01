@@ -1,0 +1,44 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkData.Style</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;create&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.style&nbsp;=&nbsp;<span class="string">"ml_gtk_style_new"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;copy&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.style&nbsp;=&nbsp;<span class="string">"ml_gtk_style_copy"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;attach&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.window&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.style<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_attach"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;detach&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_style_detach"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_window_background&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.window&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_set_background"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_bg&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_get_bg"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_bg&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_set_bg"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_fg&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_get_fg"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_fg&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_set_fg"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_light&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_get_light"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_light&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_set_light"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_dark&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_get_dark"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_dark&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_set_dark"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_mid&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_get_mid"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_mid&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_set_mid"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_base&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_get_base"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_base&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_set_base"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_text&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_get_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_text&nbsp;:&nbsp;<span class="constructor">Gtk</span>.style&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.color&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_style_set_text"</span><br>
+<span class="keyword">end</span></code></body></html>

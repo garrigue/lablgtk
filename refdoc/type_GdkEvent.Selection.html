@@ -1,0 +1,20 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GdkEvent.Selection</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">SELECTION_CLEAR</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">SELECTION_NOTIFY</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">SELECTION_REQUEST</span>&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Selection</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;selection&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Selection</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.atom<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventSelection_selection"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;target&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Selection</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.atom<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventSelection_target"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;property&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Selection</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.atom<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventSelection_property"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;requestor&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Selection</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.native_window<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventSelection_requestor"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;time&nbsp;:&nbsp;[&lt;&nbsp;<span class="constructor">GdkEvent</span>.timed&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int32<br>
+<span class="keyword">end</span></code></body></html>

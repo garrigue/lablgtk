@@ -1,0 +1,37 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GMenu.factory</title>
+</head>
+<body>
+<code class="code">?accel_group:<span class="constructor">Gtk</span>.accel_group&nbsp;<span class="keywordsign">-&gt;</span><br>
+?accel_path:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+?accel_modi:<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.modifier&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+?accel_flags:<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.accel_flag&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+(<span class="keywordsign">#</span><span class="constructor">GMenu</span>.menu_shell&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keyword">object</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;flags&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.accel_flag&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;group&nbsp;:&nbsp;<span class="constructor">Gtk</span>.accel_group<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;m&nbsp;:&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.modifier&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;menu_shell&nbsp;:&nbsp;<span class="keywordsign">'</span>a<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;accel_group&nbsp;:&nbsp;<span class="constructor">Gtk</span>.accel_group<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_check_item&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?active:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?key:<span class="constructor">Gdk</span>.keysym&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GMenu</span>.check_menu_item<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_item&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?key:<span class="constructor">Gdk</span>.keysym&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?submenu:<span class="constructor">GMenu</span>.menu&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GMenu</span>.menu_item<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_radio_item&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?group:<span class="constructor">Gtk</span>.radio_menu_item&nbsp;<span class="constructor">Gtk</span>.group&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?active:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?key:<span class="constructor">Gdk</span>.keysym&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?callback:(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GMenu</span>.radio_menu_item<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_submenu&nbsp;:&nbsp;?key:<span class="constructor">Gdk</span>.keysym&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GMenu</span>.menu<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;<span class="keyword">private</span>&nbsp;bind&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?modi:<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.modifier&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?key:<span class="constructor">Gdk</span>.keysym&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?callback:(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GMenu</span>.menu_item&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;menu&nbsp;:&nbsp;<span class="keywordsign">'</span>a<br>
+<span class="keyword">end</span></code></body></html>

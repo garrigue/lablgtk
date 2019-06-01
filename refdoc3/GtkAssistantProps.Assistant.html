@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkAssistantProps.Object.html">
+<link rel="Up" href="GtkAssistantProps.html">
+<title>LablGTK : GtkAssistantProps.Assistant</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkAssistantProps.Object.html" title="GtkAssistantProps.Object">Previous</a>
+&nbsp;<a class="up" href="GtkAssistantProps.html" title="GtkAssistantProps">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_GtkAssistantProps.Assistant.html">GtkAssistantProps.Assistant</a></h1>
+
+<pre><span id="MODULEAssistant"><span class="keyword">module</span> Assistant</span>: <code class="code">sig</code> <a href="GtkAssistantProps.Assistant.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEassistant">Gtk.assistant</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="MODULES"><span class="keyword">module</span> <a href="GtkAssistantProps.Assistant.S.html">S</a></span>: <code class="code">sig</code> <a href="GtkAssistantProps.Assistant.S.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type"><a href="Gtk.html#TYPEassistant">Gtk.assistant</a> <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> <a href="Gtk.html#TYPEassistant">Gtk.assistant</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALget_current_page"><span class="keyword">val</span> get_current_page</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int</code></pre>
+<pre><span id="VALset_current_page"><span class="keyword">val</span> set_current_page</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> unit</code></pre>
+<pre><span id="VALget_n_pages"><span class="keyword">val</span> get_n_pages</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int</code></pre>
+<pre><span id="VALget_nth_page"><span class="keyword">val</span> get_nth_page</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALinsert_page"><span class="keyword">val</span> insert_page</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> int</code></pre>
+<pre><span id="VALset_page_type"><span class="keyword">val</span> set_page_type</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="GtkEnums.html#TYPEassistant_page_type">GtkEnums.assistant_page_type</a> -> unit</code></pre>
+<pre><span id="VALget_page_type"><span class="keyword">val</span> get_page_type</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="GtkEnums.html#TYPEassistant_page_type">GtkEnums.assistant_page_type</a></code></pre>
+<pre><span id="VALset_page_title"><span class="keyword">val</span> set_page_title</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALget_page_title"><span class="keyword">val</span> get_page_title</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string</code></pre>
+<pre><span id="VALset_page_header_image"><span class="keyword">val</span> set_page_header_image</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> unit</code></pre>
+<pre><span id="VALget_page_header_image"><span class="keyword">val</span> get_page_header_image</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a></code></pre>
+<pre><span id="VALset_page_side_image"><span class="keyword">val</span> set_page_side_image</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> unit</code></pre>
+<pre><span id="VALget_page_side_image"><span class="keyword">val</span> get_page_side_image</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a></code></pre>
+<pre><span id="VALset_page_complete"><span class="keyword">val</span> set_page_complete</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool -> unit</code></pre>
+<pre><span id="VALget_page_complete"><span class="keyword">val</span> get_page_complete</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre>
+<pre><span id="VALadd_action_widget"><span class="keyword">val</span> add_action_widget</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALremove_action_widget"><span class="keyword">val</span> remove_action_widget</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALupdate_buttons_state"><span class="keyword">val</span> update_buttons_state</span> : <code class="type">[> `assistant ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre></body></html>

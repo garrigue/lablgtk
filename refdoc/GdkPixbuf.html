@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GdkEvent.html">
+<link rel="next" href="Glib.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GdkPixbuf</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GdkEvent.html" title="GdkEvent">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Glib.html" title="Glib">Next</a>
+</div>
+<h1>Module <a href="type_GdkPixbuf.html">GdkPixbuf</a></h1>
+
+<pre><span id="MODULEGdkPixbuf"><span class="keyword">module</span> GdkPixbuf</span>: <code class="code">sig</code> <a href="GdkPixbuf.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Object for manipulating image data</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/index.html">index</a></small></ul>
+</div>
+<hr width="100%">
+<h4 id="3_TheGdkPixbufStructure">The GdkPixbuf Structure</h4>
+<pre><span id="TYPEpixbuf"><span class="keyword">type</span> <code class="type"></code>pixbuf</span> = <code class="type">[ `pixbuf ] <a href="Gobject.html#TYPEobj">Gobject.obj</a></code> </pre>
+<div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-gdk-pixbuf.html">gdk-pixbuf-gdk-pixbuf</a></small></ul>
+</div>
+
+
+<pre><span id="TYPEcolorspace"><span class="keyword">type</span> <code class="type"></code>colorspace</span> = <code class="type">[ `RGB ]</code> </pre>
+
+
+<pre><span id="TYPEalpha_mode"><span class="keyword">type</span> <code class="type"></code>alpha_mode</span> = <code class="type">[ `BILEVEL | `FULL ]</code> </pre>
+
+
+<pre><span id="TYPEinterpolation"><span class="keyword">type</span> <code class="type"></code>interpolation</span> = <code class="type">[ `BILINEAR | `HYPER | `NEAREST | `TILES ]</code> </pre>
+
+
+<pre><code><span id="TYPEgdkpixbuferror"><span class="keyword">type</span> <code class="type"></code>gdkpixbuferror</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTgdkpixbuferror.ERROR_CORRUPT_IMAGE"><span class="constructor">ERROR_CORRUPT_IMAGE</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTgdkpixbuferror.ERROR_INSUFFICIENT_MEMORY"><span class="constructor">ERROR_INSUFFICIENT_MEMORY</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTgdkpixbuferror.ERROR_BAD_OPTION"><span class="constructor">ERROR_BAD_OPTION</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTgdkpixbuferror.ERROR_UNKNOWN_TYPE"><span class="constructor">ERROR_UNKNOWN_TYPE</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTgdkpixbuferror.ERROR_UNSUPPORTED_OPERATION"><span class="constructor">ERROR_UNSUPPORTED_OPERATION</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTgdkpixbuferror.ERROR_FAILED"><span class="constructor">ERROR_FAILED</span></span></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="EXCEPTIONGdkPixbufError"><span class="keyword">exception</span> GdkPixbufError</span> <span class="keyword">of</span> <code class="type"><a href="GdkPixbuf.html#TYPEgdkpixbuferror">gdkpixbuferror</a> * string</code></pre>
+
+<pre><span id="VALset_marshal_use_rle"><span class="keyword">val</span> set_marshal_use_rle</span> : <code class="type">bool -> unit</code></pre><h4 id="3_Creation">Creation</h4>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">width:int -><br>       height:int -><br>       ?bits:int -><br>       ?colorspace:<a href="GdkPixbuf.html#TYPEcolorspace">colorspace</a> -><br>       ?has_alpha:bool -> unit -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-creating.html">gdk-pixbuf-creating</a></small></ul>
+</div>
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a></code></pre>
+<pre><span id="VALcopy"><span class="keyword">val</span> copy</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a></code></pre>
+<pre><span id="VALsubpixbuf"><span class="keyword">val</span> subpixbuf</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -><br>       src_x:int -> src_y:int -> width:int -> height:int -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a></code></pre>
+<pre><span id="VALfrom_file"><span class="keyword">val</span> from_file</span> : <code class="type">string -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-file-loading.html">gdk-pixbuf-file-loading</a></small></ul>
+</div>
+
+<pre><span id="VALget_file_info"><span class="keyword">val</span> get_file_info</span> : <code class="type">string -> string * int * int</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+</ul>
+</div>
+
+<pre><span id="VALfrom_file_at_size"><span class="keyword">val</span> from_file_at_size</span> : <code class="type">string -> width:int -> height:int -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-file-loading.html">gdk-pixbuf-file-loading</a></small></ul>
+</div>
+
+<pre><span id="VALfrom_xpm_data"><span class="keyword">val</span> from_xpm_data</span> : <code class="type">string array -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a></code></pre>
+<pre><span id="VALfrom_data"><span class="keyword">val</span> from_data</span> : <code class="type">width:int -><br>       height:int -><br>       ?bits:int -><br>       ?rowstride:int -> ?has_alpha:bool -> <a href="Gpointer.html#TYPEregion">Gpointer.region</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a></code></pre><h4 id="3_Accessors">Accessors</h4>
+<pre><span id="VALget_n_channels"><span class="keyword">val</span> get_n_channels</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> int</code></pre>
+<pre><span id="VALget_has_alpha"><span class="keyword">val</span> get_has_alpha</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> bool</code></pre>
+<pre><span id="VALget_bits_per_sample"><span class="keyword">val</span> get_bits_per_sample</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> int</code></pre>
+<pre><span id="VALget_width"><span class="keyword">val</span> get_width</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> int</code></pre>
+<pre><span id="VALget_height"><span class="keyword">val</span> get_height</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> int</code></pre>
+<pre><span id="VALget_rowstride"><span class="keyword">val</span> get_rowstride</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> int</code></pre>
+<pre><span id="VALget_pixels"><span class="keyword">val</span> get_pixels</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> <a href="Gpointer.html#TYPEregion">Gpointer.region</a></code></pre><h4 id="3_Transform">Transform</h4>
+<pre><span id="VALadd_alpha"><span class="keyword">val</span> add_alpha</span> : <code class="type">?transparent:int * int * int -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-util.html">gdk-pixbuf-util</a></small></ul>
+</div>
+
+<pre><span id="VALfill"><span class="keyword">val</span> fill</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> int32 -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-util.html">gdk-pixbuf-util</a></small></ul>
+</div>
+
+<pre><span id="VALsaturate_and_pixelate"><span class="keyword">val</span> saturate_and_pixelate</span> : <code class="type">dest:<a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -><br>       saturation:float -> pixelate:bool -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-util.html">gdk-pixbuf-util</a></small></ul>
+</div>
+
+<pre><span id="VALcopy_area"><span class="keyword">val</span> copy_area</span> : <code class="type">dest:<a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -><br>       ?dest_x:int -><br>       ?dest_y:int -><br>       ?width:int -><br>       ?height:int -> ?src_x:int -> ?src_y:int -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-util.html">gdk-pixbuf-util</a></small></ul>
+</div>
+
+<pre><span id="VALscale"><span class="keyword">val</span> scale</span> : <code class="type">dest:<a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -><br>       ?dest_x:int -><br>       ?dest_y:int -><br>       ?width:int -><br>       ?height:int -><br>       ?ofs_x:float -><br>       ?ofs_y:float -><br>       ?scale_x:float -><br>       ?scale_y:float -> ?interp:<a href="GdkPixbuf.html#TYPEinterpolation">interpolation</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-scaling.html">gdk-pixbuf-scaling</a></small></ul>
+</div>
+
+<pre><span id="VALcomposite"><span class="keyword">val</span> composite</span> : <code class="type">dest:<a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -><br>       alpha:int -><br>       ?dest_x:int -><br>       ?dest_y:int -><br>       ?width:int -><br>       ?height:int -><br>       ?ofs_x:float -><br>       ?ofs_y:float -><br>       ?scale_x:float -><br>       ?scale_y:float -> ?interp:<a href="GdkPixbuf.html#TYPEinterpolation">interpolation</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-scaling.html">gdk-pixbuf-scaling</a></small></ul>
+</div>
+<h4 id="3_Saving">Saving</h4>
+<pre><span id="VALsave"><span class="keyword">val</span> save</span> : <code class="type">filename:string -><br>       typ:string -> ?options:(string * string) list -> <a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gdk-pixbuf/stable/gdk-pixbuf-file-saving.html">gdk-pixbuf-file-saving</a></small></ul>
+</div>
+
+<pre><span id="VALsave_to_callback"><span class="keyword">val</span> save_to_callback</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -><br>       typ:string -> ?options:(string * string) list -> (string -> unit) -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+</ul>
+</div>
+
+<pre><span id="VALsave_to_buffer"><span class="keyword">val</span> save_to_buffer</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">pixbuf</a> -><br>       typ:string -> ?options:(string * string) list -> Stdlib.Buffer.t -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+</ul>
+</div>
+</body></html>

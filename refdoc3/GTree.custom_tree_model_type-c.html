@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GTree.cell_renderer_skel-c.html">
+<link rel="Up" href="GTree.html">
+<title>LablGTK : GTree.custom_tree_model_type</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GTree.cell_renderer_skel-c.html" title="GTree.cell_renderer_skel">Previous</a>
+&nbsp;<a class="up" href="GTree.html" title="GTree">Up</a>
+&nbsp;</div>
+<h1>Class type virtual <a href="type_GTree.custom_tree_model_type.html">GTree.custom_tree_model_type</a></h1>
+
+<pre><span id="TYPEcustom_tree_model_type"><span class="keyword">class type</span> <span class="keyword">virtual</span> <code class="type">[['obj, 'row, 'a, 'b, 'c]]</code> custom_tree_model_type</span> = <code class="code">object</code> <a href="GTree.custom_tree_model_type-c.html">..</a> <code class="code">end</code></pre><b>Inherits</b><ul>
+<li><a href="GTree.model-c.html"><code class="code">GTree.model</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">'obj</code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GTree.model_signals-c.html">model_signals</a></code></pre>
+<pre><span id="METHODcustom_row_changed"><span class="keyword">method</span> custom_row_changed</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> 'row -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Signal emitters</p>
+</div>
+</div>
+
+<pre><span id="METHODcustom_row_deleted"><span class="keyword">method</span> custom_row_deleted</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="METHODcustom_row_has_child_toggled"><span class="keyword">method</span> custom_row_has_child_toggled</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> 'row -> unit</code></pre>
+<pre><span id="METHODcustom_row_inserted"><span class="keyword">method</span> custom_row_inserted</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> 'row -> unit</code></pre>
+<pre><span id="METHODcustom_rows_reordered"><span class="keyword">method</span> custom_rows_reordered</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> 'row option -> int array -> unit</code></pre>
+<pre><span id="METHODcustom_unref_node"><span class="keyword">method</span> custom_unref_node</span> : <code class="type">'row -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Override these to implement a cache of rows</p>
+</div>
+</div>
+
+<pre><span id="METHODcustom_ref_node"><span class="keyword">method</span> custom_ref_node</span> : <code class="type">'row -> unit</code></pre>
+<pre><span id="METHODcustom_flags"><span class="keyword">method</span> custom_flags</span> : <code class="type"><a href="GtkEnums.html#TYPEtree_model_flags">GtkEnums.tree_model_flags</a> list</code></pre>
+<pre><span id="METHODcustom_get_iter"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_get_iter</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> 'row option</code></pre><div class="info ">
+<div class="info-desc">
+<p>Functions of the custom model. They must act exactly as described in the documentation 
+      of Gtk orelse Gtk may emit fatal errors.</p>
+</div>
+</div>
+
+<pre><span id="METHODcustom_get_path"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_get_path</span> : <code class="type">'row -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a></code></pre>
+<pre><span id="METHODcustom_value"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_value</span> : <code class="type"><a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> 'row -> column:int -> <a href="Gobject.html#TYPEbasic">Gobject.basic</a></code></pre><p><code class="code">custom_value typ row ~column</code> is the value to set in <code class="code">row</code> for column <code class="code">column</code>.
+        It must must be of the type <code class="code">typ</code>, i.e. the type declared for column  <code class="code">column</code>.</p>
+
+<pre><span id="METHODcustom_iter_children"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_iter_children</span> : <code class="type">'row option -> 'row option</code></pre>
+<pre><span id="METHODcustom_iter_has_child"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_iter_has_child</span> : <code class="type">'row -> bool</code></pre>
+<pre><span id="METHODcustom_iter_n_children"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_iter_n_children</span> : <code class="type">'row option -> int</code></pre>
+<pre><span id="METHODcustom_iter_next"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_iter_next</span> : <code class="type">'row -> 'row option</code></pre>
+<pre><span id="METHODcustom_iter_nth_child"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_iter_nth_child</span> : <code class="type">'row option -> int -> 'row option</code></pre>
+<pre><span id="METHODcustom_iter_parent"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_iter_parent</span> : <code class="type">'row -> 'row option</code></pre>
+<pre><span id="METHODcustom_decode_iter"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_decode_iter</span> : <code class="type">'a -> 'b -> 'c -> 'row</code></pre>
+<pre><span id="METHODcustom_encode_iter"><span class="keyword">method</span> <span class="keyword">virtual</span> custom_encode_iter</span> : <code class="type">'row -> 'a * 'b * 'c</code></pre>
+<pre><span id="METHODcustom_n_columns"><span class="keyword">method</span> custom_n_columns</span> : <code class="type">int</code></pre><div class="info ">
+<div class="info-desc">
+<p>For internal use only. Do not override these methods.</p>
+</div>
+</div>
+
+<pre><span id="METHODcustom_get_column_type"><span class="keyword">method</span> custom_get_column_type</span> : <code class="type">int -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a></code></pre>
+<pre><span id="METHODcustom_get_value"><span class="keyword">method</span> custom_get_value</span> : <code class="type">'row -> int -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> unit</code></pre></body></html>

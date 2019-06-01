@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="next" href="Glib.Timeout.html">
+<link rel="Up" href="Glib.html">
+<title>LablGTK : Glib.Main</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="Glib.html" title="Glib">Up</a>
+&nbsp;<a class="post" href="Glib.Timeout.html" title="Glib.Timeout">Next</a>
+</div>
+<h1>Module <a href="type_Glib.Main.html">Glib.Main</a></h1>
+
+<pre><span id="MODULEMain"><span class="keyword">module</span> Main</span>: <code class="code">sig</code> <a href="Glib.Main.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>The Main Event Loop</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/glib/stable/glib-The-Main-Event-Loop.html">glib-The-Main-Event-Loop</a></small></ul>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">bool -> <a href="Glib.Main.html#TYPEt">t</a></code></pre>
+<pre><span id="VALiteration"><span class="keyword">val</span> iteration</span> : <code class="type">bool -> bool</code></pre>
+<pre><span id="VALpending"><span class="keyword">val</span> pending</span> : <code class="type">unit -> bool</code></pre>
+<pre><span id="VALis_running"><span class="keyword">val</span> is_running</span> : <code class="type"><a href="Glib.Main.html#TYPEt">t</a> -> bool</code></pre>
+<pre><span id="VALquit"><span class="keyword">val</span> quit</span> : <code class="type"><a href="Glib.Main.html#TYPEt">t</a> -> unit</code></pre>
+<pre><span id="VALdestroy"><span class="keyword">val</span> destroy</span> : <code class="type"><a href="Glib.Main.html#TYPEt">t</a> -> unit</code></pre>
+<pre><span id="TYPElocale_category"><span class="keyword">type</span> <code class="type"></code>locale_category</span> = <code class="type">[ `ALL | `COLLATE | `CTYPE | `MESSAGES | `MONETARY | `NUMERIC | `TIME ]</code> </pre>
+
+
+<pre><span id="VALsetlocale"><span class="keyword">val</span> setlocale</span> : <code class="type"><a href="Glib.Main.html#TYPElocale_category">locale_category</a> -> string option -> string</code></pre>
+<pre><span id="VALwrap_poll_func"><span class="keyword">val</span> wrap_poll_func</span> : <code class="type">unit -> unit</code></pre></body></html>

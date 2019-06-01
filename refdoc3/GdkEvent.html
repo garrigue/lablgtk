@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GdkEnums.html">
+<link rel="next" href="GdkPixbuf.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GdkEvent</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GdkEnums.html" title="GdkEnums">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GdkPixbuf.html" title="GdkPixbuf">Next</a>
+</div>
+<h1>Module <a href="type_GdkEvent.html">GdkEvent</a></h1>
+
+<pre><span id="MODULEGdkEvent"><span class="keyword">module</span> GdkEvent</span>: <code class="code">sig</code> <a href="GdkEvent.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALunsafe_copy"><span class="keyword">val</span> unsafe_copy</span> : <code class="type"><a href="Gpointer.html#TYPEboxed">Gpointer.boxed</a> -> [< <a href="Gdk.Tags.html#TYPEevent_type">Gdk.Tags.event_type</a> ] <a href="Gdk.html#TYPEevent">Gdk.event</a></code></pre>
+<pre><span id="VALcopy"><span class="keyword">val</span> copy</span> : <code class="type">([< <a href="Gdk.Tags.html#TYPEevent_type">Gdk.Tags.event_type</a> ] as 'a) <a href="Gdk.html#TYPEevent">Gdk.event</a> -> 'a <a href="Gdk.html#TYPEevent">Gdk.event</a></code></pre>
+<pre><span id="VALget_type"><span class="keyword">val</span> get_type</span> : <code class="type">'a <a href="Gdk.html#TYPEevent">Gdk.event</a> -> 'a</code></pre>
+<pre><span id="VALget_window"><span class="keyword">val</span> get_window</span> : <code class="type">'a <a href="Gdk.html#TYPEevent">Gdk.event</a> -> <a href="Gdk.html#TYPEwindow">Gdk.window</a></code></pre>
+<pre><span id="VALget_send_event"><span class="keyword">val</span> get_send_event</span> : <code class="type">'a <a href="Gdk.html#TYPEevent">Gdk.event</a> -> bool</code></pre>
+<pre><span id="TYPEtimed"><span class="keyword">type</span> <code class="type"></code>timed</span> = <code class="type">[ `BUTTON_PRESS<br>       | `BUTTON_RELEASE<br>       | `DRAG_ENTER<br>       | `DRAG_LEAVE<br>       | `DRAG_MOTION<br>       | `DRAG_STATUS<br>       | `DROP_FINISHED<br>       | `DROP_START<br>       | `ENTER_NOTIFY<br>       | `KEY_PRESS<br>       | `KEY_RELEASE<br>       | `LEAVE_NOTIFY<br>       | `MOTION_NOTIFY<br>       | `PROPERTY_NOTIFY<br>       | `PROXIMITY_IN<br>       | `PROXIMITY_OUT<br>       | `SCROLL<br>       | `SELECTION_CLEAR<br>       | `SELECTION_NOTIFY<br>       | `SELECTION_REQUEST<br>       | `THREE_BUTTON_PRESS<br>       | `TWO_BUTTON_PRESS ]</code> </pre>
+
+
+<pre><span id="VALget_time"><span class="keyword">val</span> get_time</span> : <code class="type">[< <a href="GdkEvent.html#TYPEtimed">timed</a> ] <a href="Gdk.html#TYPEevent">Gdk.event</a> -> int32</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">([< <a href="Gdk.Tags.html#TYPEevent_type">Gdk.Tags.event_type</a> ] as 'a) -> 'a <a href="Gdk.html#TYPEevent">Gdk.event</a></code></pre>
+<pre><span id="VALset_window"><span class="keyword">val</span> set_window</span> : <code class="type">'a <a href="Gdk.html#TYPEevent">Gdk.event</a> -> <a href="Gdk.html#TYPEwindow">Gdk.window</a> -> unit</code></pre>
+<pre><span id="TYPEany"><span class="keyword">type</span> <code class="type"></code>any</span> = <code class="type"><a href="Gdk.Tags.html#TYPEevent_type">Gdk.Tags.event_type</a> <a href="Gdk.html#TYPEevent">Gdk.event</a></code> </pre>
+
+
+<pre><span id="VALunsafe_cast"><span class="keyword">val</span> unsafe_cast</span> : <code class="type">[< <a href="Gdk.Tags.html#TYPEevent_type">Gdk.Tags.event_type</a> ] <a href="Gdk.html#TYPEevent">Gdk.event</a> -> [< <a href="Gdk.Tags.html#TYPEevent_type">Gdk.Tags.event_type</a> ] <a href="Gdk.html#TYPEevent">Gdk.event</a></code></pre>
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">kind:([< <a href="Gdk.Tags.html#TYPEevent_type">Gdk.Tags.event_type</a> ] as 'a) list -> <a href="GdkEvent.html#TYPEany">any</a> -> 'a <a href="Gdk.html#TYPEevent">Gdk.event</a></code></pre>
+<pre><span id="MODULEExpose"><span class="keyword">module</span> <a href="GdkEvent.Expose.html">Expose</a></span>: <code class="code">sig</code> <a href="GdkEvent.Expose.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEVisibility"><span class="keyword">module</span> <a href="GdkEvent.Visibility.html">Visibility</a></span>: <code class="code">sig</code> <a href="GdkEvent.Visibility.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEMotion"><span class="keyword">module</span> <a href="GdkEvent.Motion.html">Motion</a></span>: <code class="code">sig</code> <a href="GdkEvent.Motion.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEButton"><span class="keyword">module</span> <a href="GdkEvent.Button.html">Button</a></span>: <code class="code">sig</code> <a href="GdkEvent.Button.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEScroll"><span class="keyword">module</span> <a href="GdkEvent.Scroll.html">Scroll</a></span>: <code class="code">sig</code> <a href="GdkEvent.Scroll.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEKey"><span class="keyword">module</span> <a href="GdkEvent.Key.html">Key</a></span>: <code class="code">sig</code> <a href="GdkEvent.Key.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULECrossing"><span class="keyword">module</span> <a href="GdkEvent.Crossing.html">Crossing</a></span>: <code class="code">sig</code> <a href="GdkEvent.Crossing.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEFocus"><span class="keyword">module</span> <a href="GdkEvent.Focus.html">Focus</a></span>: <code class="code">sig</code> <a href="GdkEvent.Focus.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEConfigure"><span class="keyword">module</span> <a href="GdkEvent.Configure.html">Configure</a></span>: <code class="code">sig</code> <a href="GdkEvent.Configure.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEProperty"><span class="keyword">module</span> <a href="GdkEvent.Property.html">Property</a></span>: <code class="code">sig</code> <a href="GdkEvent.Property.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULESelection"><span class="keyword">module</span> <a href="GdkEvent.Selection.html">Selection</a></span>: <code class="code">sig</code> <a href="GdkEvent.Selection.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEProximity"><span class="keyword">module</span> <a href="GdkEvent.Proximity.html">Proximity</a></span>: <code class="code">sig</code> <a href="GdkEvent.Proximity.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULESetting"><span class="keyword">module</span> <a href="GdkEvent.Setting.html">Setting</a></span>: <code class="code">sig</code> <a href="GdkEvent.Setting.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEWindowState"><span class="keyword">module</span> <a href="GdkEvent.WindowState.html">WindowState</a></span>: <code class="code">sig</code> <a href="GdkEvent.WindowState.html">..</a> <code class="code">end</code></pre></body></html>

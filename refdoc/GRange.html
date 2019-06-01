@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GPango.html">
+<link rel="next" href="GSourceView3.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GRange</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GPango.html" title="GPango">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GSourceView3.html" title="GSourceView3">Next</a>
+</div>
+<h1>Module <a href="type_GRange.html">GRange</a></h1>
+
+<pre><span id="MODULEGRange"><span class="keyword">module</span> GRange</span>: <code class="code">sig</code> <a href="GRange.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Scrollbars, progressbars, etc.</p>
+<h4 id="3_GtkProgressBar">GtkProgressBar</h4>
+<pre><span id="TYPEprogress_bar"><span class="keyword">class</span> <a href="GRange.progress_bar-c.html">progress_bar</a></span> : <code class="type"><a href="Gtk.html#TYPEprogress_bar">Gtk.progress_bar</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GRange.progress_bar-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget which indicates progress visually</p>
+
+</div>
+<br>
+<pre><span id="VALprogress_bar"><span class="keyword">val</span> progress_bar</span> : <code class="type">?pulse_step:float -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GRange.progress_bar-c.html">progress_bar</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkProgress.html">GtkProgress</a></small><small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkProgressBar.html">GtkProgressBar</a></small></ul>
+</div>
+<div class="param_info"><code class="code">pulse_step</code> : default value is <code class="code">0.1</code></div>
+<h4 id="3_GtkRange">GtkRange</h4>
+<pre><span id="TYPErange_signals"><span class="keyword">class</span> <a href="GRange.range_signals-c.html">range_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPErange">Gtk.range</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GRange.range_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPErange"><span class="keyword">class</span> <a href="GRange.range-c.html">range</a></span> : <code class="type">[> <a href="Gtk.html#TYPErange">Gtk.range</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GRange.range-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Base class for widgets which visualize an adjustment</p>
+
+</div>
+<br>
+<pre><span id="TYPEscale"><span class="keyword">class</span> <a href="GRange.scale-c.html">scale</a></span> : <code class="type"><a href="Gtk.html#TYPEscale">Gtk.scale</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GRange.scale-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A slider widget for selecting a value from a range</p>
+
+</div>
+<br>
+<pre><span id="VALscale"><span class="keyword">val</span> scale</span> : <code class="type">Gtk.Tags.orientation -><br>       ?adjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?digits:int -><br>       ?draw_value:bool -><br>       ?has_origin:bool -><br>       ?value_pos:Gtk.Tags.position_type -><br>       ?fill_level:float -><br>       ?inverted:bool -><br>       ?restrict_to_fill_level:bool -><br>       ?round_digits:int -><br>       ?show_fill_level:bool -><br>       ?lower_stepper_sensitivity:Gtk.Tags.sensitivity_type -><br>       ?upper_stepper_sensitivity:Gtk.Tags.sensitivity_type -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GRange.scale-c.html">scale</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkScale.html">GtkScale</a></small><small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkHScale.html">GtkHScale</a></small><small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkVScale.html">GtkVScale</a></small></ul>
+</div>
+<div class="param_info"><code class="code">digits</code> : default value is <code class="code">1</code></div>
+<div class="param_info"><code class="code">draw_value</code> : default value is <code class="code">false</code></div>
+<div class="param_info"><code class="code">value_pos</code> : default value is <code class="code">`LEFT</code></div>
+<div class="param_info"><code class="code">inverted</code> : default value is <code class="code">false</code></div>
+
+<pre><span id="VALscrollbar"><span class="keyword">val</span> scrollbar</span> : <code class="type">Gtk.Tags.orientation -><br>       ?adjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?fill_level:float -><br>       ?inverted:bool -><br>       ?restrict_to_fill_level:bool -><br>       ?round_digits:int -><br>       ?show_fill_level:bool -><br>       ?lower_stepper_sensitivity:Gtk.Tags.sensitivity_type -><br>       ?upper_stepper_sensitivity:Gtk.Tags.sensitivity_type -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GRange.range-c.html">range</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkScrollbar.html">GtkScrollbar</a></small><small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkHScrollbar.html">GtkHScrollbar</a></small><small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkVScrollbar.html">GtkVScrollbar</a></small></ul>
+</div>
+<div class="param_info"><code class="code">inverted</code> : default value is <code class="code">false</code></div>
+</body></html>

@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GSourceView3.source_completion_item-c.html">
+<link rel="next" href="GSourceView3.source_completion_context_signals-c.html">
+<link rel="Up" href="GSourceView3.html">
+<title>LablGTK : GSourceView3.source_completion_provider</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GSourceView3.source_completion_item-c.html" title="GSourceView3.source_completion_item">Previous</a>
+&nbsp;<a class="up" href="GSourceView3.html" title="GSourceView3">Up</a>
+&nbsp;<a class="post" href="GSourceView3.source_completion_context_signals-c.html" title="GSourceView3.source_completion_context_signals">Next</a>
+</div>
+<h1>Class <a href="type_GSourceView3.source_completion_provider.html">GSourceView3.source_completion_provider</a></h1>
+
+<pre><span id="TYPEsource_completion_provider"><span class="keyword">class</span> source_completion_provider</span> : <code class="type">GtkSourceView3_types.source_completion_provider <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GSourceView3.source_completion_provider-c.html">..</a> <code class="code">end</code></pre><br><hr width="100%">
+
+<pre><span id="METHODas_source_completion_provider"><span class="keyword">method</span> as_source_completion_provider</span> : <code class="type">GtkSourceView3_types.source_completion_provider <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODicon"><span class="keyword">method</span> icon</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> option</code></pre>
+<pre><span id="METHODname"><span class="keyword">method</span> name</span> : <code class="type">string</code></pre>
+<pre><span id="METHODpopulate"><span class="keyword">method</span> populate</span> : <code class="type"><a href="GSourceView3.source_completion_context-c.html">source_completion_context</a> -> unit</code></pre>
+<pre><span id="METHODactivation"><span class="keyword">method</span> activation</span> : <code class="type">SourceView3Enums.source_completion_activation_flags list</code></pre>
+<pre><span id="METHODmatched"><span class="keyword">method</span> matched</span> : <code class="type"><a href="GSourceView3.source_completion_context-c.html">source_completion_context</a> -> bool</code></pre>
+<pre><span id="METHODinfo_widget"><span class="keyword">method</span> info_widget</span> : <code class="type"><a href="GSourceView3.source_completion_proposal-c.html">source_completion_proposal</a> -> <a href="GObj.widget-c.html">GObj.widget</a> option</code></pre>
+<pre><span id="METHODupdate_info"><span class="keyword">method</span> update_info</span> : <code class="type"><a href="GSourceView3.source_completion_proposal-c.html">source_completion_proposal</a> -><br>       <a href="GSourceView3.source_completion_info-c.html">source_completion_info</a> -> unit</code></pre>
+<pre><span id="METHODstart_iter"><span class="keyword">method</span> start_iter</span> : <code class="type"><a href="GSourceView3.source_completion_context-c.html">source_completion_context</a> -><br>       <a href="GSourceView3.source_completion_proposal-c.html">source_completion_proposal</a> -> <a href="GText.iter-c.html">GText.iter</a></code></pre>
+<pre><span id="METHODactivate_proposal"><span class="keyword">method</span> activate_proposal</span> : <code class="type"><a href="GSourceView3.source_completion_proposal-c.html">source_completion_proposal</a> -> <a href="GText.iter-c.html">GText.iter</a> -> bool</code></pre>
+<pre><span id="METHODinteractive_delay"><span class="keyword">method</span> interactive_delay</span> : <code class="type">int</code></pre>
+<pre><span id="METHODpriority"><span class="keyword">method</span> priority</span> : <code class="type">int</code></pre></body></html>

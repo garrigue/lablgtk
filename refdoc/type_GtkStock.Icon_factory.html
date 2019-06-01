@@ -1,0 +1,19 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkStock.Icon_factory</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;new_factory&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.icon_factory&nbsp;=&nbsp;<span class="string">"ml_gtk_icon_factory_new"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;add&nbsp;:&nbsp;<span class="constructor">Gtk</span>.icon_factory&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.icon_set&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_icon_factory_add"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;lookup&nbsp;:&nbsp;<span class="constructor">Gtk</span>.icon_factory&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.icon_set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_icon_factory_lookup"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;add_default&nbsp;:&nbsp;<span class="constructor">Gtk</span>.icon_factory&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_icon_factory_add_default"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;remove_default&nbsp;:&nbsp;<span class="constructor">Gtk</span>.icon_factory&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_icon_factory_remove_default"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;lookup_default&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.icon_set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_icon_factory_lookup_default"</span><br>
+<span class="keyword">end</span></code></body></html>

@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GAction.ui_manager_signals-c.html">
+<link rel="Up" href="GAction.html">
+<title>LablGTK : GAction.ui_manager</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GAction.ui_manager_signals-c.html" title="GAction.ui_manager_signals">Previous</a>
+&nbsp;<a class="up" href="GAction.html" title="GAction">Up</a>
+&nbsp;</div>
+<h1>Class <a href="type_GAction.ui_manager.html">GAction.ui_manager</a></h1>
+
+<pre><span id="TYPEui_manager"><span class="keyword">class</span> ui_manager</span> : <code class="type">[> <a href="Gtk.html#TYPEui_manager">Gtk.ui_manager</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GAction.ui_manager-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkUIManager.html">GtkUIManager</a></small></ul>
+</div>
+<br><hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">([> <a href="Gtk.html#TYPEui_manager">Gtk.ui_manager</a> ] as 'a) <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODas_ui_manager"><span class="keyword">method</span> as_ui_manager</span> : <code class="type"><a href="Gtk.html#TYPEui_manager">Gtk.ui_manager</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODadd_tearoffs"><span class="keyword">method</span> add_tearoffs</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODadd_ui_from_file"><span class="keyword">method</span> add_ui_from_file</span> : <code class="type">string -> <a href="GAction.html#TYPEui_id">ui_id</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b><ul><li><code>Glib.Markup.Error</code> if the XML is invalid</li>
+<li><code>Glib.GError</code> if an error occurs while reading the file</li>
+</ul></li>
+</ul>
+</div>
+
+<pre><span id="METHODadd_ui_from_string"><span class="keyword">method</span> add_ui_from_string</span> : <code class="type">string -> <a href="GAction.html#TYPEui_id">ui_id</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Glib.Markup.Error</code> if the XML is invalid</li>
+</ul>
+</div>
+
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GAction.ui_manager_signals-c.html">ui_manager_signals</a></code></pre>
+<pre><span id="METHODensure_update"><span class="keyword">method</span> ensure_update</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODget_accel_group"><span class="keyword">method</span> get_accel_group</span> : <code class="type"><a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a></code></pre>
+<pre><span id="METHODget_action"><span class="keyword">method</span> get_action</span> : <code class="type">string -> <a href="GAction.action-c.html">action</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Not_found</code> if no widget exist at the given path</li>
+</ul>
+</div>
+
+<pre><span id="METHODget_action_groups"><span class="keyword">method</span> get_action_groups</span> : <code class="type"><a href="GAction.action_group-c.html">action_group</a> list</code></pre>
+<pre><span id="METHODget_widget"><span class="keyword">method</span> get_widget</span> : <code class="type">string -> <a href="GObj.widget-c.html">GObj.widget</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Not_found</code> if no widget exist at the given path</li>
+</ul>
+</div>
+
+<pre><span id="METHODget_toplevels"><span class="keyword">method</span> get_toplevels</span> : <code class="type"><a href="GtkEnums.html#TYPEui_manager_item_type">GtkEnums.ui_manager_item_type</a> list -> <a href="GObj.widget-c.html">GObj.widget</a> list</code></pre>
+<pre><span id="METHODinsert_action_group"><span class="keyword">method</span> insert_action_group</span> : <code class="type"><a href="GAction.action_group-c.html">action_group</a> -> int -> unit</code></pre>
+<pre><span id="METHODnew_merge_id"><span class="keyword">method</span> new_merge_id</span> : <code class="type">unit -> <a href="GAction.html#TYPEui_id">ui_id</a></code></pre>
+<pre><span id="METHODadd_ui"><span class="keyword">method</span> add_ui</span> : <code class="type"><a href="GAction.html#TYPEui_id">ui_id</a> -><br>       path:string -><br>       name:string -><br>       action:string option -> <a href="GtkEnums.html#TYPEui_manager_item_type">GtkEnums.ui_manager_item_type</a> -> top:bool -> unit</code></pre>
+<pre><span id="METHODremove_action_group"><span class="keyword">method</span> remove_action_group</span> : <code class="type"><a href="GAction.action_group-c.html">action_group</a> -> unit</code></pre>
+<pre><span id="METHODremove_ui"><span class="keyword">method</span> remove_ui</span> : <code class="type"><a href="GAction.html#TYPEui_id">ui_id</a> -> unit</code></pre>
+<pre><span id="METHODset_add_tearoffs"><span class="keyword">method</span> set_add_tearoffs</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODui"><span class="keyword">method</span> ui</span> : <code class="type">string</code></pre></body></html>

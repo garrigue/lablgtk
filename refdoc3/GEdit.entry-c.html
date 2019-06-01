@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GEdit.entry_signals-c.html">
+<link rel="next" href="GEdit.spin_button_signals-c.html">
+<link rel="Up" href="GEdit.html">
+<title>LablGTK : GEdit.entry</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GEdit.entry_signals-c.html" title="GEdit.entry_signals">Previous</a>
+&nbsp;<a class="up" href="GEdit.html" title="GEdit">Up</a>
+&nbsp;<a class="post" href="GEdit.spin_button_signals-c.html" title="GEdit.spin_button_signals">Next</a>
+</div>
+<h1>Class <a href="type_GEdit.entry.html">GEdit.entry</a></h1>
+
+<pre><span id="TYPEentry"><span class="keyword">class</span> entry</span> : <code class="type">[> <a href="Gtk.html#TYPEentry">Gtk.entry</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.entry-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<div class="info-desc">
+<p>A single line text entry field</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkEntry.html">GtkEntry</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GEdit.editable-c.html"><code class="code">GEdit.editable</code></a></li>
+<li><a href="GObj.objvar-c.html"><code class="code">GObj.objvar</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="METHODas_entry"><span class="keyword">method</span> as_entry</span> : <code class="type"><a href="Gtk.html#TYPEentry">Gtk.entry</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GEdit.entry_signals-c.html">entry_signals</a></code></pre>
+<pre><span id="METHODevent"><span class="keyword">method</span> event</span> : <code class="type"><a href="GObj.event_ops-c.html">GObj.event_ops</a></code></pre>
+<pre><span id="METHODscroll_offset"><span class="keyword">method</span> scroll_offset</span> : <code class="type">int</code></pre>
+<pre><span id="METHODtext"><span class="keyword">method</span> text</span> : <code class="type">string</code></pre>
+<pre><span id="METHODtext_length"><span class="keyword">method</span> text_length</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_activates_default"><span class="keyword">method</span> set_activates_default</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_editable"><span class="keyword">method</span> set_editable</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_has_frame"><span class="keyword">method</span> set_has_frame</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_invisible_char"><span class="keyword">method</span> set_invisible_char</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_max_length"><span class="keyword">method</span> set_max_length</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_placeholder_text"><span class="keyword">method</span> set_placeholder_text</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_text"><span class="keyword">method</span> set_text</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_visibility"><span class="keyword">method</span> set_visibility</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_width_chars"><span class="keyword">method</span> set_width_chars</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_xalign"><span class="keyword">method</span> set_xalign</span> : <code class="type">float -> unit</code></pre>
+<pre><span id="METHODactivates_default"><span class="keyword">method</span> activates_default</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODeditable"><span class="keyword">method</span> editable</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODhas_frame"><span class="keyword">method</span> has_frame</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODinvisible_char"><span class="keyword">method</span> invisible_char</span> : <code class="type">int</code></pre>
+<pre><span id="METHODmax_length"><span class="keyword">method</span> max_length</span> : <code class="type">int</code></pre>
+<pre><span id="METHODplaceholder_text"><span class="keyword">method</span> placeholder_text</span> : <code class="type">string</code></pre>
+<pre><span id="METHODvisibility"><span class="keyword">method</span> visibility</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODwidth_chars"><span class="keyword">method</span> width_chars</span> : <code class="type">int</code></pre>
+<pre><span id="METHODxalign"><span class="keyword">method</span> xalign</span> : <code class="type">float</code></pre>
+<pre><span id="METHODset_completion"><span class="keyword">method</span> set_completion</span> : <code class="type"><a href="GEdit.entry_completion-c.html">entry_completion</a> -> unit</code></pre>
+<pre><span id="METHODget_completion"><span class="keyword">method</span> get_completion</span> : <code class="type"><a href="GEdit.entry_completion-c.html">entry_completion</a> option</code></pre>
+<pre><span id="METHODoverwrite_mode"><span class="keyword">method</span> overwrite_mode</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_overwrite_mode"><span class="keyword">method</span> set_overwrite_mode</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODprimary_icon_activatable"><span class="keyword">method</span> primary_icon_activatable</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODprimary_icon_sensitive"><span class="keyword">method</span> primary_icon_sensitive</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_primary_icon_activatable"><span class="keyword">method</span> set_primary_icon_activatable</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_primary_icon_name"><span class="keyword">method</span> set_primary_icon_name</span> : <code class="type">string -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>empty string to delete</p>
+</div>
+</div>
+
+<pre><span id="METHODset_primary_icon_pixbuf"><span class="keyword">method</span> set_primary_icon_pixbuf</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> unit</code></pre>
+<pre><span id="METHODset_primary_icon_sensitive"><span class="keyword">method</span> set_primary_icon_sensitive</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_primary_icon_stock"><span class="keyword">method</span> set_primary_icon_stock</span> : <code class="type"><a href="GtkStock.html#TYPEid">GtkStock.id</a> -> unit</code></pre>
+<pre><span id="METHODset_primary_icon_tooltip_markup"><span class="keyword">method</span> set_primary_icon_tooltip_markup</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_primary_icon_tooltip_text"><span class="keyword">method</span> set_primary_icon_tooltip_text</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODsecondary_icon_activatable"><span class="keyword">method</span> secondary_icon_activatable</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODsecondary_icon_sensitive"><span class="keyword">method</span> secondary_icon_sensitive</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODset_secondary_icon_activatable"><span class="keyword">method</span> set_secondary_icon_activatable</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_secondary_icon_name"><span class="keyword">method</span> set_secondary_icon_name</span> : <code class="type">string -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>empty string to delete</p>
+</div>
+</div>
+
+<pre><span id="METHODset_secondary_icon_pixbuf"><span class="keyword">method</span> set_secondary_icon_pixbuf</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> unit</code></pre>
+<pre><span id="METHODset_secondary_icon_sensitive"><span class="keyword">method</span> set_secondary_icon_sensitive</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_secondary_icon_stock"><span class="keyword">method</span> set_secondary_icon_stock</span> : <code class="type"><a href="GtkStock.html#TYPEid">GtkStock.id</a> -> unit</code></pre>
+<pre><span id="METHODset_secondary_icon_tooltip_markup"><span class="keyword">method</span> set_secondary_icon_tooltip_markup</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="METHODset_secondary_icon_tooltip_text"><span class="keyword">method</span> set_secondary_icon_tooltip_text</span> : <code class="type">string -> unit</code></pre></body></html>

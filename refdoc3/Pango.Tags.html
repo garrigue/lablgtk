@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="next" href="Pango.Font.html">
+<link rel="Up" href="Pango.html">
+<title>LablGTK : Pango.Tags</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="Pango.html" title="Pango">Up</a>
+&nbsp;<a class="post" href="Pango.Font.html" title="Pango.Font">Next</a>
+</div>
+<h1>Module <a href="type_Pango.Tags.html">Pango.Tags</a></h1>
+
+<pre><span id="MODULETags"><span class="keyword">module</span> Tags</span>: <code class="code">sig</code> <a href="Pango.Tags.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEstyle"><span class="keyword">type</span> <code class="type"></code>style</span> = <code class="type">[ `ITALIC | `NORMAL | `OBLIQUE ]</code> </pre>
+
+
+<pre><span id="TYPEweight_internal"><span class="keyword">type</span> <code class="type"></code>weight_internal</span> = <code class="type">[ `BOLD | `HEAVY | `LIGHT | `NORMAL | `ULTRABOLD | `ULTRALIGHT ]</code> </pre>
+
+
+<pre><span id="TYPEweight"><span class="keyword">type</span> <code class="type"></code>weight</span> = <code class="type">[ `BOLD<br>       | `CUSTOM of int<br>       | `HEAVY<br>       | `LIGHT<br>       | `NORMAL<br>       | `ULTRABOLD<br>       | `ULTRALIGHT ]</code> </pre>
+
+
+<pre><span id="TYPEvariant"><span class="keyword">type</span> <code class="type"></code>variant</span> = <code class="type">[ `NORMAL | `SMALL_CAPS ]</code> </pre>
+
+
+<pre><span id="TYPEstretch"><span class="keyword">type</span> <code class="type"></code>stretch</span> = <code class="type">[ `CONDENSED<br>       | `EXPANDED<br>       | `EXTRA_CONDENSED<br>       | `EXTRA_EXPANDED<br>       | `NORMAL<br>       | `SEMI_CONDENSED<br>       | `SEMI_EXPANDED<br>       | `ULTRA_CONDENSED<br>       | `ULTRA_EXPANDED ]</code> </pre>
+
+
+<pre><span id="TYPEscale"><span class="keyword">type</span> <code class="type"></code>scale</span> = <code class="type">[ `CUSTOM of float<br>       | `LARGE<br>       | `MEDIUM<br>       | `SMALL<br>       | `XX_LARGE<br>       | `XX_SMALL<br>       | `X_LARGE<br>       | `X_SMALL ]</code> </pre>
+
+
+<pre><span id="VALscale_to_float"><span class="keyword">val</span> scale_to_float</span> : <code class="type"><a href="Pango.Tags.html#TYPEscale">scale</a> -> float</code></pre>
+<pre><span id="TYPEunderline"><span class="keyword">type</span> <code class="type"></code>underline</span> = <code class="type">[ `DOUBLE | `LOW | `NONE | `SINGLE ]</code> </pre>
+
+
+<pre><span id="TYPEwrap_mode"><span class="keyword">type</span> <code class="type"></code>wrap_mode</span> = <code class="type">[ `CHAR | `WORD | `WORD_CHAR ]</code> </pre>
+
+
+<pre><span id="TYPEellipsize_mode"><span class="keyword">type</span> <code class="type"></code>ellipsize_mode</span> = <code class="type">[ `END | `MIDDLE | `NONE | `START ]</code> </pre>
+
+
+<pre><span id="VAL_get_tables"><span class="keyword">val</span> _get_tables</span> : <code class="type">unit -><br>       <a href="Pango.Tags.html#TYPEstyle">style</a> <a href="Gpointer.html#TYPEvariant_table">Gpointer.variant_table</a> *<br>       <a href="Pango.Tags.html#TYPEweight_internal">weight_internal</a> <a href="Gpointer.html#TYPEvariant_table">Gpointer.variant_table</a> *<br>       <a href="Pango.Tags.html#TYPEvariant">variant</a> <a href="Gpointer.html#TYPEvariant_table">Gpointer.variant_table</a> *<br>       <a href="Pango.Tags.html#TYPEstretch">stretch</a> <a href="Gpointer.html#TYPEvariant_table">Gpointer.variant_table</a> *<br>       <a href="Pango.Tags.html#TYPEunderline">underline</a> <a href="Gpointer.html#TYPEvariant_table">Gpointer.variant_table</a> *<br>       <a href="Pango.Tags.html#TYPEwrap_mode">wrap_mode</a> <a href="Gpointer.html#TYPEvariant_table">Gpointer.variant_table</a> *<br>       <a href="Pango.Tags.html#TYPEellipsize_mode">ellipsize_mode</a> <a href="Gpointer.html#TYPEvariant_table">Gpointer.variant_table</a></code></pre>
+<pre><span id="VALweight_to_int"><span class="keyword">val</span> weight_to_int</span> : <code class="type"><a href="Pango.Tags.html#TYPEweight">weight</a> -> int</code></pre></body></html>

@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GUtil.add_ml_signals-c.html">
+<link rel="next" href="GUtil.variable-c.html">
+<link rel="Up" href="GUtil.html">
+<title>LablGTK : GUtil.variable_signals</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GUtil.add_ml_signals-c.html" title="GUtil.add_ml_signals">Previous</a>
+&nbsp;<a class="up" href="GUtil.html" title="GUtil">Up</a>
+&nbsp;<a class="post" href="GUtil.variable-c.html" title="GUtil.variable">Next</a>
+</div>
+<h1>Class <a href="type_GUtil.variable_signals.html">GUtil.variable_signals</a></h1>
+
+<pre><span id="TYPEvariable_signals"><span class="keyword">class</span> <code class="type">['a]</code> variable_signals</span> : <code class="type">set:'a <a href="GUtil.signal-c.html">signal</a> -> changed:'a <a href="GUtil.signal-c.html">signal</a> -> </code><code class="code">object</code> <a href="GUtil.variable_signals-c.html">..</a> <code class="code">end</code></pre><br><hr width="100%">
+
+<pre><span id="ATTafter"><span class="keyword">val</span> after</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODafter"><span class="keyword">method</span> after</span> : <code class="type">< after : 'b; changed : callback:('a -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a>;<br>         disconnect : <a href="GtkSignal.html#TYPEid">GtkSignal.id</a> -> unit;<br>         set : callback:('a -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a>; .. ><br>       as 'b</code></pre>
+<pre><span id="METHODset"><span class="keyword">method</span> set</span> : <code class="type">callback:('a -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODchanged"><span class="keyword">method</span> changed</span> : <code class="type">callback:('a -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODdisconnect"><span class="keyword">method</span> disconnect</span> : <code class="type"><a href="GtkSignal.html#TYPEid">GtkSignal.id</a> -> unit</code></pre>
+<pre><span id="ATTdisconnectors"><span class="keyword">val</span> <span class="keyword">mutable</span> disconnectors</span> : <code class="type">(<a href="GtkSignal.html#TYPEid">GtkSignal.id</a> -> bool) list</code></pre></body></html>

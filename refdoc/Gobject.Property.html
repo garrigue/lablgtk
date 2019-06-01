@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Gobject.Data.html">
+<link rel="Up" href="Gobject.html">
+<title>LablGTK : Gobject.Property</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Gobject.Data.html" title="Gobject.Data">Previous</a>
+&nbsp;<a class="up" href="Gobject.html" title="Gobject">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Gobject.Property.html">Gobject.Property</a></h1>
+
+<pre><span id="MODULEProperty"><span class="keyword">module</span> Property</span>: <code class="code">sig</code> <a href="Gobject.Property.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALfreeze_notify"><span class="keyword">val</span> freeze_notify</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> unit</code></pre>
+<pre><span id="VALthaw_notify"><span class="keyword">val</span> thaw_notify</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> unit</code></pre>
+<pre><span id="VALnotify"><span class="keyword">val</span> notify</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALset_value"><span class="keyword">val</span> set_value</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> string -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> unit</code></pre>
+<pre><span id="VALget_value"><span class="keyword">val</span> get_value</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> string -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> unit</code></pre>
+<pre><span id="VALget_type"><span class="keyword">val</span> get_type</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> string -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a></code></pre>
+<pre><span id="VALset_dyn"><span class="keyword">val</span> set_dyn</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> string -> 'b <a href="Gobject.html#TYPEdata_set">Gobject.data_set</a> -> unit</code></pre>
+<pre><span id="VALget_dyn"><span class="keyword">val</span> get_dyn</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> string -> <a href="Gobject.html#TYPEdata_get">Gobject.data_get</a></code></pre>
+<pre><span id="VALset"><span class="keyword">val</span> set</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> ('a, 'b) <a href="Gobject.html#TYPEproperty">Gobject.property</a> -> 'b -> unit</code></pre>
+<pre><span id="VALget"><span class="keyword">val</span> get</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> ('a, 'b) <a href="Gobject.html#TYPEproperty">Gobject.property</a> -> 'b</code></pre>
+<pre><span id="VALget_some"><span class="keyword">val</span> get_some</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> ('a, 'b option) <a href="Gobject.html#TYPEproperty">Gobject.property</a> -> 'b</code></pre>
+<pre><span id="VALcheck"><span class="keyword">val</span> check</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> ('a, 'b) <a href="Gobject.html#TYPEproperty">Gobject.property</a> -> unit</code></pre>
+<pre><span id="VALmay_cons"><span class="keyword">val</span> may_cons</span> : <code class="type">('a, 'b) <a href="Gobject.html#TYPEproperty">Gobject.property</a> -><br>       'b option -> 'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> 'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list</code></pre>
+<pre><span id="VALmay_cons_opt"><span class="keyword">val</span> may_cons_opt</span> : <code class="type">('a, 'b option) <a href="Gobject.html#TYPEproperty">Gobject.property</a> -><br>       'b option -> 'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> 'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list</code></pre></body></html>

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="next" href="GFile.chooser-c.html">
+<link rel="Up" href="GFile.html">
+<title>LablGTK : GFile.chooser_signals</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="GFile.html" title="GFile">Up</a>
+&nbsp;<a class="post" href="GFile.chooser-c.html" title="GFile.chooser">Next</a>
+</div>
+<h1>Class type <a href="type_GFile.chooser_signals.html">GFile.chooser_signals</a></h1>
+
+<pre><span id="TYPEchooser_signals"><span class="keyword">class type</span> chooser_signals</span> = <code class="code">object</code> <a href="GFile.chooser_signals-c.html">..</a> <code class="code">end</code></pre><div class="info classtype top">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkFileChooser.html">GtkFileChooser</a></small></ul>
+</div>
+<hr width="100%">
+
+<pre><span id="METHODcurrent_folder_changed"><span class="keyword">method</span> current_folder_changed</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODselection_changed"><span class="keyword">method</span> selection_changed</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODupdate_preview"><span class="keyword">method</span> update_preview</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODfile_activated"><span class="keyword">method</span> file_activated</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODconfirm_overwrite"><span class="keyword">method</span> confirm_overwrite</span> : <code class="type">callback:(unit -> Gtk.Tags.file_chooser_confirmation) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>since Gtk 2.8</p>
+</div>
+</div>
+
+<pre><span id="METHODnotify_action"><span class="keyword">method</span> notify_action</span> : <code class="type">callback:(Gtk.Tags.file_chooser_action -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_create_folders"><span class="keyword">method</span> notify_create_folders</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_do_overwrite_confirmation"><span class="keyword">method</span> notify_do_overwrite_confirmation</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_extra_widget"><span class="keyword">method</span> notify_extra_widget</span> : <code class="type">callback:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_local_only"><span class="keyword">method</span> notify_local_only</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_preview_widget"><span class="keyword">method</span> notify_preview_widget</span> : <code class="type">callback:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_preview_widget_active"><span class="keyword">method</span> notify_preview_widget_active</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_select_multiple"><span class="keyword">method</span> notify_select_multiple</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_show_hidden"><span class="keyword">method</span> notify_show_hidden</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_use_preview_label"><span class="keyword">method</span> notify_use_preview_label</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre></body></html>

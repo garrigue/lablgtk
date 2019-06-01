@@ -1,0 +1,12 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GdkEvent.WindowState</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">WINDOW_STATE</span>&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">WindowState</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;changed_mask&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">WindowState</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.window_state&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;new_window_state&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">WindowState</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.window_state&nbsp;list<br>
+<span class="keyword">end</span></code></body></html>

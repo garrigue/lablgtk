@@ -1,0 +1,30 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkBase.Clipboard</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get&nbsp;:&nbsp;<span class="constructor">Gdk</span>.atom&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.clipboard&nbsp;=&nbsp;<span class="string">"ml_gtk_clipboard_get"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;clear&nbsp;:&nbsp;<span class="constructor">Gtk</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"ml_gtk_clipboard_clear"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_text&nbsp;:&nbsp;<span class="constructor">Gtk</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_clipboard_set_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_image&nbsp;:&nbsp;<span class="constructor">Gtk</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_clipboard_set_image"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;wait_for_contents&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;target:<span class="constructor">Gdk</span>.atom&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.selection_data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_clipboard_wait_for_contents"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;wait_for_text&nbsp;:&nbsp;<span class="constructor">Gtk</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_clipboard_wait_for_text"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;wait_for_image&nbsp;:&nbsp;<span class="constructor">Gtk</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkPixbuf</span>.pixbuf&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_clipboard_wait_for_image"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;wait_for_targets&nbsp;:&nbsp;<span class="constructor">Gtk</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.atom&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_clipboard_wait_for_targets"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;request_contents&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;target:<span class="constructor">Gdk</span>.atom&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;callback:(<span class="constructor">Gtk</span>.selection_data&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_clipboard_request_contents"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;request_text&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtk</span>.clipboard&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;callback:(string&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_clipboard_request_text"</span><br>
+<span class="keyword">end</span></code></body></html>

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkSpell.html">
+<link rel="next" href="GtkText.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GtkStock</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkSpell.html" title="GtkSpell">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GtkText.html" title="GtkText">Next</a>
+</div>
+<h1>Module <a href="type_GtkStock.html">GtkStock</a></h1>
+
+<pre><span id="MODULEGtkStock"><span class="keyword">module</span> GtkStock</span>: <code class="code">sig</code> <a href="GtkStock.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Stock Items: prebuilt common menu/toolbar items and corresponding icons</p>
+
+<pre><span id="VAL_gtkstock_init"><span class="keyword">val</span> _gtkstock_init</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="TYPEgtk_stock_id"><span class="keyword">type</span> <code class="type"></code>gtk_stock_id</span> = <code class="type">[ `ABOUT<br>       | `ADD<br>       | `APPLY<br>       | `BOLD<br>       | `CANCEL<br>       | `CAPS_LOCK_WARNING<br>       | `CDROM<br>       | `CLEAR<br>       | `CLOSE<br>       | `COLOR_PICKER<br>       | `CONNECT<br>       | `CONVERT<br>       | `COPY<br>       | `CUT<br>       | `DELETE<br>       | `DIALOG_AUTHENTICATION<br>       | `DIALOG_ERROR<br>       | `DIALOG_INFO<br>       | `DIALOG_QUESTION<br>       | `DIALOG_WARNING<br>       | `DIRECTORY<br>       | `DISCONNECT<br>       | `DND<br>       | `DND_MULTIPLE<br>       | `EDIT<br>       | `EXECUTE<br>       | `FILE<br>       | `FIND<br>       | `FIND_AND_REPLACE<br>       | `FLOPPY<br>       | `FULLSCREEN<br>       | `GOTO_BOTTOM<br>       | `GOTO_FIRST<br>       | `GOTO_LAST<br>       | `GOTO_TOP<br>       | `GO_BACK<br>       | `GO_DOWN<br>       | `GO_FORWARD<br>       | `GO_UP<br>       | `HARDDISK<br>       | `HELP<br>       | `HOME<br>       | `INDENT<br>       | `INDEX<br>       | `INFO<br>       | `ITALIC<br>       | `JUMP_TO<br>       | `JUSTIFY_CENTER<br>       | `JUSTIFY_FILL<br>       | `JUSTIFY_LEFT<br>       | `JUSTIFY_RIGHT<br>       | `LEAVE_FULLSCREEN<br>       | `MEDIA_FORWARD<br>       | `MEDIA_NEXT<br>       | `MEDIA_PAUSE<br>       | `MEDIA_PLAY<br>       | `MEDIA_PREVIOUS<br>       | `MEDIA_RECORD<br>       | `MEDIA_REWIND<br>       | `MEDIA_STOP<br>       | `MISSING_IMAGE<br>       | `NETWORK<br>       | `NEW<br>       | `NO<br>       | `OK<br>       | `OPEN<br>       | `ORIENTATION_LANDSCAPE<br>       | `ORIENTATION_PORTRAIT<br>       | `ORIENTATION_REVERSE_LANDSCAPE<br>       | `ORIENTATION_REVERSE_PORTRAIT<br>       | `PAGE_SETUP<br>       | `PASTE<br>       | `PREFERENCES<br>       | `PRINT<br>       | `PRINT_ERROR<br>       | `PRINT_PAUSED<br>       | `PRINT_PREVIEW<br>       | `PRINT_REPORT<br>       | `PRINT_WARNING<br>       | `PROPERTIES<br>       | `QUIT<br>       | `REDO<br>       | `REFRESH<br>       | `REMOVE<br>       | `REVERT_TO_SAVED<br>       | `SAVE<br>       | `SAVE_AS<br>       | `SELECT_ALL<br>       | `SELECT_COLOR<br>       | `SELECT_FONT<br>       | `SORT_ASCENDING<br>       | `SORT_DESCENDING<br>       | `SPELL_CHECK<br>       | `STOP<br>       | `STRIKETHROUGH<br>       | `UNDELETE<br>       | `UNDERLINE<br>       | `UNDO<br>       | `UNINDENT<br>       | `YES<br>       | `ZOOM_100<br>       | `ZOOM_FIT<br>       | `ZOOM_IN<br>       | `ZOOM_OUT ]</code> </pre>
+
+
+<pre><span id="TYPEid"><span class="keyword">type</span> <code class="type"></code>id</span> = <code class="type">[ `ABOUT<br>       | `ADD<br>       | `APPLY<br>       | `BOLD<br>       | `CANCEL<br>       | `CAPS_LOCK_WARNING<br>       | `CDROM<br>       | `CLEAR<br>       | `CLOSE<br>       | `COLOR_PICKER<br>       | `CONNECT<br>       | `CONVERT<br>       | `COPY<br>       | `CUT<br>       | `DELETE<br>       | `DIALOG_AUTHENTICATION<br>       | `DIALOG_ERROR<br>       | `DIALOG_INFO<br>       | `DIALOG_QUESTION<br>       | `DIALOG_WARNING<br>       | `DIRECTORY<br>       | `DISCONNECT<br>       | `DND<br>       | `DND_MULTIPLE<br>       | `EDIT<br>       | `EXECUTE<br>       | `FILE<br>       | `FIND<br>       | `FIND_AND_REPLACE<br>       | `FLOPPY<br>       | `FULLSCREEN<br>       | `GOTO_BOTTOM<br>       | `GOTO_FIRST<br>       | `GOTO_LAST<br>       | `GOTO_TOP<br>       | `GO_BACK<br>       | `GO_DOWN<br>       | `GO_FORWARD<br>       | `GO_UP<br>       | `HARDDISK<br>       | `HELP<br>       | `HOME<br>       | `INDENT<br>       | `INDEX<br>       | `INFO<br>       | `ITALIC<br>       | `JUMP_TO<br>       | `JUSTIFY_CENTER<br>       | `JUSTIFY_FILL<br>       | `JUSTIFY_LEFT<br>       | `JUSTIFY_RIGHT<br>       | `LEAVE_FULLSCREEN<br>       | `MEDIA_FORWARD<br>       | `MEDIA_NEXT<br>       | `MEDIA_PAUSE<br>       | `MEDIA_PLAY<br>       | `MEDIA_PREVIOUS<br>       | `MEDIA_RECORD<br>       | `MEDIA_REWIND<br>       | `MEDIA_STOP<br>       | `MISSING_IMAGE<br>       | `NETWORK<br>       | `NEW<br>       | `NO<br>       | `OK<br>       | `OPEN<br>       | `ORIENTATION_LANDSCAPE<br>       | `ORIENTATION_PORTRAIT<br>       | `ORIENTATION_REVERSE_LANDSCAPE<br>       | `ORIENTATION_REVERSE_PORTRAIT<br>       | `PAGE_SETUP<br>       | `PASTE<br>       | `PREFERENCES<br>       | `PRINT<br>       | `PRINT_ERROR<br>       | `PRINT_PAUSED<br>       | `PRINT_PREVIEW<br>       | `PRINT_REPORT<br>       | `PRINT_WARNING<br>       | `PROPERTIES<br>       | `QUIT<br>       | `REDO<br>       | `REFRESH<br>       | `REMOVE<br>       | `REVERT_TO_SAVED<br>       | `SAVE<br>       | `SAVE_AS<br>       | `SELECT_ALL<br>       | `SELECT_COLOR<br>       | `SELECT_FONT<br>       | `SORT_ASCENDING<br>       | `SORT_DESCENDING<br>       | `SPELL_CHECK<br>       | `STOCK of string<br>       | `STOP<br>       | `STRIKETHROUGH<br>       | `UNDELETE<br>       | `UNDERLINE<br>       | `UNDO<br>       | `UNINDENT<br>       | `YES<br>       | `ZOOM_100<br>       | `ZOOM_FIT<br>       | `ZOOM_IN<br>       | `ZOOM_OUT ]</code> </pre>
+
+
+<pre><span id="VALid_table"><span class="keyword">val</span> id_table</span> : <code class="type">(<a href="GtkStock.html#TYPEid">id</a>, string) Stdlib.Hashtbl.t</code></pre>
+<pre><span id="VALconvert_id"><span class="keyword">val</span> convert_id</span> : <code class="type"><a href="GtkStock.html#TYPEid">id</a> -> string</code></pre>
+<pre><span id="VALconv"><span class="keyword">val</span> conv</span> : <code class="type"><a href="GtkStock.html#TYPEid">id</a> <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a></code></pre>
+<pre><span id="MODULEIcon_source"><span class="keyword">module</span> <a href="GtkStock.Icon_source.html">Icon_source</a></span>: <code class="code">sig</code> <a href="GtkStock.Icon_source.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEIcon_set"><span class="keyword">module</span> <a href="GtkStock.Icon_set.html">Icon_set</a></span>: <code class="code">sig</code> <a href="GtkStock.Icon_set.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEIcon_factory"><span class="keyword">module</span> <a href="GtkStock.Icon_factory.html">Icon_factory</a></span>: <code class="code">sig</code> <a href="GtkStock.Icon_factory.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALmake_icon_source"><span class="keyword">val</span> make_icon_source</span> : <code class="type">?filename:string -><br>       ?pixbuf:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -><br>       ?direction:Gtk.Tags.text_direction -><br>       ?state:Gtk.Tags.state_type -><br>       ?size:Gtk.Tags.icon_size -> unit -> <a href="Gtk.html#TYPEicon_source">Gtk.icon_source</a></code></pre>
+<pre><span id="VALmake_icon_set"><span class="keyword">val</span> make_icon_set</span> : <code class="type">?pixbuf:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> <a href="Gtk.html#TYPEicon_source">Gtk.icon_source</a> list -> <a href="Gtk.html#TYPEicon_set">Gtk.icon_set</a></code></pre>
+<pre><span id="VALmake_icon_factory"><span class="keyword">val</span> make_icon_factory</span> : <code class="type">?default:bool -><br>       ?icons:(<a href="GtkStock.html#TYPEid">id</a> * <a href="Gtk.html#TYPEicon_set">Gtk.icon_set</a>) list -> unit -> <a href="Gtk.html#TYPEicon_factory">Gtk.icon_factory</a></code></pre>
+<pre><code><span id="TYPEitem"><span class="keyword">type</span> <code class="type"></code>item</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTitem.stock_id">stock_id</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTitem.label">label</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTitem.modifier">modifier</span>&nbsp;: <code class="type"><a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTitem.keyval">keyval</span>&nbsp;: <code class="type"><a href="Gdk.html#TYPEkeysym">Gdk.keysym</a></code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="MODULEItem"><span class="keyword">module</span> <a href="GtkStock.Item.html">Item</a></span>: <code class="code">sig</code> <a href="GtkStock.Item.html">..</a> <code class="code">end</code></pre></body></html>

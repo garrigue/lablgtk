@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GAction.html">
+<link rel="next" href="GButton.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GBin</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GAction.html" title="GAction">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GButton.html" title="GButton">Next</a>
+</div>
+<h1>Module <a href="type_GBin.html">GBin</a></h1>
+
+<pre><span id="MODULEGBin"><span class="keyword">module</span> GBin</span>: <code class="code">sig</code> <a href="GBin.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Containers with just one child</p>
+<h4 id="3_GtkScrolledWindow"> GtkScrolledWindow </h4>
+<pre><span id="TYPEscrolled_window"><span class="keyword">class</span> <a href="GBin.scrolled_window-c.html">scrolled_window</a></span> : <code class="type"><a href="Gtk.html#TYPEscrolled_window">Gtk.scrolled_window</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.scrolled_window-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Adds scrollbars to its child widget</p>
+
+</div>
+<br>
+<pre><span id="VALscrolled_window"><span class="keyword">val</span> scrolled_window</span> : <code class="type">?hadjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?vadjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?hpolicy:Gtk.Tags.policy_type -><br>       ?vpolicy:Gtk.Tags.policy_type -><br>       ?placement:Gtk.Tags.corner_type -><br>       ?shadow_type:Gtk.Tags.shadow_type -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GBin.scrolled_window-c.html">scrolled_window</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkScrolledWindow.html">GtkScrolledWindow</a></small></ul>
+</div>
+<h4 id="3_GtkEventBox">GtkEventBox</h4>
+<pre><span id="TYPEevent_box"><span class="keyword">class</span> <a href="GBin.event_box-c.html">event_box</a></span> : <code class="type">[> <a href="Gtk.html#TYPEevent_box">Gtk.event_box</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.event_box-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget used to catch events for widgets which do not have their own window</p>
+
+</div>
+<br>
+<pre><span id="VALevent_box"><span class="keyword">val</span> event_box</span> : <code class="type">?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GBin.event_box-c.html">event_box</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkEventBox.html">GtkEventBox</a></small></ul>
+</div>
+
+<pre><span id="TYPEinvisible"><span class="keyword">class</span> <a href="GBin.invisible-c.html">invisible</a></span> : <code class="type">[> <a href="Gtk.html#TYPEinvisible">Gtk.invisible</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.invisible-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="VALinvisible"><span class="keyword">val</span> invisible</span> : <code class="type">?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GBin.invisible-c.html">invisible</a></code></pre><h4 id="3_GtkHandleBox">GtkHandleBox</h4>
+<pre><span id="TYPEhandle_box_signals"><span class="keyword">class</span> <a href="GBin.handle_box_signals-c.html">handle_box_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEhandle_box">Gtk.handle_box</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.handle_box_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEhandle_box"><span class="keyword">class</span> <a href="GBin.handle_box-c.html">handle_box</a></span> : <code class="type"><a href="Gtk.html#TYPEhandle_box">Gtk.handle_box</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.handle_box-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget for detachable window portions</p>
+
+</div>
+<br>
+<pre><span id="VALhandle_box"><span class="keyword">val</span> handle_box</span> : <code class="type">?handle_position:Gtk.Tags.position_type -><br>       ?snap_edge:Gtk.Tags.position_type -><br>       ?shadow_type:Gtk.Tags.shadow_type -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GBin.handle_box-c.html">handle_box</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkHandleBox.html">GtkHandleBox</a></small></ul>
+</div>
+<h4 id="3_GtkFrameGtkAspectFrame">GtkFrame &amp; GtkAspectFrame</h4>
+<pre><span id="TYPEframe_skel"><span class="keyword">class</span> <a href="GBin.frame_skel-c.html">frame_skel</a></span> : <code class="type">[> <a href="Gtk.html#TYPEframe">Gtk.frame</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.frame_skel-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPEframe"><span class="keyword">class</span> <a href="GBin.frame-c.html">frame</a></span> : <code class="type"><a href="Gtk.html#TYPEframe">Gtk.frame</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.frame-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A bin with a decorative frame and optional label</p>
+
+</div>
+<br>
+<pre><span id="VALframe"><span class="keyword">val</span> frame</span> : <code class="type">?label:string -><br>       ?label_xalign:<a href="Gtk.html#TYPEclampf">Gtk.clampf</a> -><br>       ?label_yalign:<a href="Gtk.html#TYPEclampf">Gtk.clampf</a> -><br>       ?shadow_type:Gtk.Tags.shadow_type -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GBin.frame-c.html">frame</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkFrame.html">GtkFrame</a></small></ul>
+</div>
+
+<pre><span id="TYPEaspect_frame"><span class="keyword">class</span> <a href="GBin.aspect_frame-c.html">aspect_frame</a></span> : <code class="type"><a href="Gtk.html#TYPEaspect_frame">Gtk.aspect_frame</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.aspect_frame-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A frame that constrains its child to a particular aspect ratio</p>
+
+</div>
+<br>
+<pre><span id="VALaspect_frame"><span class="keyword">val</span> aspect_frame</span> : <code class="type">?obey_child:bool -><br>       ?ratio:float -><br>       ?xalign:<a href="Gtk.html#TYPEclampf">Gtk.clampf</a> -><br>       ?yalign:<a href="Gtk.html#TYPEclampf">Gtk.clampf</a> -><br>       ?label:string -><br>       ?label_xalign:<a href="Gtk.html#TYPEclampf">Gtk.clampf</a> -><br>       ?label_yalign:<a href="Gtk.html#TYPEclampf">Gtk.clampf</a> -><br>       ?shadow_type:Gtk.Tags.shadow_type -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GBin.aspect_frame-c.html">aspect_frame</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkAspectFrame.html">GtkAspectFrame</a></small></ul>
+</div>
+<h4 id="3_GtkViewport">GtkViewport</h4>
+<pre><span id="TYPEviewport"><span class="keyword">class</span> <a href="GBin.viewport-c.html">viewport</a></span> : <code class="type"><a href="Gtk.html#TYPEviewport">Gtk.viewport</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.viewport-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALviewport"><span class="keyword">val</span> viewport</span> : <code class="type">?hadjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?vadjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?shadow_type:Gtk.Tags.shadow_type -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GBin.viewport-c.html">viewport</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkViewport.html">GtkViewport</a></small></ul>
+</div>
+<h4 id="3_GtkAlignment">GtkAlignment</h4><p>A widget which controls the alignment and size of its child</p>
+
+<pre><span id="TYPEalignment"><span class="keyword">class</span> <a href="GBin.alignment-c.html">alignment</a></span> : <code class="type"><a href="Gtk.html#TYPEalignment">Gtk.alignment</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.alignment-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALalignment"><span class="keyword">val</span> alignment</span> : <code class="type">?padding:int * int * int * int -><br>       ?xalign:<a href="Gtk.html#TYPEclampf">Gtk.clampf</a> -><br>       ?yalign:<a href="Gtk.html#TYPEclampf">Gtk.clampf</a> -><br>       ?xscale:<a href="Gtk.html#TYPEclampf">Gtk.clampf</a> -><br>       ?yscale:<a href="Gtk.html#TYPEclampf">Gtk.clampf</a> -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GBin.alignment-c.html">alignment</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkAlignment.html">GtkAlignment</a></small></ul>
+</div>
+
+<pre><span id="VALalignment_cast"><span class="keyword">val</span> alignment_cast</span> : <code class="type">#<a href="GObj.widget-c.html">GObj.widget</a> -> <a href="GBin.alignment-c.html">alignment</a></code></pre><h4 id="3_GtkExpander">GtkExpander</h4><p>A container which can hide its child</p>
+
+<pre><span id="TYPEexpander_signals"><span class="keyword">class</span> <a href="GBin.expander_signals-c.html">expander_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEexpander">Gtk.expander</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.expander_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEexpander"><span class="keyword">class</span> <a href="GBin.expander-c.html">expander</a></span> : <code class="type">[> <a href="Gtk.html#TYPEexpander">Gtk.expander</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GBin.expander-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALexpander"><span class="keyword">val</span> expander</span> : <code class="type">?expanded:bool -><br>       ?label:string -><br>       ?spacing:int -><br>       ?use_underline:bool -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GBin.expander-c.html">expander</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkExpander.html">GtkExpander</a></small></ul>
+</div>
+</body></html>

@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkBaseProps.Orientable.html">
+<link rel="next" href="GtkBaseProps.Dialog.html">
+<link rel="Up" href="GtkBaseProps.html">
+<title>LablGTK : GtkBaseProps.Window</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkBaseProps.Orientable.html" title="GtkBaseProps.Orientable">Previous</a>
+&nbsp;<a class="up" href="GtkBaseProps.html" title="GtkBaseProps">Up</a>
+&nbsp;<a class="post" href="GtkBaseProps.Dialog.html" title="GtkBaseProps.Dialog">Next</a>
+</div>
+<h1>Module <a href="type_GtkBaseProps.Window.html">GtkBaseProps.Window</a></h1>
+
+<pre><span id="MODULEWindow"><span class="keyword">module</span> Window</span>: <code class="code">sig</code> <a href="GtkBaseProps.Window.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEwindow">Gtk.window</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="MODULEP"><span class="keyword">module</span> <a href="GtkBaseProps.Window.P.html">P</a></span>: <code class="code">sig</code> <a href="GtkBaseProps.Window.P.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULES"><span class="keyword">module</span> <a href="GtkBaseProps.Window.S.html">S</a></span>: <code class="code">sig</code> <a href="GtkBaseProps.Window.S.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">?kind:<a href="GtkEnums.html#TYPEwindow_type">GtkEnums.window_type</a> -><br>       <a href="Gtk.html#TYPEwindow">Gtk.window</a> <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> <a href="Gtk.html#TYPEwindow">Gtk.window</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALpresent"><span class="keyword">val</span> present</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALiconify"><span class="keyword">val</span> iconify</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALdeiconify"><span class="keyword">val</span> deiconify</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALstick"><span class="keyword">val</span> stick</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALunstick"><span class="keyword">val</span> unstick</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALmaximize"><span class="keyword">val</span> maximize</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALunmaximize"><span class="keyword">val</span> unmaximize</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALfullscreen"><span class="keyword">val</span> fullscreen</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALunfullscreen"><span class="keyword">val</span> unfullscreen</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALset_decorated"><span class="keyword">val</span> set_decorated</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool -> unit</code></pre>
+<pre><span id="VALset_mnemonic_modifier"><span class="keyword">val</span> set_mnemonic_modifier</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> unit</code></pre>
+<pre><span id="VALmove"><span class="keyword">val</span> move</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> x:int -> y:int -> unit</code></pre>
+<pre><span id="VALparse_geometry"><span class="keyword">val</span> parse_geometry</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> bool</code></pre>
+<pre><span id="VALreshow_with_initial_size"><span class="keyword">val</span> reshow_with_initial_size</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALresize"><span class="keyword">val</span> resize</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> width:int -> height:int -> unit</code></pre>
+<pre><span id="VALset_role"><span class="keyword">val</span> set_role</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALget_role"><span class="keyword">val</span> get_role</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string</code></pre>
+<pre><span id="VALmake_params"><span class="keyword">val</span> make_params</span> : <code class="type">cont:(([> `window ] as 'a) <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> 'b) -><br>       'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list -><br>       ?title:string -><br>       ?decorated:bool -><br>       ?deletable:bool -><br>       ?focus_on_map:bool -><br>       ?icon:<a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -><br>       ?icon_name:string -><br>       ?modal:bool -><br>       ?position:<a href="GtkEnums.html#TYPEwindow_position">GtkEnums.window_position</a> -><br>       ?resizable:bool -><br>       ?screen:<a href="Gdk.html#TYPEscreen">Gdk.screen</a> -><br>       ?type_hint:<a href="GdkEnums.html#TYPEwindow_type_hint">GdkEnums.window_type_hint</a> -> ?urgency_hint:bool -> 'b</code></pre></body></html>

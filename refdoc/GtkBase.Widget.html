@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkBase.Object.html">
+<link rel="next" href="GtkBase.Container.html">
+<link rel="Up" href="GtkBase.html">
+<title>LablGTK : GtkBase.Widget</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkBase.Object.html" title="GtkBase.Object">Previous</a>
+&nbsp;<a class="up" href="GtkBase.html" title="GtkBase">Up</a>
+&nbsp;<a class="post" href="GtkBase.Container.html" title="GtkBase.Container">Next</a>
+</div>
+<h1>Module <a href="type_GtkBase.Widget.html">GtkBase.Widget</a></h1>
+
+<pre><span id="MODULEWidget"><span class="keyword">module</span> Widget</span>: <code class="code">sig</code> <a href="GtkBase.Widget.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span class="keyword">include</span> <a href="GtkBaseProps.Widget.html">GtkBaseProps.Widget</a></pre>
+
+<pre><span id="VALsize_params"><span class="keyword">val</span> size_params</span> : <code class="type">cont:(([> `widget ] as 'a) <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> 'b) -><br>       'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> ?width:int -> ?height:int -> 'b</code></pre>
+<pre><span id="VALunparent"><span class="keyword">val</span> unparent</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALshow"><span class="keyword">val</span> show</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALshow_now"><span class="keyword">val</span> show_now</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALshow_all"><span class="keyword">val</span> show_all</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALhide"><span class="keyword">val</span> hide</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALmap"><span class="keyword">val</span> map</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALunmap"><span class="keyword">val</span> unmap</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALrealize"><span class="keyword">val</span> realize</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALunrealize"><span class="keyword">val</span> unrealize</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALqueue_draw"><span class="keyword">val</span> queue_draw</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALqueue_resize"><span class="keyword">val</span> queue_resize</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALdraw"><span class="keyword">val</span> draw</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.html#TYPEcairo">Gdk.cairo</a> -> unit</code></pre>
+<pre><span id="VALevent"><span class="keyword">val</span> event</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> 'a <a href="Gdk.html#TYPEevent">Gdk.event</a> -> bool</code></pre>
+<pre><span id="VALactivate"><span class="keyword">val</span> activate</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre>
+<pre><span id="VALreparent"><span class="keyword">val</span> reparent</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALintersect"><span class="keyword">val</span> intersect</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.Rectangle.html#TYPEt">Gdk.Rectangle.t</a> -> <a href="Gdk.Rectangle.html#TYPEt">Gdk.Rectangle.t</a> option</code></pre>
+<pre><span id="VALadd_events"><span class="keyword">val</span> add_events</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.Tags.html#TYPEevent_mask">Gdk.Tags.event_mask</a> list -> unit</code></pre>
+<pre><span id="VALget_toplevel"><span class="keyword">val</span> get_toplevel</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALget_ancestor"><span class="keyword">val</span> get_ancestor</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALget_visual"><span class="keyword">val</span> get_visual</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.html#TYPEvisual">Gdk.visual</a></code></pre>
+<pre><span id="VALget_pointer"><span class="keyword">val</span> get_pointer</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int * int</code></pre>
+<pre><span id="VALis_ancestor"><span class="keyword">val</span> is_ancestor</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre>
+<pre><span id="VALensure_style"><span class="keyword">val</span> ensure_style</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALmodify_fg"><span class="keyword">val</span> modify_fg</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre>
+<pre><span id="VALmodify_bg"><span class="keyword">val</span> modify_bg</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre>
+<pre><span id="VALmodify_text"><span class="keyword">val</span> modify_text</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre>
+<pre><span id="VALmodify_base"><span class="keyword">val</span> modify_base</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> Gtk.Tags.state_type -> <a href="Gdk.html#TYPEcolor">Gdk.color</a> -> unit</code></pre>
+<pre><span id="VALmodify_font"><span class="keyword">val</span> modify_font</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> unit</code></pre>
+<pre><span id="VALget_pango_context"><span class="keyword">val</span> get_pango_context</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Pango.html#TYPEcontext">Pango.context</a></code></pre>
+<pre><span id="VALcreate_pango_context"><span class="keyword">val</span> create_pango_context</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Pango.html#TYPEcontext">Pango.context</a></code></pre>
+<pre><span id="VALrender_icon"><span class="keyword">val</span> render_icon</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> Gtk.Tags.icon_size -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a></code></pre>
+<pre><span id="VALadd_accelerator"><span class="keyword">val</span> add_accelerator</span> : <code class="type">([> `widget ] as 'a) <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       sgn:('a, unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a> -><br>       <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -><br>       key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -><br>       ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> ?flags:Gtk.Tags.accel_flag list -> unit</code></pre>
+<pre><span id="VALremove_accelerator"><span class="keyword">val</span> remove_accelerator</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> key:<a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> unit</code></pre>
+<pre><span id="VALset_accel_path"><span class="keyword">val</span> set_accel_path</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> unit</code></pre>
+<pre><span id="VALwindow"><span class="keyword">val</span> window</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.html#TYPEwindow">Gdk.window</a></code></pre>
+<pre><span id="VALallocation"><span class="keyword">val</span> allocation</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPErectangle">Gtk.rectangle</a></code></pre>
+<pre><span id="VALset_visual"><span class="keyword">val</span> set_visual</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.html#TYPEvisual">Gdk.visual</a> -> unit</code></pre>
+<pre><span id="MODULETooltip"><span class="keyword">module</span> <a href="GtkBase.Widget.Tooltip.html">Tooltip</a></span>: <code class="code">sig</code> <a href="GtkBase.Widget.Tooltip.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+
+<pre><span id="MODULESignals"><span class="keyword">module</span> <a href="GtkBase.Widget.Signals.html">Signals</a></span>: <code class="code">sig</code> <a href="GtkBase.Widget.Signals.html">..</a> <code class="code">end</code></pre></body></html>

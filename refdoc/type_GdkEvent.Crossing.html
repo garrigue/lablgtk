@@ -1,0 +1,25 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GdkEvent.Crossing</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">ENTER_NOTIFY</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">LEAVE_NOTIFY</span>&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Crossing</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;subwindow&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Crossing</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.window<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventCrossing_subwindow"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;time&nbsp;:&nbsp;[&lt;&nbsp;<span class="constructor">GdkEvent</span>.timed&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int32<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;x&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Crossing</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;=&nbsp;<span class="string">"ml_GdkEventCrossing_x"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;y&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Crossing</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;=&nbsp;<span class="string">"ml_GdkEventCrossing_y"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;x_root&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Crossing</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventCrossing_x_root"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;y_root&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Crossing</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventCrossing_y_root"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;mode&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Crossing</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.crossing_mode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventCrossing_mode"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;detail&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Crossing</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gdk</span>.<span class="constructor">Tags</span>.notify_type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventCrossing_detail"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;focus&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Crossing</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool&nbsp;=&nbsp;<span class="string">"ml_GdkEventCrossing_focus"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;state&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Crossing</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_GdkEventCrossing_state"</span><br>
+<span class="keyword">end</span></code></body></html>

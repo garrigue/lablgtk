@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkTree.TreeModelFilter.html">
+<link rel="next" href="GtkTree.CustomModel.html">
+<link rel="Up" href="GtkTree.html">
+<title>LablGTK : GtkTree.IconView</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkTree.TreeModelFilter.html" title="GtkTree.TreeModelFilter">Previous</a>
+&nbsp;<a class="up" href="GtkTree.html" title="GtkTree">Up</a>
+&nbsp;<a class="post" href="GtkTree.CustomModel.html" title="GtkTree.CustomModel">Next</a>
+</div>
+<h1>Module <a href="type_GtkTree.IconView.html">GtkTree.IconView</a></h1>
+
+<pre><span id="MODULEIconView"><span class="keyword">module</span> IconView</span>: <code class="type"><a href="GtkTreeProps.IconView.html">GtkTreeProps.IconView</a></code></pre><hr width="100%">
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="Gtk.html#TYPEicon_view">Gtk.icon_view</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="MODULEP"><span class="keyword">module</span> <a href="GtkTreeProps.IconView.P.html">P</a></span>: <code class="code">sig</code> <a href="GtkTreeProps.IconView.P.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULES"><span class="keyword">module</span> <a href="GtkTreeProps.IconView.S.html">S</a></span>: <code class="code">sig</code> <a href="GtkTreeProps.IconView.S.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type"><a href="Gtk.html#TYPEicon_view">Gtk.icon_view</a> <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> <a href="Gtk.html#TYPEicon_view">Gtk.icon_view</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALget_path_at_pos"><span class="keyword">val</span> get_path_at_pos</span> : <code class="type">[> `iconview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> int -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> option</code></pre>
+<pre><span id="VALselected_foreach"><span class="keyword">val</span> selected_foreach</span> : <code class="type">[> `iconview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> (<a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit) -> unit</code></pre>
+<pre><span id="VALselect_path"><span class="keyword">val</span> select_path</span> : <code class="type">[> `iconview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="VALunselect_path"><span class="keyword">val</span> unselect_path</span> : <code class="type">[> `iconview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="VALpath_is_selected"><span class="keyword">val</span> path_is_selected</span> : <code class="type">[> `iconview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> bool</code></pre>
+<pre><span id="VALget_selected_items"><span class="keyword">val</span> get_selected_items</span> : <code class="type">[> `iconview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> list</code></pre>
+<pre><span id="VALselect_all"><span class="keyword">val</span> select_all</span> : <code class="type">[> `iconview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALunselect_all"><span class="keyword">val</span> unselect_all</span> : <code class="type">[> `iconview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALitem_activated"><span class="keyword">val</span> item_activated</span> : <code class="type">[> `iconview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="VALmake_params"><span class="keyword">val</span> make_params</span> : <code class="type">cont:(([> `iconview ] as 'a) <a href="Gobject.html#TYPEparam">Gobject.param</a> list -> 'b) -><br>       'a <a href="Gobject.html#TYPEparam">Gobject.param</a> list -><br>       ?columns:int -><br>       ?model:<a href="Gtk.html#TYPEtree_model">Gtk.tree_model</a> -><br>       ?orientation:<a href="GtkEnums.html#TYPEorientation">GtkEnums.orientation</a> -><br>       ?selection_mode:<a href="GtkEnums.html#TYPEselection_mode">GtkEnums.selection_mode</a> -> 'b</code></pre></body></html>

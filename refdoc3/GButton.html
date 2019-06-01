@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GBin.html">
+<link rel="next" href="GContainer.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GButton</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GBin.html" title="GBin">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GContainer.html" title="GContainer">Next</a>
+</div>
+<h1>Module <a href="type_GButton.html">GButton</a></h1>
+
+<pre><span id="MODULEGButton"><span class="keyword">module</span> GButton</span>: <code class="code">sig</code> <a href="GButton.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>A widget that creates a signal when clicked on</p>
+<h4 id="3_GtkButton">GtkButton</h4>
+<pre><span id="TYPEbutton_skel"><span class="keyword">class</span> <a href="GButton.button_skel-c.html">button_skel</a></span> : <code class="type">[> <a href="Gtk.html#TYPEbutton">Gtk.button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.button_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEbutton_signals"><span class="keyword">class</span> <a href="GButton.button_signals-c.html">button_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEbutton">Gtk.button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.button_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEbutton"><span class="keyword">class</span> <a href="GButton.button-c.html">button</a></span> : <code class="type"><a href="Gtk.html#TYPEbutton">Gtk.button</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A widget that creates a signal when clicked on</p>
+
+</div>
+<br>
+<pre><span id="VALbutton"><span class="keyword">val</span> button</span> : <code class="type">?label:string -><br>       ?use_mnemonic:bool -><br>       ?stock:<a href="GtkStock.html#TYPEid">GtkStock.id</a> -><br>       ?relief:Gtk.Tags.relief_style -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GButton.button-c.html">button</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkButton.html">GtkButton</a></small></ul>
+</div>
+<h5 id="4_GtkToggleButtonGtkRadioButton">GtkToggleButton &amp; GtkRadioButton</h5>
+<pre><span id="TYPEtoggle_button_signals"><span class="keyword">class</span> <a href="GButton.toggle_button_signals-c.html">toggle_button_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtoggle_button">Gtk.toggle_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.toggle_button_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtoggle_button"><span class="keyword">class</span> <a href="GButton.toggle_button-c.html">toggle_button</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtoggle_button">Gtk.toggle_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.toggle_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Create buttons which retain their state</p>
+
+</div>
+<br>
+<pre><span id="VALtoggle_button"><span class="keyword">val</span> toggle_button</span> : <code class="type">?label:string -><br>       ?use_mnemonic:bool -><br>       ?stock:<a href="GtkStock.html#TYPEid">GtkStock.id</a> -><br>       ?relief:Gtk.Tags.relief_style -><br>       ?active:bool -><br>       ?draw_indicator:bool -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GButton.toggle_button-c.html">toggle_button</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkToggleButton.html">GtkToggleButton</a></small></ul>
+</div>
+
+<pre><span id="VALcheck_button"><span class="keyword">val</span> check_button</span> : <code class="type">?label:string -><br>       ?use_mnemonic:bool -><br>       ?stock:<a href="GtkStock.html#TYPEid">GtkStock.id</a> -><br>       ?relief:Gtk.Tags.relief_style -><br>       ?active:bool -><br>       ?draw_indicator:bool -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GButton.toggle_button-c.html">toggle_button</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkCheckButton.html">GtkCheckButton</a></small></ul>
+</div>
+
+<pre><span id="TYPEradio_button"><span class="keyword">class</span> <a href="GButton.radio_button-c.html">radio_button</a></span> : <code class="type"><a href="Gtk.html#TYPEradio_button">Gtk.radio_button</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.radio_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A choice from multiple check buttons</p>
+
+</div>
+<br>
+<pre><span id="VALradio_button"><span class="keyword">val</span> radio_button</span> : <code class="type">?group:<a href="Gtk.html#TYPEradio_button">Gtk.radio_button</a> <a href="Gtk.html#TYPEgroup">Gtk.group</a> -><br>       ?label:string -><br>       ?use_mnemonic:bool -><br>       ?stock:<a href="GtkStock.html#TYPEid">GtkStock.id</a> -><br>       ?relief:Gtk.Tags.relief_style -><br>       ?active:bool -><br>       ?draw_indicator:bool -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GButton.radio_button-c.html">radio_button</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkRadioButton.html">GtkRadioButton</a></small></ul>
+</div>
+<h5 id="4_GtkColorButtonGtkFontButton">GtkColorButton &amp; GtkFontButton</h5>
+<pre><span id="TYPEcolor_button_signals"><span class="keyword">class</span> <a href="GButton.color_button_signals-c.html">color_button_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEcolor_button">Gtk.color_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.color_button_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEcolor_button"><span class="keyword">class</span> <a href="GButton.color_button-c.html">color_button</a></span> : <code class="type">[> <a href="Gtk.html#TYPEcolor_button">Gtk.color_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.color_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALcolor_button"><span class="keyword">val</span> color_button</span> : <code class="type">?color:<a href="Gdk.html#TYPEcolor">Gdk.color</a> -><br>       ?rgba:<a href="Gdk.html#TYPErgba">Gdk.rgba</a> -><br>       ?title:string -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GButton.color_button-c.html">color_button</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>A button to launch a color selection dialog</p>
+</div>
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkColorButton.html">GtkColorButton</a></small></ul>
+</div>
+
+<pre><span id="TYPEfont_button_signals"><span class="keyword">class</span> <a href="GButton.font_button_signals-c.html">font_button_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEfont_button">Gtk.font_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.font_button_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEfont_button"><span class="keyword">class</span> <a href="GButton.font_button-c.html">font_button</a></span> : <code class="type">[> <a href="Gtk.html#TYPEfont_button">Gtk.font_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.font_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALfont_button"><span class="keyword">val</span> font_button</span> : <code class="type">?font_name:string -><br>       ?title:string -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GButton.font_button-c.html">font_button</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>A button to launch a font selection dialog</p>
+</div>
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkFontButton.html">GtkFontButton</a></small></ul>
+</div>
+<h4 id="3_GtkToolbar">GtkToolbar</h4>
+<pre><span id="TYPEtool_item_o"><span class="keyword">class type</span> <a href="GButton.tool_item_o-c.html">tool_item_o</a></span> = <code class="code">object</code> <a href="GButton.tool_item_o-c.html">..</a> <code class="code">end</code></pre>
+<pre><span id="TYPEtoolbar_signals"><span class="keyword">class</span> <a href="GButton.toolbar_signals-c.html">toolbar_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtoolbar">Gtk.toolbar</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.toolbar_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtoolbar"><span class="keyword">class</span> <a href="GButton.toolbar-c.html">toolbar</a></span> : <code class="type"><a href="Gtk.html#TYPEtoolbar">Gtk.toolbar</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.toolbar-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Create bars of buttons and other widgets</p>
+
+</div>
+<br>
+<pre><span id="VALtoolbar"><span class="keyword">val</span> toolbar</span> : <code class="type">?orientation:Gtk.Tags.orientation -><br>       ?style:Gtk.Tags.toolbar_style -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GButton.toolbar-c.html">toolbar</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkToolbar.html">GtkToolbar</a></small></ul>
+</div>
+<h5 id="4_ToolItemsforthenewtoolbarAPI">ToolItems for the new toolbar API</h5>
+<pre><span id="TYPEtool_item_skel"><span class="keyword">class</span> <a href="GButton.tool_item_skel-c.html">tool_item_skel</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtool_item">Gtk.tool_item</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.tool_item_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtool_item"><span class="keyword">class</span> <a href="GButton.tool_item-c.html">tool_item</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtool_item">Gtk.tool_item</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.tool_item-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALtool_item"><span class="keyword">val</span> tool_item</span> : <code class="type">?homogeneous:bool -><br>       ?expand:bool -><br>       ?packing:(<a href="GButton.tool_item_o-c.html">tool_item_o</a> -> unit) -><br>       ?show:bool -> unit -> <a href="GButton.tool_item-c.html">tool_item</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkToolItem.html">GtkToolItem</a></small></ul>
+</div>
+
+<pre><span id="TYPEseparator_tool_item"><span class="keyword">class</span> <a href="GButton.separator_tool_item-c.html">separator_tool_item</a></span> : <code class="type">[> <a href="Gtk.html#TYPEseparator_tool_item">Gtk.separator_tool_item</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.separator_tool_item-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALseparator_tool_item"><span class="keyword">val</span> separator_tool_item</span> : <code class="type">?draw:bool -><br>       ?homogeneous:bool -><br>       ?expand:bool -><br>       ?packing:(<a href="GButton.tool_item_o-c.html">tool_item_o</a> -> unit) -><br>       ?show:bool -> unit -> <a href="GButton.separator_tool_item-c.html">separator_tool_item</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkSeparatorToolItem.html">GtkSeparatorToolItem</a></small></ul>
+</div>
+
+<pre><span id="TYPEtool_button_signals"><span class="keyword">class</span> <a href="GButton.tool_button_signals-c.html">tool_button_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtool_button">Gtk.tool_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.tool_button_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtool_button_skel"><span class="keyword">class</span> <a href="GButton.tool_button_skel-c.html">tool_button_skel</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtool_button">Gtk.tool_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.tool_button_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtool_button"><span class="keyword">class</span> <a href="GButton.tool_button-c.html">tool_button</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtool_button">Gtk.tool_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.tool_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALtool_button"><span class="keyword">val</span> tool_button</span> : <code class="type">?label:string -><br>       ?stock:<a href="GtkStock.html#TYPEid">GtkStock.id</a> -><br>       ?use_underline:bool -><br>       ?homogeneous:bool -><br>       ?expand:bool -><br>       ?packing:(<a href="GButton.tool_item_o-c.html">tool_item_o</a> -> unit) -><br>       ?show:bool -> unit -> <a href="GButton.tool_button-c.html">tool_button</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkToolButton.html">GtkToolButton</a></small></ul>
+</div>
+
+<pre><span id="TYPEtoggle_tool_button_signals"><span class="keyword">class</span> <a href="GButton.toggle_tool_button_signals-c.html">toggle_tool_button_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtoggle_tool_button">Gtk.toggle_tool_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.toggle_tool_button_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtoggle_tool_button"><span class="keyword">class</span> <a href="GButton.toggle_tool_button-c.html">toggle_tool_button</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtoggle_tool_button">Gtk.toggle_tool_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.toggle_tool_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALtoggle_tool_button"><span class="keyword">val</span> toggle_tool_button</span> : <code class="type">?active:bool -><br>       ?label:string -><br>       ?stock:<a href="GtkStock.html#TYPEid">GtkStock.id</a> -><br>       ?use_underline:bool -><br>       ?homogeneous:bool -><br>       ?expand:bool -><br>       ?packing:(<a href="GButton.tool_item_o-c.html">tool_item_o</a> -> unit) -><br>       ?show:bool -> unit -> <a href="GButton.toggle_tool_button-c.html">toggle_tool_button</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkToggleToolButton.html">GtkToggleToolButton</a></small></ul>
+</div>
+
+<pre><span id="TYPEradio_tool_button"><span class="keyword">class</span> <a href="GButton.radio_tool_button-c.html">radio_tool_button</a></span> : <code class="type">[> <a href="Gtk.html#TYPEradio_tool_button">Gtk.radio_tool_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.radio_tool_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALradio_tool_button"><span class="keyword">val</span> radio_tool_button</span> : <code class="type">?group:<a href="GButton.radio_tool_button-c.html">radio_tool_button</a> -><br>       ?active:bool -><br>       ?label:string -><br>       ?stock:<a href="GtkStock.html#TYPEid">GtkStock.id</a> -><br>       ?use_underline:bool -><br>       ?homogeneous:bool -><br>       ?expand:bool -><br>       ?packing:(<a href="GButton.tool_item_o-c.html">tool_item_o</a> -> unit) -><br>       ?show:bool -> unit -> <a href="GButton.radio_tool_button-c.html">radio_tool_button</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.4</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkRadioToolButton.html">GtkRadioToolButton</a></small></ul>
+</div>
+
+<pre><span id="TYPEmenu_tool_button"><span class="keyword">class</span> <a href="GButton.menu_tool_button-c.html">menu_tool_button</a></span> : <code class="type">[> <a href="Gtk.html#TYPEmenu_tool_button">Gtk.menu_tool_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.menu_tool_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALmenu_tool_button"><span class="keyword">val</span> menu_tool_button</span> : <code class="type">?menu:< as_menu : <a href="Gtk.html#TYPEmenu">Gtk.menu</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a>; .. > -><br>       ?label:string -><br>       ?stock:<a href="GtkStock.html#TYPEid">GtkStock.id</a> -><br>       ?use_underline:bool -><br>       ?homogeneous:bool -><br>       ?expand:bool -><br>       ?packing:(<a href="GButton.tool_item_o-c.html">tool_item_o</a> -> unit) -><br>       ?show:bool -> unit -> <a href="GButton.menu_tool_button-c.html">menu_tool_button</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkMenuToolButton.html">GtkMenuToolButton</a></small></ul>
+</div>
+
+<pre><span id="TYPElink_button"><span class="keyword">class</span> <a href="GButton.link_button-c.html">link_button</a></span> : <code class="type">[> <a href="Gtk.html#TYPElink_button">Gtk.link_button</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GButton.link_button-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br><p>A button for URL</p>
+
+<pre><span id="VALlink_button"><span class="keyword">val</span> link_button</span> : <code class="type">?label:string -><br>       string -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GButton.link_button-c.html">link_button</a></code></pre></body></html>

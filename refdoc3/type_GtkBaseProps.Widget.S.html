@@ -1,0 +1,50 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkBaseProps.Widget.S</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;destroy&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;show&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;hide&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;unmap&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;query_tooltip&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;x:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;y:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;kbd:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.tooltip&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;realize&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;unrealize&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;state_changed&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">GtkEnums</span>.state_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parent_set&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gtk</span>.widget&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;size_allocate&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gtk</span>.rectangle&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;style_set&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gtk</span>.style&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;selection_get&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gtk</span>.selection_data&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;info:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;time:int32&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;selection_received&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gtk</span>.selection_data&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;time:int32&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;drag_begin&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gdk</span>.drag_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;drag_data_delete&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gdk</span>.drag_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;drag_data_get&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gdk</span>.drag_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.selection_data&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;info:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;time:int32&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;drag_data_received&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gdk</span>.drag_context&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;y:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.selection_data&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;info:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;time:int32&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;drag_drop&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gdk</span>.drag_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;y:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;time:int32&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;drag_end&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gdk</span>.drag_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;drag_leave&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gdk</span>.drag_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;time:int32&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;drag_motion&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">Gdk</span>.drag_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;y:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;time:int32&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;event&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;event_after&nbsp;:&nbsp;([&gt;&nbsp;<span class="keywordsign">`</span>widget&nbsp;],&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">GtkSignal</span>.t<br>
+<span class="keyword">end</span></code></body></html>

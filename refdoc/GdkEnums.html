@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Gdk.html">
+<link rel="next" href="GdkEvent.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GdkEnums</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Gdk.html" title="Gdk">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GdkEvent.html" title="GdkEvent">Next</a>
+</div>
+<h1>Module <a href="type_GdkEnums.html">GdkEnums</a></h1>
+
+<pre><span id="MODULEGdkEnums"><span class="keyword">module</span> GdkEnums</span>: <code class="code">sig</code> <a href="GdkEnums.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>gdk enums</p>
+</div>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEevent_type"><span class="keyword">type</span> <code class="type"></code>event_type</span> = <code class="type">[ `BUTTON_PRESS<br>       | `BUTTON_RELEASE<br>       | `CLIENT_EVENT<br>       | `CONFIGURE<br>       | `DAMAGE<br>       | `DELETE<br>       | `DESTROY<br>       | `DRAG_ENTER<br>       | `DRAG_LEAVE<br>       | `DRAG_MOTION<br>       | `DRAG_STATUS<br>       | `DROP_FINISHED<br>       | `DROP_START<br>       | `ENTER_NOTIFY<br>       | `EXPOSE<br>       | `FOCUS_CHANGE<br>       | `GRAB_BROKEN<br>       | `KEY_PRESS<br>       | `KEY_RELEASE<br>       | `LEAVE_NOTIFY<br>       | `MAP<br>       | `MOTION_NOTIFY<br>       | `NOTHING<br>       | `OWNER_CHANGE<br>       | `PROPERTY_NOTIFY<br>       | `PROXIMITY_IN<br>       | `PROXIMITY_OUT<br>       | `SCROLL<br>       | `SELECTION_CLEAR<br>       | `SELECTION_NOTIFY<br>       | `SELECTION_REQUEST<br>       | `SETTING<br>       | `THREE_BUTTON_PRESS<br>       | `TOUCHPAD_PINCH<br>       | `TOUCHPAD_SWIPE<br>       | `TOUCH_BEGIN<br>       | `TOUCH_CANCEL<br>       | `TOUCH_END<br>       | `TOUCH_UPDATE<br>       | `TWO_BUTTON_PRESS<br>       | `UNMAP<br>       | `VISIBILITY_NOTIFY<br>       | `WINDOW_STATE ]</code> </pre>
+
+
+<pre><span id="TYPEvisibility_state"><span class="keyword">type</span> <code class="type"></code>visibility_state</span> = <code class="type">[ `FULLY_OBSCURED | `PARTIAL | `UNOBSCURED ]</code> </pre>
+
+
+<pre><span id="TYPEtouchpad_gesture_phase"><span class="keyword">type</span> <code class="type"></code>touchpad_gesture_phase</span> = <code class="type">[ `BEGIN | `CANCEL | `END | `UPDATE ]</code> </pre>
+
+
+<pre><span id="TYPEscroll_direction"><span class="keyword">type</span> <code class="type"></code>scroll_direction</span> = <code class="type">[ `DOWN | `LEFT | `RIGHT | `SMOOTH | `UP ]</code> </pre>
+
+
+<pre><span id="TYPEcrossing_mode"><span class="keyword">type</span> <code class="type"></code>crossing_mode</span> = <code class="type">[ `DEVICE_SWITCH<br>       | `GRAB<br>       | `GTK_GRAB<br>       | `GTK_UNGRAB<br>       | `NORMAL<br>       | `STATE_CHANGED<br>       | `TOUCH_BEGIN<br>       | `TOUCH_END<br>       | `UNGRAB ]</code> </pre>
+
+
+<pre><span id="TYPEnotify_type"><span class="keyword">type</span> <code class="type"></code>notify_type</span> = <code class="type">[ `ANCESTOR<br>       | `INFERIOR<br>       | `NONLINEAR<br>       | `NONLINEAR_VIRTUAL<br>       | `UNKNOWN<br>       | `VIRTUAL ]</code> </pre>
+
+
+<pre><span id="TYPEsetting_action"><span class="keyword">type</span> <code class="type"></code>setting_action</span> = <code class="type">[ `CHANGED | `DELETED | `NEW ]</code> </pre>
+
+
+<pre><span id="TYPEowner_change"><span class="keyword">type</span> <code class="type"></code>owner_change</span> = <code class="type">[ `CLOSE | `DESTROY | `NEW_OWNER ]</code> </pre>
+
+
+<pre><span id="TYPEwindow_state"><span class="keyword">type</span> <code class="type"></code>window_state</span> = <code class="type">[ `ABOVE<br>       | `BELOW<br>       | `FOCUSED<br>       | `FULLSCREEN<br>       | `ICONIFIED<br>       | `MAXIMIZED<br>       | `STICKY<br>       | `TILED<br>       | `WITHDRAWN ]</code> </pre>
+
+
+<pre><span id="TYPEinput_source"><span class="keyword">type</span> <code class="type"></code>input_source</span> = <code class="type">[ `CURSOR | `ERASER | `KEYBOARD | `MOUSE | `PEN | `TOUCHPAD | `TOUCHSCREEN ]</code> </pre>
+
+
+<pre><span id="TYPEinput_mode"><span class="keyword">type</span> <code class="type"></code>input_mode</span> = <code class="type">[ `DISABLED | `SCREEN | `WINDOW ]</code> </pre>
+
+
+<pre><span id="TYPEdevice_type"><span class="keyword">type</span> <code class="type"></code>device_type</span> = <code class="type">[ `FLOATING | `MASTER | `SLAVE ]</code> </pre>
+
+
+<pre><span id="TYPEvisual_type"><span class="keyword">type</span> <code class="type"></code>visual_type</span> = <code class="type">[ `DIRECT_COLOR<br>       | `GRAYSCALE<br>       | `PSEUDO_COLOR<br>       | `STATIC_COLOR<br>       | `STATIC_GRAY<br>       | `TRUE_COLOR ]</code> </pre>
+
+
+<pre><span id="TYPEdrag_action"><span class="keyword">type</span> <code class="type"></code>drag_action</span> = <code class="type">[ `ASK | `COPY | `DEFAULT | `LINK | `MOVE | `PRIVATE ]</code> </pre>
+
+
+<pre><span id="TYPEdrag_protocol"><span class="keyword">type</span> <code class="type"></code>drag_protocol</span> = <code class="type">[ `LOCAL<br>       | `MOTIF<br>       | `NONE<br>       | `OLE2<br>       | `ROOTWIN<br>       | `WAYLAND<br>       | `WIN32_DROPFILES<br>       | `XDND ]</code> </pre>
+
+
+<pre><span id="TYPExdata"><span class="keyword">type</span> <code class="type"></code>xdata</span> = <code class="type">[ `BYTES | `INT32S | `NONE | `SHORTS ]</code> </pre>
+
+
+<pre><span id="TYPEproperty_state"><span class="keyword">type</span> <code class="type"></code>property_state</span> = <code class="type">[ `DELETE | `NEW_VALUE ]</code> </pre>
+
+
+<pre><span id="TYPEproperty_mode"><span class="keyword">type</span> <code class="type"></code>property_mode</span> = <code class="type">[ `APPEND | `PREPEND | `REPLACE ]</code> </pre>
+
+
+<pre><span id="TYPEwindow_class"><span class="keyword">type</span> <code class="type"></code>window_class</span> = <code class="type">[ `INPUT_ONLY | `INPUT_OUTPUT ]</code> </pre>
+
+
+<pre><span id="TYPEwindow_type"><span class="keyword">type</span> <code class="type"></code>window_type</span> = <code class="type">[ `CHILD | `FOREIGN | `OFFSCREEN | `ROOT | `SUBSURFACE | `TEMP | `TOPLEVEL ]</code> </pre>
+
+
+<pre><span id="TYPEwindow_attributes_type"><span class="keyword">type</span> <code class="type"></code>window_attributes_type</span> = <code class="type">[ `CURSOR | `NOREDIR | `TITLE | `TYPE_HINT | `VISUAL | `WMCLASS | `X | `Y ]</code> </pre>
+
+
+<pre><span id="TYPEwindow_hints"><span class="keyword">type</span> <code class="type"></code>window_hints</span> = <code class="type">[ `ASPECT<br>       | `BASE_SIZE<br>       | `MAX_SIZE<br>       | `MIN_SIZE<br>       | `POS<br>       | `RESIZE_INC<br>       | `USER_POS<br>       | `USER_SIZE<br>       | `WIN_GRAVITY ]</code> </pre>
+
+
+<pre><span id="TYPEwm_decoration"><span class="keyword">type</span> <code class="type"></code>wm_decoration</span> = <code class="type">[ `ALL | `BORDER | `MAXIMIZE | `MENU | `MINIMIZE | `RESIZEH | `TITLE ]</code> </pre>
+
+
+<pre><span id="TYPEwm_function"><span class="keyword">type</span> <code class="type"></code>wm_function</span> = <code class="type">[ `ALL | `CLOSE | `MAXIMIZE | `MINIMIZE | `MOVE | `RESIZE ]</code> </pre>
+
+
+<pre><span id="TYPEgravity"><span class="keyword">type</span> <code class="type"></code>gravity</span> = <code class="type">[ `CENTER<br>       | `EAST<br>       | `NORTH<br>       | `NORTH_EAST<br>       | `NORTH_WEST<br>       | `SOUTH<br>       | `SOUTH_EAST<br>       | `SOUTH_WEST<br>       | `STATIC<br>       | `WEST ]</code> </pre>
+
+
+<pre><span id="TYPEwindow_edge"><span class="keyword">type</span> <code class="type"></code>window_edge</span> = <code class="type">[ `EAST<br>       | `NORTH<br>       | `NORTH_EAST<br>       | `NORTH_WEST<br>       | `SOUTH<br>       | `SOUTH_EAST<br>       | `SOUTH_WEST<br>       | `WEST ]</code> </pre>
+
+
+<pre><span id="TYPEfullscreen_mode"><span class="keyword">type</span> <code class="type"></code>fullscreen_mode</span> = <code class="type">[ `ON_ALL_MONITORS | `ON_CURRENT_MONITOR ]</code> </pre>
+
+
+<pre><span id="TYPEmodifier"><span class="keyword">type</span> <code class="type"></code>modifier</span> = <code class="type">[ `BUTTON1<br>       | `BUTTON2<br>       | `BUTTON3<br>       | `BUTTON4<br>       | `BUTTON5<br>       | `CONTROL<br>       | `HYPER<br>       | `LOCK<br>       | `META<br>       | `MOD1<br>       | `MOD2<br>       | `MOD3<br>       | `MOD4<br>       | `MOD5<br>       | `RELEASE<br>       | `SHIFT<br>       | `SUPER ]</code> </pre>
+
+
+<pre><span id="TYPEmodifier_intent"><span class="keyword">type</span> <code class="type"></code>modifier_intent</span> = <code class="type">[ `CONTEXT_MENU<br>       | `DEFAULT_MOD_MASK<br>       | `EXTEND_SELECTION<br>       | `MODIFY_SELECTION<br>       | `NO_TEXT_INPUT<br>       | `PRIMARY_ACCELERATOR<br>       | `SHIFT_GROUP ]</code> </pre>
+
+
+<pre><span id="TYPEstatus"><span class="keyword">type</span> <code class="type"></code>status</span> = <code class="type">[ `ERROR | `ERROR_FILE | `ERROR_MEM | `ERROR_PARAM | `OK ]</code> </pre>
+
+
+<pre><span id="TYPEgrab_status"><span class="keyword">type</span> <code class="type"></code>grab_status</span> = <code class="type">[ `ALREADY_GRABBED<br>       | `FAILED<br>       | `FROZEN<br>       | `INVALID_TIME<br>       | `NOT_VIEWABLE<br>       | `SUCCESS ]</code> </pre>
+
+
+<pre><span id="TYPEgrab_ownership"><span class="keyword">type</span> <code class="type"></code>grab_ownership</span> = <code class="type">[ `APPLICATION | `NONE | `WINDOW ]</code> </pre>
+
+
+<pre><span id="TYPEevent_mask"><span class="keyword">type</span> <code class="type"></code>event_mask</span> = <code class="type">[ `ALL_EVENTS<br>       | `BUTTON1_MOTION<br>       | `BUTTON2_MOTION<br>       | `BUTTON3_MOTION<br>       | `BUTTON_MOTION<br>       | `BUTTON_PRESS<br>       | `BUTTON_RELEASE<br>       | `ENTER_NOTIFY<br>       | `EXPOSURE<br>       | `FOCUS_CHANGE<br>       | `KEY_PRESS<br>       | `KEY_RELEASE<br>       | `LEAVE_NOTIFY<br>       | `POINTER_MOTION<br>       | `POINTER_MOTION_HINT<br>       | `PROPERTY_CHANGE<br>       | `PROXIMITY_IN<br>       | `PROXIMITY_OUT<br>       | `SCROLL<br>       | `SMOOTH_SCROLL<br>       | `STRUCTURE<br>       | `SUBSTRUCTURE<br>       | `TOUCH<br>       | `TOUCHPAD_GESTURE<br>       | `VISIBILITY_NOTIFY ]</code> </pre>
+
+
+<pre><span id="TYPEgl_error"><span class="keyword">type</span> <code class="type"></code>gl_error</span> = <code class="type">[ `NOT_AVAILABLE | `UNSUPPORTED_FORMAT | `UNSUPPORTED_PROFILE ]</code> </pre>
+
+
+<pre><span id="TYPEwindow_type_hint"><span class="keyword">type</span> <code class="type"></code>window_type_hint</span> = <code class="type">[ `COMBO<br>       | `DESKTOP<br>       | `DIALOG<br>       | `DND<br>       | `DOCK<br>       | `DROPDOWN_MENU<br>       | `MENU<br>       | `NORMAL<br>       | `NOTIFICATION<br>       | `POPUP_MENU<br>       | `SPLASHSCREEN<br>       | `TOOLBAR<br>       | `TOOLTIP<br>       | `UTILITY ]</code> </pre>
+
+
+<pre><span id="TYPEaxis_use"><span class="keyword">type</span> <code class="type"></code>axis_use</span> = <code class="type">[ `IGNORE | `LAST | `PRESSURE | `WHEEL | `X | `XTILT | `Y | `YTILT ]</code> </pre>
+
+
+<pre><span id="TYPEcursor_type"><span class="keyword">type</span> <code class="type"></code>cursor_type</span> = <code class="type">[ `ARROW<br>       | `BASED_ARROW_DOWN<br>       | `BASED_ARROW_UP<br>       | `BOAT<br>       | `BOGOSITY<br>       | `BOTTOM_LEFT_CORNER<br>       | `BOTTOM_RIGHT_CORNER<br>       | `BOTTOM_SIDE<br>       | `BOTTOM_TEE<br>       | `BOX_SPIRAL<br>       | `CENTER_PTR<br>       | `CIRCLE<br>       | `CLOCK<br>       | `COFFEE_MUG<br>       | `CROSS<br>       | `CROSSHAIR<br>       | `CROSS_REVERSE<br>       | `DIAMOND_CROSS<br>       | `DOT<br>       | `DOTBOX<br>       | `DOUBLE_ARROW<br>       | `DRAFT_LARGE<br>       | `DRAFT_SMALL<br>       | `DRAPED_BOX<br>       | `EXCHANGE<br>       | `FLEUR<br>       | `GOBBLER<br>       | `GUMBY<br>       | `HAND1<br>       | `HAND2<br>       | `HEART<br>       | `ICON<br>       | `IRON_CROSS<br>       | `LEFTBUTTON<br>       | `LEFT_PTR<br>       | `LEFT_SIDE<br>       | `LEFT_TEE<br>       | `LL_ANGLE<br>       | `LR_ANGLE<br>       | `MAN<br>       | `MIDDLEBUTTON<br>       | `MOUSE<br>       | `PENCIL<br>       | `PIRATE<br>       | `PLUS<br>       | `QUESTION_ARROW<br>       | `RIGHTBUTTON<br>       | `RIGHT_PTR<br>       | `RIGHT_SIDE<br>       | `RIGHT_TEE<br>       | `RTL_LOGO<br>       | `SAILBOAT<br>       | `SB_DOWN_ARROW<br>       | `SB_H_DOUBLE_ARROW<br>       | `SB_LEFT_ARROW<br>       | `SB_RIGHT_ARROW<br>       | `SB_UP_ARROW<br>       | `SB_V_DOUBLE_ARROW<br>       | `SHUTTLE<br>       | `SIZING<br>       | `SPIDER<br>       | `SPRAYCAN<br>       | `STAR<br>       | `TARGET<br>       | `TCROSS<br>       | `TOP_LEFT_ARROW<br>       | `TOP_LEFT_CORNER<br>       | `TOP_RIGHT_CORNER<br>       | `TOP_SIDE<br>       | `TOP_TEE<br>       | `TREK<br>       | `UL_ANGLE<br>       | `UMBRELLA<br>       | `UR_ANGLE<br>       | `WATCH<br>       | `XTERM<br>       | `X_CURSOR ]</code> </pre>
+
+</body></html>

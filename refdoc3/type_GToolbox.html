@@ -1,0 +1,42 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GToolbox</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;menu_entry&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">C</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;bool&nbsp;*&nbsp;(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">I</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">M</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;<span class="constructor">GToolbox</span>.menu_entry&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">R</span>&nbsp;<span class="keyword">of</span>&nbsp;(string&nbsp;*&nbsp;bool&nbsp;*&nbsp;(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit))&nbsp;list&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;build_menu&nbsp;:&nbsp;<span class="constructor">GMenu</span>.menu&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;entries:<span class="constructor">GToolbox</span>.menu_entry&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;popup_menu&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;entries:<span class="constructor">GToolbox</span>.menu_entry&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;button:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;time:int32&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;question_box&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?parent:<span class="keywordsign">#</span><span class="constructor">GWindow</span>.window_skel&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;title:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;buttons:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?default:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?icon:<span class="keywordsign">#</span><span class="constructor">GObj</span>.widget&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;message_box&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?parent:<span class="keywordsign">#</span><span class="constructor">GWindow</span>.window_skel&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;title:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?icon:<span class="keywordsign">#</span><span class="constructor">GObj</span>.widget&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?ok:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;input_string&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?parent:<span class="keywordsign">#</span><span class="constructor">GWindow</span>.window_skel&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;title:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ok:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?cancel:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?text:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;input_text&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?parent:<span class="keywordsign">#</span><span class="constructor">GWindow</span>.window_skel&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;title:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ok:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?cancel:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?text:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;key_combination&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">A</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">C</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">S</span>&nbsp;]&nbsp;list&nbsp;*&nbsp;char<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;shortcut_specification&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;keys&nbsp;:&nbsp;<span class="constructor">GToolbox</span>.key_combination&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;message&nbsp;:&nbsp;<span class="keywordsign">'</span>a;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create_shortcuts&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;window:<span class="keywordsign">#</span><span class="constructor">GWindow</span>.window_skel&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;shortcuts:<span class="keywordsign">'</span>a&nbsp;<span class="constructor">GToolbox</span>.shortcut_specification&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+<span class="keyword">end</span></code></body></html>

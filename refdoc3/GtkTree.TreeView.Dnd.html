@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkTree.TreeView.Tooltip.html">
+<link rel="Up" href="GtkTree.TreeView.html">
+<title>LablGTK : GtkTree.TreeView.Dnd</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkTree.TreeView.Tooltip.html" title="GtkTree.TreeView.Tooltip">Previous</a>
+&nbsp;<a class="up" href="GtkTree.TreeView.html" title="GtkTree.TreeView">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_GtkTree.TreeView.Dnd.html">GtkTree.TreeView.Dnd</a></h1>
+
+<pre><span id="MODULEDnd"><span class="keyword">module</span> Dnd</span>: <code class="code">sig</code> <a href="GtkTree.TreeView.Dnd.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALget_dest_row_at_pos"><span class="keyword">val</span> get_dest_row_at_pos</span> : <code class="type">[> `treeview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       x:int -> y:int -> (<a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> * <a href="GtkEnums.html#TYPEtree_view_drop_position">GtkEnums.tree_view_drop_position</a>) option</code></pre>
+<pre><span id="VALenable_model_drag_dest"><span class="keyword">val</span> enable_model_drag_dest</span> : <code class="type">[> `treeview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       targets:<a href="Gtk.html#TYPEtarget_entry">Gtk.target_entry</a> array -> actions:<a href="Gdk.Tags.html#TYPEdrag_action">Gdk.Tags.drag_action</a> list -> unit</code></pre>
+<pre><span id="VALunset_rows_drag_dest"><span class="keyword">val</span> unset_rows_drag_dest</span> : <code class="type">[> `treeview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALenable_model_drag_source"><span class="keyword">val</span> enable_model_drag_source</span> : <code class="type">[> `treeview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -><br>       targets:<a href="Gtk.html#TYPEtarget_entry">Gtk.target_entry</a> array -> actions:<a href="Gdk.Tags.html#TYPEdrag_action">Gdk.Tags.drag_action</a> list -> unit</code></pre>
+<pre><span id="VALunset_rows_drag_source"><span class="keyword">val</span> unset_rows_drag_source</span> : <code class="type">[> `treeview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre></body></html>

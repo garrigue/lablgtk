@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GTree.icon_view_signals-c.html">
+<link rel="next" href="GTree.custom_tree_model-c.html">
+<link rel="Up" href="GTree.html">
+<title>LablGTK : GTree.icon_view</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GTree.icon_view_signals-c.html" title="GTree.icon_view_signals">Previous</a>
+&nbsp;<a class="up" href="GTree.html" title="GTree">Up</a>
+&nbsp;<a class="post" href="GTree.custom_tree_model-c.html" title="GTree.custom_tree_model">Next</a>
+</div>
+<h1>Class <a href="type_GTree.icon_view.html">GTree.icon_view</a></h1>
+
+<pre><span id="TYPEicon_view"><span class="keyword">class</span> icon_view</span> : <code class="type">[> <a href="Gtk.html#TYPEicon_view">Gtk.icon_view</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.icon_view-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<div class="info-desc">
+<p>A widget which displays a list of icons in a grid</p>
+</div>
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkIconView.html">GtkIconView</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GContainer.container-c.html"><code class="code">GContainer.container</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">([> <a href="Gtk.html#TYPEicon_view">Gtk.icon_view</a> ] as 'a) <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GTree.icon_view_signals-c.html">icon_view_signals</a></code></pre>
+<pre><span id="METHODevent"><span class="keyword">method</span> event</span> : <code class="type"><a href="GObj.event_ops-c.html">GObj.event_ops</a></code></pre><h2 id="1_Properties">Properties</h2>
+<pre><span id="METHODmodel"><span class="keyword">method</span> model</span> : <code class="type"><a href="GTree.model-c.html">model</a></code></pre>
+<pre><span id="METHODset_model"><span class="keyword">method</span> set_model</span> : <code class="type"><a href="GTree.model-c.html">model</a> option -> unit</code></pre>
+<pre><span id="METHODset_markup_column"><span class="keyword">method</span> set_markup_column</span> : <code class="type">string <a href="GTree.html#TYPEcolumn">column</a> -> unit</code></pre>
+<pre><span id="METHODset_pixbuf_column"><span class="keyword">method</span> set_pixbuf_column</span> : <code class="type"><a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> <a href="GTree.html#TYPEcolumn">column</a> -> unit</code></pre>
+<pre><span id="METHODset_text_column"><span class="keyword">method</span> set_text_column</span> : <code class="type">string <a href="GTree.html#TYPEcolumn">column</a> -> unit</code></pre>
+<pre><span id="METHODorientation"><span class="keyword">method</span> orientation</span> : <code class="type"><a href="GtkEnums.html#TYPEorientation">GtkEnums.orientation</a></code></pre>
+<pre><span id="METHODset_orientation"><span class="keyword">method</span> set_orientation</span> : <code class="type"><a href="GtkEnums.html#TYPEorientation">GtkEnums.orientation</a> -> unit</code></pre>
+<pre><span id="METHODselection_mode"><span class="keyword">method</span> selection_mode</span> : <code class="type"><a href="GtkEnums.html#TYPEselection_mode">GtkEnums.selection_mode</a></code></pre>
+<pre><span id="METHODset_selection_mode"><span class="keyword">method</span> set_selection_mode</span> : <code class="type"><a href="GtkEnums.html#TYPEselection_mode">GtkEnums.selection_mode</a> -> unit</code></pre>
+<pre><span id="METHODcolumn_spacing"><span class="keyword">method</span> column_spacing</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_column_spacing"><span class="keyword">method</span> set_column_spacing</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODitem_width"><span class="keyword">method</span> item_width</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_item_width"><span class="keyword">method</span> set_item_width</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODmargin"><span class="keyword">method</span> margin</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_margin"><span class="keyword">method</span> set_margin</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODcolumns"><span class="keyword">method</span> columns</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_columns"><span class="keyword">method</span> set_columns</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODrow_spacing"><span class="keyword">method</span> row_spacing</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_row_spacing"><span class="keyword">method</span> set_row_spacing</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODspacing"><span class="keyword">method</span> spacing</span> : <code class="type">int</code></pre>
+<pre><span id="METHODset_spacing"><span class="keyword">method</span> set_spacing</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODget_path_at_pos"><span class="keyword">method</span> get_path_at_pos</span> : <code class="type">int -> int -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> option</code></pre>
+<pre><span id="METHODselected_foreach"><span class="keyword">method</span> selected_foreach</span> : <code class="type">(<a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit) -> unit</code></pre>
+<pre><span id="METHODget_selected_items"><span class="keyword">method</span> get_selected_items</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> list</code></pre>
+<pre><span id="METHODpath_is_selected"><span class="keyword">method</span> path_is_selected</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> bool</code></pre>
+<pre><span id="METHODselect_path"><span class="keyword">method</span> select_path</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="METHODunselect_path"><span class="keyword">method</span> unselect_path</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="METHODselect_all"><span class="keyword">method</span> select_all</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODunselect_all"><span class="keyword">method</span> unselect_all</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODitem_activated"><span class="keyword">method</span> item_activated</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre></body></html>

@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkText.ChildAnchor.html">
+<link rel="next" href="GtkText.Iter.html">
+<link rel="Up" href="GtkText.html">
+<title>LablGTK : GtkText.View</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkText.ChildAnchor.html" title="GtkText.ChildAnchor">Previous</a>
+&nbsp;<a class="up" href="GtkText.html" title="GtkText">Up</a>
+&nbsp;<a class="post" href="GtkText.Iter.html" title="GtkText.Iter">Next</a>
+</div>
+<h1>Module <a href="type_GtkText.View.html">GtkText.View</a></h1>
+
+<pre><span id="MODULEView"><span class="keyword">module</span> View</span>: <code class="code">sig</code> <a href="GtkText.View.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span class="keyword">include</span> <a href="GtkTextProps.TextView.html">GtkTextProps.TextView</a></pre>
+
+<pre><span id="VALcreate_with_buffer"><span class="keyword">val</span> create_with_buffer</span> : <code class="type"><a href="Gtk.html#TYPEtext_buffer">Gtk.text_buffer</a> -> <a href="Gtk.html#TYPEtext_view">Gtk.text_view</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALset_buffer"><span class="keyword">val</span> set_buffer</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_buffer">Gtk.text_buffer</a> -> unit</code></pre>
+<pre><span id="VALget_buffer"><span class="keyword">val</span> get_buffer</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_buffer">Gtk.text_buffer</a></code></pre>
+<pre><span id="VALscroll_to_mark"><span class="keyword">val</span> scroll_to_mark</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       <a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a> -> float -> bool -> float -> float -> unit</code></pre>
+<pre><span id="VALscroll_to_iter"><span class="keyword">val</span> scroll_to_iter</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> float -> bool -> float -> float -> bool</code></pre>
+<pre><span id="VALscroll_mark_onscreen"><span class="keyword">val</span> scroll_mark_onscreen</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a> -> unit</code></pre>
+<pre><span id="VALmove_mark_onscreen"><span class="keyword">val</span> move_mark_onscreen</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a> -> bool</code></pre>
+<pre><span id="VALplace_cursor_onscreen"><span class="keyword">val</span> place_cursor_onscreen</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre>
+<pre><span id="VALget_visible_rect"><span class="keyword">val</span> get_visible_rect</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.Rectangle.html#TYPEt">Gdk.Rectangle.t</a></code></pre>
+<pre><span id="VALget_iter_location"><span class="keyword">val</span> get_iter_location</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="Gdk.Rectangle.html#TYPEt">Gdk.Rectangle.t</a></code></pre>
+<pre><span id="VALget_line_at_y"><span class="keyword">val</span> get_line_at_y</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> * int</code></pre>
+<pre><span id="VALget_line_yrange"><span class="keyword">val</span> get_line_yrange</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int * int</code></pre>
+<pre><span id="VALget_iter_at_location"><span class="keyword">val</span> get_iter_at_location</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> int -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a></code></pre>
+<pre><span id="VALbuffer_to_window_coords"><span class="keyword">val</span> buffer_to_window_coords</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       Gtk.Tags.text_window_type -> int -> int -> int * int</code></pre>
+<pre><span id="VALwindow_to_buffer_coords"><span class="keyword">val</span> window_to_buffer_coords</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       Gtk.Tags.text_window_type -> int -> int -> int * int</code></pre>
+<pre><span id="VALget_window"><span class="keyword">val</span> get_window</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> Gtk.Tags.text_window_type -> <a href="Gdk.html#TYPEwindow">Gdk.window</a> option</code></pre>
+<pre><span id="VALget_window_type"><span class="keyword">val</span> get_window_type</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.html#TYPEwindow">Gdk.window</a> -> Gtk.Tags.text_window_type</code></pre>
+<pre><span id="VALset_border_window_size"><span class="keyword">val</span> set_border_window_size</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [ `BOTTOM | `LEFT | `RIGHT | `TOP ] -> int -> unit</code></pre>
+<pre><span id="VALget_border_window_size"><span class="keyword">val</span> get_border_window_size</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [ `BOTTOM | `LEFT | `RIGHT | `TOP ] -> int</code></pre>
+<pre><span id="VALforward_display_line"><span class="keyword">val</span> forward_display_line</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALbackward_display_line"><span class="keyword">val</span> backward_display_line</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALforward_display_line_end"><span class="keyword">val</span> forward_display_line_end</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALbackward_display_line_start"><span class="keyword">val</span> backward_display_line_start</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALstarts_display_line"><span class="keyword">val</span> starts_display_line</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> bool</code></pre>
+<pre><span id="VALmove_visually"><span class="keyword">val</span> move_visually</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> bool</code></pre>
+<pre><span id="VALadd_child_at_anchor"><span class="keyword">val</span> add_child_at_anchor</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEtext_child_anchor">Gtk.text_child_anchor</a> -> unit</code></pre>
+<pre><span id="VALadd_child_in_window"><span class="keyword">val</span> add_child_in_window</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> Gtk.Tags.text_window_type -> int -> int -> unit</code></pre>
+<pre><span id="VALmove_child"><span class="keyword">val</span> move_child</span> : <code class="type">[> `textview ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> int -> int -> unit</code></pre></body></html>

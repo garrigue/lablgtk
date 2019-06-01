@@ -1,0 +1,23 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GtkFile.FileFilter</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;create&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gtk</span>.file_filter&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_file_filter_new"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;set_name&nbsp;:&nbsp;[&gt;&nbsp;<span class="constructor">Gtk</span>.file_filter&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_file_filter_set_name"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_name&nbsp;:&nbsp;[&gt;&nbsp;<span class="constructor">Gtk</span>.file_filter&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_file_filter_get_name"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;add_mime_type&nbsp;:&nbsp;[&gt;&nbsp;<span class="constructor">Gtk</span>.file_filter&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_file_filter_add_mime_type"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;add_pattern&nbsp;:&nbsp;[&gt;&nbsp;<span class="constructor">Gtk</span>.file_filter&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_file_filter_add_pattern"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;add_custom&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&gt;&nbsp;<span class="constructor">Gtk</span>.file_filter&nbsp;]&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkEnums</span>.file_filter_flags&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback:((<span class="constructor">GtkEnums</span>.file_filter_flags&nbsp;*&nbsp;string)&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_gtk_file_filter_add_custom"</span><br>
+<span class="keyword">end</span></code></body></html>

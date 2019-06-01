@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkSignal.html">
+<link rel="next" href="GtkStock.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GtkSpell</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkSignal.html" title="GtkSignal">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GtkStock.html" title="GtkStock">Next</a>
+</div>
+<h1>Module <a href="type_GtkSpell.html">GtkSpell</a></h1>
+
+<pre><span id="MODULEGtkSpell"><span class="keyword">module</span> GtkSpell</span>: <code class="code">sig</code> <a href="GtkSpell.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>GtkSpell interface</p>
+</div>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.BACKEND"><span class="constructor">BACKEND</span></span></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="EXCEPTIONError"><span class="keyword">exception</span> Error</span> <span class="keyword">of</span> <code class="type"><a href="GtkSpell.html#TYPEerror">error</a> * string</code></pre>
+
+<pre><span id="VALattach"><span class="keyword">val</span> attach</span> : <code class="type">?lang:string -> #<a href="GText.view-c.html">GText.view</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Starts spell checking on the GtkTextView.</p>
+</div>
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Error</code> .</li>
+</ul>
+</div>
+
+<pre><span id="VALis_attached"><span class="keyword">val</span> is_attached</span> : <code class="type">#<a href="GText.view-c.html">GText.view</a> -> bool</code></pre>
+<pre><span id="VALdetach"><span class="keyword">val</span> detach</span> : <code class="type">#<a href="GText.view-c.html">GText.view</a> -> unit</code></pre>
+<pre><span id="VALrecheck_all"><span class="keyword">val</span> recheck_all</span> : <code class="type">#<a href="GText.view-c.html">GText.view</a> -> unit</code></pre>
+<pre><span id="VALset_language"><span class="keyword">val</span> set_language</span> : <code class="type">#<a href="GText.view-c.html">GText.view</a> -> string option -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Error</code> .</li>
+</ul>
+</div>
+</body></html>

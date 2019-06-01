@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="next" href="GMain.Grab.html">
+<link rel="Up" href="GMain.html">
+<title>LablGTK : GMain.Main</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="GMain.html" title="GMain">Up</a>
+&nbsp;<a class="post" href="GMain.Grab.html" title="GMain.Grab">Next</a>
+</div>
+<h1>Module <a href="type_GMain.Main.html">GMain.Main</a></h1>
+
+<pre><span id="MODULEMain"><span class="keyword">module</span> Main</span>: <code class="code">sig</code> <a href="GMain.Main.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/gtk-General.html">gtk-General</a></small></ul>
+</div>
+<hr width="100%">
+
+<pre><span id="VALinit"><span class="keyword">val</span> init</span> : <code class="type">?setlocale:bool -> unit -> string</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">init</code> also sets the locale and returns its name.
+       Either set <code class="code">~setlocale</code> to <code class="code">false</code> or GTK_SETLOCALE to "0"
+       if you don't want to the locale to be set</p>
+</div>
+</div>
+
+<pre><span id="VALmain"><span class="keyword">val</span> main</span> : <code class="type">unit -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">main</code> runs the main loop, until <code class="code">quit</code> is called.
+       <em>Do not use in multi-threaded programs.</em></p>
+</div>
+</div>
+
+<pre><span id="VALquit"><span class="keyword">val</span> quit</span> : <code class="type">unit -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>quit the main loop</p>
+</div>
+</div>
+
+<pre><span id="VALversion"><span class="keyword">val</span> version</span> : <code class="type">int * int * int</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">major, minor, micro</code></p>
+</div>
+</div>
+</body></html>

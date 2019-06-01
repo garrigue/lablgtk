@@ -1,0 +1,33 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GAction.ui_manager</title>
+</head>
+<body>
+<code class="code">([&gt;&nbsp;<span class="constructor">Gtk</span>.ui_manager&nbsp;]&nbsp;<span class="keyword">as</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="constructor">Gtk</span>.obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keyword">object</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;obj&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_tearoffs&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_ui&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GAction</span>.ui_id&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;path:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;name:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;action:string&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GtkEnums</span>.ui_manager_item_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;top:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_ui_from_file&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GAction</span>.ui_id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_ui_from_string&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GAction</span>.ui_id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;as_ui_manager&nbsp;:&nbsp;<span class="constructor">Gtk</span>.ui_manager&nbsp;<span class="constructor">Gtk</span>.obj<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;connect&nbsp;:&nbsp;<span class="constructor">GAction</span>.ui_manager_signals<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;ensure_update&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_accel_group&nbsp;:&nbsp;<span class="constructor">Gtk</span>.accel_group<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_action&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GAction</span>.action<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_action_groups&nbsp;:&nbsp;<span class="constructor">GAction</span>.action_group&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_toplevels&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">GtkEnums</span>.ui_manager_item_type&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GObj</span>.widget&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_widget&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GObj</span>.widget<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert_action_group&nbsp;:&nbsp;<span class="constructor">GAction</span>.action_group&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;new_merge_id&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GAction</span>.ui_id<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_action_group&nbsp;:&nbsp;<span class="constructor">GAction</span>.action_group&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_ui&nbsp;:&nbsp;<span class="constructor">GAction</span>.ui_id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_add_tearoffs&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;ui&nbsp;:&nbsp;string<br>
+<span class="keyword">end</span></code></body></html>

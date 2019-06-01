@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Gobject.Type.html">
+<link rel="next" href="Gobject.Closure.html">
+<link rel="Up" href="Gobject.html">
+<title>LablGTK : Gobject.Value</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Gobject.Type.html" title="Gobject.Type">Previous</a>
+&nbsp;<a class="up" href="Gobject.html" title="Gobject">Up</a>
+&nbsp;<a class="post" href="Gobject.Closure.html" title="Gobject.Closure">Next</a>
+</div>
+<h1>Module <a href="type_Gobject.Value.html">Gobject.Value</a></h1>
+
+<pre><span id="MODULEValue"><span class="keyword">module</span> Value</span>: <code class="code">sig</code> <a href="Gobject.Value.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALcreate_empty"><span class="keyword">val</span> create_empty</span> : <code class="type">unit -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a></code></pre>
+<pre><span id="VALinit"><span class="keyword">val</span> init</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> unit</code></pre>
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type"><a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a></code></pre>
+<pre><span id="VALrelease"><span class="keyword">val</span> release</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> unit</code></pre>
+<pre><span id="VALget_type"><span class="keyword">val</span> get_type</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a></code></pre>
+<pre><span id="VALcopy"><span class="keyword">val</span> copy</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> unit</code></pre>
+<pre><span id="VALreset"><span class="keyword">val</span> reset</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> unit</code></pre>
+<pre><span id="VALtype_compatible"><span class="keyword">val</span> type_compatible</span> : <code class="type"><a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> bool</code></pre>
+<pre><span id="VALtype_transformable"><span class="keyword">val</span> type_transformable</span> : <code class="type"><a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> bool</code></pre>
+<pre><span id="VALtransform"><span class="keyword">val</span> transform</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> bool</code></pre>
+<pre><span id="VALget"><span class="keyword">val</span> get</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> <a href="Gobject.html#TYPEdata_get">Gobject.data_get</a></code></pre>
+<pre><span id="VALset"><span class="keyword">val</span> set</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> 'a <a href="Gobject.html#TYPEdata_set">Gobject.data_set</a> -> unit</code></pre>
+<pre><span id="VALget_pointer"><span class="keyword">val</span> get_pointer</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> <a href="Gpointer.html#TYPEboxed">Gpointer.boxed</a></code></pre>
+<pre><span id="VALget_nativeint"><span class="keyword">val</span> get_nativeint</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> nativeint</code></pre>
+<pre><span id="VALget_int32"><span class="keyword">val</span> get_int32</span> : <code class="type"><a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> int32</code></pre>
+<pre><span id="VALget_conv"><span class="keyword">val</span> get_conv</span> : <code class="type"><a href="Gobject.html#TYPEdata_kind">Gobject.data_kind</a> -> <a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> <a href="Gobject.html#TYPEdata_conv_get">Gobject.data_conv_get</a></code></pre></body></html>

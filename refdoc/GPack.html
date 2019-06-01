@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GObj.html">
+<link rel="next" href="GPango.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GPack</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GObj.html" title="GObj">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GPango.html" title="GPango">Next</a>
+</div>
+<h1>Module <a href="type_GPack.html">GPack</a></h1>
+
+<pre><span id="MODULEGPack"><span class="keyword">module</span> GPack</span>: <code class="code">sig</code> <a href="GPack.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Several container widgets</p>
+<h4 id="3_Boxes">Boxes</h4>
+<pre><span id="TYPEbox_skel"><span class="keyword">class</span> <a href="GPack.box_skel-c.html">box_skel</a></span> : <code class="type">[> <a href="Gtk.html#TYPEbox">Gtk.box</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.box_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEbox"><span class="keyword">class</span> <a href="GPack.box-c.html">box</a></span> : <code class="type">[> <a href="Gtk.html#TYPEbox">Gtk.box</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.box-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A base class for box containers</p>
+
+</div>
+<br>
+<pre><span id="VALbox"><span class="keyword">val</span> box</span> : <code class="type">Gtk.Tags.orientation -><br>       ?homogeneous:bool -><br>       ?spacing:int -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GPack.box-c.html">box</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkBox.html">GtkBox</a></small></ul>
+</div>
+<div class="param_info"><code class="code">homogeneous</code> : default value is <code class="code">false</code></div>
+
+<pre><span id="VALvbox"><span class="keyword">val</span> vbox</span> : <code class="type">?homogeneous:bool -><br>       ?spacing:int -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GPack.box-c.html">box</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkVBox.html">GtkVBox</a></small></ul>
+</div>
+<div class="param_info"><code class="code">homogeneous</code> : default value is <code class="code">false</code></div>
+
+<pre><span id="VALhbox"><span class="keyword">val</span> hbox</span> : <code class="type">?homogeneous:bool -><br>       ?spacing:int -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GPack.box-c.html">box</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkHVBox.html">GtkHVBox</a></small></ul>
+</div>
+<div class="param_info"><code class="code">homogeneous</code> : default value is <code class="code">false</code></div>
+
+<pre><span id="TYPEbutton_box"><span class="keyword">class</span> <a href="GPack.button_box-c.html">button_box</a></span> : <code class="type">[> <a href="Gtk.html#TYPEbutton_box">Gtk.button_box</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.button_box-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALbutton_box"><span class="keyword">val</span> button_box</span> : <code class="type">Gtk.Tags.orientation -><br>       ?spacing:int -><br>       ?layout:Gtk.Tags.button_box_style -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GPack.button_box-c.html">button_box</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkButtonBox.html">GtkButtonBox</a></small></ul>
+</div>
+<h4 id="3_GtkTable">GtkTable</h4>
+<pre><span id="TYPEtable"><span class="keyword">class</span> <a href="GPack.table-c.html">table</a></span> : <code class="type"><a href="Gtk.html#TYPEtable">Gtk.table</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.table-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Pack widgets in regular patterns</p>
+
+</div>
+<br>
+<pre><span id="VALtable"><span class="keyword">val</span> table</span> : <code class="type">?columns:int -><br>       ?rows:int -><br>       ?homogeneous:bool -><br>       ?row_spacings:int -><br>       ?col_spacings:int -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GPack.table-c.html">table</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTable.html">GtkTable</a></small></ul>
+</div>
+<h4 id="3_GtkGrid">GtkGrid</h4>
+<pre><span id="TYPEgrid"><span class="keyword">class</span> <a href="GPack.grid-c.html">grid</a></span> : <code class="type"><a href="Gtk.html#TYPEgrid">Gtk.grid</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.grid-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Pack widgets in regular patterns</p>
+
+</div>
+<br>
+<pre><span id="VALgrid"><span class="keyword">val</span> grid</span> : <code class="type">?baseline_row:int -><br>       ?row_homogeneous:bool -><br>       ?col_homogeneous:bool -><br>       ?row_spacings:int -><br>       ?col_spacings:int -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GPack.grid-c.html">grid</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkGrid.html">GtkGrid</a></small></ul>
+</div>
+<h4 id="3_GtkFixed">GtkFixed</h4>
+<pre><span id="TYPEfixed"><span class="keyword">class</span> <a href="GPack.fixed-c.html">fixed</a></span> : <code class="type"><a href="Gtk.html#TYPEfixed">Gtk.fixed</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.fixed-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A container which allows you to position widgets at fixed coordinates</p>
+
+</div>
+<br>
+<pre><span id="VALfixed"><span class="keyword">val</span> fixed</span> : <code class="type">?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GPack.fixed-c.html">fixed</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkFixed.html">GtkFixed</a></small></ul>
+</div>
+<h4 id="3_GtkLayout">GtkLayout</h4>
+<pre><span id="TYPElayout"><span class="keyword">class</span> <a href="GPack.layout-c.html">layout</a></span> : <code class="type">[> <a href="Gtk.html#TYPElayout">Gtk.layout</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.layout-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Infinite scrollable area containing child widgets and/or custom drawing</p>
+
+</div>
+<br>
+<pre><span id="VALlayout"><span class="keyword">val</span> layout</span> : <code class="type">?hadjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?vadjustment:<a href="GData.adjustment-c.html">GData.adjustment</a> -><br>       ?layout_width:int -><br>       ?layout_height:int -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GPack.layout-c.html">layout</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkLayout.html">GtkLayout</a></small></ul>
+</div>
+<h4 id="3_GtkNotebook">GtkNotebook</h4>
+<pre><span id="TYPEnotebook_signals"><span class="keyword">class</span> <a href="GPack.notebook_signals-c.html">notebook_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEnotebook">Gtk.notebook</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.notebook_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEnotebook"><span class="keyword">class</span> <a href="GPack.notebook-c.html">notebook</a></span> : <code class="type"><a href="Gtk.html#TYPEnotebook">Gtk.notebook</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.notebook-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A tabbed notebook container</p>
+
+</div>
+<br>
+<pre><span id="VALnotebook"><span class="keyword">val</span> notebook</span> : <code class="type">?enable_popup:bool -><br>       ?group_name:string -><br>       ?scrollable:bool -><br>       ?show_border:bool -><br>       ?show_tabs:bool -><br>       ?tab_pos:Gtk.Tags.position_type -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GPack.notebook-c.html">notebook</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkNotebook.html">GtkNotebook</a></small></ul>
+</div>
+<h4 id="3_GtkPaned">GtkPaned</h4>
+<pre><span id="TYPEpaned"><span class="keyword">class</span> <a href="GPack.paned-c.html">paned</a></span> : <code class="type"><a href="Gtk.html#TYPEpaned">Gtk.paned</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GPack.paned-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Base class for widgets with two adjustable panes</p>
+
+</div>
+<br>
+<pre><span id="VALpaned"><span class="keyword">val</span> paned</span> : <code class="type">Gtk.Tags.orientation -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GPack.paned-c.html">paned</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkPaned.html">GtkPaned</a></small></ul>
+</div>
+</body></html>

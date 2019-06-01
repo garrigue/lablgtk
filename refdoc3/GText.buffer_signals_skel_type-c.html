@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="next" href="GText.buffer_signals_type-c.html">
+<link rel="Up" href="GText.html">
+<title>LablGTK : GText.buffer_signals_skel_type</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="GText.html" title="GText">Up</a>
+&nbsp;<a class="post" href="GText.buffer_signals_type-c.html" title="GText.buffer_signals_type">Next</a>
+</div>
+<h1>Class type <a href="type_GText.buffer_signals_skel_type.html">GText.buffer_signals_skel_type</a></h1>
+
+<pre><span id="TYPEbuffer_signals_skel_type"><span class="keyword">class type</span> buffer_signals_skel_type</span> = <code class="code">object</code> <a href="GText.buffer_signals_skel_type-c.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="METHODapply_tag"><span class="keyword">method</span> apply_tag</span> : <code class="type">callback:(<a href="GText.tag-c.html">tag</a> -> start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> unit) -><br>       <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODbegin_user_action"><span class="keyword">method</span> begin_user_action</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODchanged"><span class="keyword">method</span> changed</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODdelete_range"><span class="keyword">method</span> delete_range</span> : <code class="type">callback:(start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODend_user_action"><span class="keyword">method</span> end_user_action</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODinsert_child_anchor"><span class="keyword">method</span> insert_child_anchor</span> : <code class="type">callback:(<a href="GText.iter-c.html">iter</a> -> <a href="Gtk.html#TYPEtext_child_anchor">Gtk.text_child_anchor</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODinsert_pixbuf"><span class="keyword">method</span> insert_pixbuf</span> : <code class="type">callback:(<a href="GText.iter-c.html">iter</a> -> <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODinsert_text"><span class="keyword">method</span> insert_text</span> : <code class="type">callback:(<a href="GText.iter-c.html">iter</a> -> string -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODmark_deleted"><span class="keyword">method</span> mark_deleted</span> : <code class="type">callback:(<a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODmark_set"><span class="keyword">method</span> mark_set</span> : <code class="type">callback:(<a href="GText.iter-c.html">iter</a> -> <a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODmodified_changed"><span class="keyword">method</span> modified_changed</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODremove_tag"><span class="keyword">method</span> remove_tag</span> : <code class="type">callback:(<a href="GText.tag-c.html">tag</a> -> start:<a href="GText.iter-c.html">iter</a> -> stop:<a href="GText.iter-c.html">iter</a> -> unit) -><br>       <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_cursor_position"><span class="keyword">method</span> notify_cursor_position</span> : <code class="type">callback:(int -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_has_selection"><span class="keyword">method</span> notify_has_selection</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_tag_table"><span class="keyword">method</span> notify_tag_table</span> : <code class="type">callback:(<a href="Gtk.html#TYPEtext_tag_table">Gtk.text_tag_table</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre></body></html>

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GEdit.editable_signals-c.html">
+<link rel="next" href="GEdit.entry_completion_signals-c.html">
+<link rel="Up" href="GEdit.html">
+<title>LablGTK : GEdit.editable</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GEdit.editable_signals-c.html" title="GEdit.editable_signals">Previous</a>
+&nbsp;<a class="up" href="GEdit.html" title="GEdit">Up</a>
+&nbsp;<a class="post" href="GEdit.entry_completion_signals-c.html" title="GEdit.entry_completion_signals">Next</a>
+</div>
+<h1>Class <a href="type_GEdit.editable.html">GEdit.editable</a></h1>
+
+<pre><span id="TYPEeditable"><span class="keyword">class</span> editable</span> : <code class="type">[> <a href="Gtk.html#TYPEeditable">Gtk.editable</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GEdit.editable-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<div class="info-desc">
+<p>Interface for text-editing widgets</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkEditable.html">GtkEditable</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GObj.widget_impl-c.html"><code class="code">GObj.widget_impl</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="METHODcopy_clipboard"><span class="keyword">method</span> copy_clipboard</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODcut_clipboard"><span class="keyword">method</span> cut_clipboard</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODdelete_selection"><span class="keyword">method</span> delete_selection</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODdelete_text"><span class="keyword">method</span> delete_text</span> : <code class="type">start:int -> stop:int -> unit</code></pre>
+<pre><span id="METHODeditable"><span class="keyword">method</span> editable</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODget_chars"><span class="keyword">method</span> get_chars</span> : <code class="type">start:int -> stop:int -> string</code></pre>
+<pre><span id="METHODinsert_text"><span class="keyword">method</span> insert_text</span> : <code class="type">string -> pos:int -> int</code></pre>
+<pre><span id="METHODpaste_clipboard"><span class="keyword">method</span> paste_clipboard</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODposition"><span class="keyword">method</span> position</span> : <code class="type">int</code></pre>
+<pre><span id="METHODselect_region"><span class="keyword">method</span> select_region</span> : <code class="type">start:int -> stop:int -> unit</code></pre>
+<pre><span id="METHODselection"><span class="keyword">method</span> selection</span> : <code class="type">(int * int) option</code></pre>
+<pre><span id="METHODset_position"><span class="keyword">method</span> set_position</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_editable"><span class="keyword">method</span> set_editable</span> : <code class="type">bool -> unit</code></pre></body></html>

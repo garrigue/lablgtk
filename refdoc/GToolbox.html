@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GText.html">
+<link rel="next" href="GTree.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GToolbox</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GText.html" title="GText">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GTree.html" title="GTree">Next</a>
+</div>
+<h1>Module <a href="type_GToolbox.html">GToolbox</a></h1>
+
+<pre><span id="MODULEGToolbox"><span class="keyword">module</span> GToolbox</span>: <code class="code">sig</code> <a href="GToolbox.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Useful functions for LablGTK.</p>
+</div>
+</div>
+<hr width="100%">
+<h3 id="2_Menus">Menus</h3>
+<pre><span id="TYPEmenu_entry"><span class="keyword">type</span> <code class="type"></code>menu_entry</span> = <code class="type">[ `C of string * bool * (bool -> unit)<br>       | `I of string * (unit -> unit)<br>       | `M of string * <a href="GToolbox.html#TYPEmenu_entry">menu_entry</a> list<br>       | `R of (string * bool * (bool -> unit)) list ]</code> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>Tree description of a menu</p>
+</div>
+</div>
+
+
+<pre><span id="VALbuild_menu"><span class="keyword">val</span> build_menu</span> : <code class="type"><a href="GMenu.menu-c.html">GMenu.menu</a> -> entries:<a href="GToolbox.html#TYPEmenu_entry">menu_entry</a> list -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Build a menu from a tree description</p>
+</div>
+</div>
+
+<pre><span id="VALpopup_menu"><span class="keyword">val</span> popup_menu</span> : <code class="type">entries:<a href="GToolbox.html#TYPEmenu_entry">menu_entry</a> list -> button:int -> time:int32 -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Popup a menu created from the given list of 
+   labels and functions.</p>
+</div>
+</div>
+<h3 id="2_Parametrizeddialogwindows">Parametrized dialog windows</h3>
+<pre><span id="VALquestion_box"><span class="keyword">val</span> question_box</span> : <code class="type">?parent:#<a href="GWindow.window_skel-c.html">GWindow.window_skel</a> -><br>       title:string -><br>       buttons:string list -> ?default:int -> ?icon:#<a href="GObj.widget-c.html">GObj.widget</a> -> string -> int</code></pre><div class="info ">
+<div class="info-desc">
+<p>This function is used to display a question in a dialog box,
+   with a parametrized list of buttons. The function returns the number
+   of the clicked button (starting at 1), or 0 if the window is 
+   savagedly destroyed.</p>
+</div>
+</div>
+<div class="param_info"><code class="code">parent</code> : the parent window in the front of which it should be displayed.
+                 this also sets the <code class="code">destroy_with_parent</code> property.</div>
+<div class="param_info"><code class="code">title</code> : the title of the dialog</div>
+<div class="param_info"><code class="code">buttons</code> : the list of button labels.</div>
+<div class="param_info"><code class="code">default</code> : the index of the default answer</div>
+<div class="param_info"><code class="code">icon</code> : a widget (usually a pixmap) which can be displayed on the left
+     of the window.</div>
+
+<pre><span id="VALmessage_box"><span class="keyword">val</span> message_box</span> : <code class="type">?parent:#<a href="GWindow.window_skel-c.html">GWindow.window_skel</a> -><br>       title:string -> ?icon:#<a href="GObj.widget-c.html">GObj.widget</a> -> ?ok:string -> string -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>This function is used to display a message in a dialog box with just an Ok button.
+   We use <code class="code">question_box</code> with just an ok button.</p>
+</div>
+</div>
+<div class="param_info"><code class="code">parent</code> : the parent window in the front of which it should be displayed.
+                 this also sets the <code class="code">destroy_with_parent</code> property.</div>
+<div class="param_info"><code class="code">title</code> : the title of the dialog</div>
+<div class="param_info"><code class="code">icon</code> : a widget (usually a pixmap) which can be displayed on the left
+     of the window.</div>
+<div class="param_info"><code class="code">ok</code> : the text for the ok button (default is "Ok")</div>
+
+<pre><span id="VALinput_string"><span class="keyword">val</span> input_string</span> : <code class="type">?parent:#<a href="GWindow.window_skel-c.html">GWindow.window_skel</a> -><br>       title:string -><br>       ?ok:string -> ?cancel:string -> ?text:string -> string -> string option</code></pre><div class="info ">
+<div class="info-desc">
+<p>Make the user type in a string.</p>
+</div>
+<ul class="info-attributes">
+<li><b>Returns</b> <code class="code">None</code> if the user clicked on cancel, or <code class="code">Some s</code> if the user
+   clicked on the ok button.</li>
+</ul>
+</div>
+<div class="param_info"><code class="code">parent</code> : the parent window in the front of which it should be displayed.
+                 this also sets the <code class="code">destroy_with_parent</code> property.</div>
+<div class="param_info"><code class="code">title</code> : the title of the dialog</div>
+<div class="param_info"><code class="code">ok</code> : the text for the confirmation button (default is "Ok")</div>
+<div class="param_info"><code class="code">cancel</code> : the text for the cancel button (default is "Cancel")</div>
+<div class="param_info"><code class="code">text</code> : the default text displayed in the entry widget</div>
+
+<pre><span id="VALinput_text"><span class="keyword">val</span> input_text</span> : <code class="type">?parent:#<a href="GWindow.window_skel-c.html">GWindow.window_skel</a> -><br>       title:string -><br>       ?ok:string -> ?cancel:string -> ?text:string -> string -> string option</code></pre><div class="info ">
+<div class="info-desc">
+<p>Make the user type in a text.</p>
+</div>
+<ul class="info-attributes">
+<li><b>Returns</b> <code class="code">None</code> if the user clicked on cancel, or <code class="code">Some s</code> if the user
+   clicked on the ok button.</li>
+</ul>
+</div>
+<div class="param_info"><code class="code">parent</code> : the parent window in the front of which it should be displayed.
+                 this also sets the <code class="code">destroy_with_parent</code> property.</div>
+<div class="param_info"><code class="code">title</code> : the title of the dialog</div>
+<div class="param_info"><code class="code">ok</code> : the text for the confirmation button (default is "Ok")</div>
+<div class="param_info"><code class="code">cancel</code> : the text for the cancel button (default is "Cancel")</div>
+<div class="param_info"><code class="code">text</code> : the default text displayed in the entry widget (utf8)</div>
+<h3 id="2_Keyboardshortcuts">Keyboard shortcuts</h3><p>Associate messages to key combinations.</p>
+
+<pre><span id="TYPEkey_combination"><span class="keyword">type</span> <code class="type"></code>key_combination</span> = <code class="type">[ `A | `C | `S ] list * char</code> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>A keyboard shorcut: a combination of Alt, Control and Shift and a letter.</p>
+</div>
+</div>
+
+
+<pre><code><span id="TYPEshortcut_specification"><span class="keyword">type</span> <code class="type">'a</code> shortcut_specification</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTshortcut_specification.name">name</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTshortcut_specification.keys">keys</span>&nbsp;: <code class="type"><a href="GToolbox.html#TYPEkey_combination">key_combination</a> list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTshortcut_specification.message">message</span>&nbsp;: <code class="type">'a</code>;</code></td>
+
+</tr></table>
+}
+
+<div class="info ">
+<div class="info-desc">
+<p>A shortcut specification: name of a GTK+ signal to emit, keyboard shortcuts
+   and the message to send. The name must be unique.</p>
+</div>
+</div>
+
+
+<pre><span id="VALcreate_shortcuts"><span class="keyword">val</span> create_shortcuts</span> : <code class="type">window:#<a href="GWindow.window_skel-c.html">GWindow.window_skel</a> -><br>       shortcuts:'a <a href="GToolbox.html#TYPEshortcut_specification">shortcut_specification</a> list -><br>       callback:('a -> unit) -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Setup the given shortcut spec list for the given window and callback.
+   This create the GTK+ signal, associate the keyboard shortcuts to it, make the
+   window listen to these shortcuts and eventually call the given callback with
+   the messages from the shortcut specification.</p>
+</div>
+</div>
+</body></html>

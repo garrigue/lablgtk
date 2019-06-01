@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Glib.Message.html">
+<link rel="next" href="Glib.Unichar.html">
+<link rel="Up" href="Glib.html">
+<title>LablGTK : Glib.Convert</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Glib.Message.html" title="Glib.Message">Previous</a>
+&nbsp;<a class="up" href="Glib.html" title="Glib">Up</a>
+&nbsp;<a class="post" href="Glib.Unichar.html" title="Glib.Unichar">Next</a>
+</div>
+<h1>Module <a href="type_Glib.Convert.html">Glib.Convert</a></h1>
+
+<pre><span id="MODULEConvert"><span class="keyword">module</span> Convert</span>: <code class="code">sig</code> <a href="Glib.Convert.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Character Set Conversion</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/glib/stable/glib-Character-Set-Conversion.html">glib-Character-Set-Conversion</a></small></ul>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.NO_CONVERSION"><span class="constructor">NO_CONVERSION</span></span></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+<div class="info-desc">
+<p>Conversion between the requested character sets is not supported</p>
+</div>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.ILLEGAL_SEQUENCE"><span class="constructor">ILLEGAL_SEQUENCE</span></span></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+<div class="info-desc">
+<p>Invalid byte sequence in conversion input</p>
+</div>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.FAILED"><span class="constructor">FAILED</span></span></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+<div class="info-desc">
+<p>Conversion failed for some reason</p>
+</div>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.PARTIAL_INPUT"><span class="constructor">PARTIAL_INPUT</span></span></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+<div class="info-desc">
+<p>Partial character sequence at end of input</p>
+</div>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.BAD_URI"><span class="constructor">BAD_URI</span></span></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+<div class="info-desc">
+<p>URI is invalid</p>
+</div>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.NOT_ABSOLUTE_PATH"><span class="constructor">NOT_ABSOLUTE_PATH</span></span></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+<div class="info-desc">
+<p>Pathname is not an absolute path</p>
+</div>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+
+
+
+<pre><span id="EXCEPTIONError"><span class="keyword">exception</span> Error</span> <span class="keyword">of</span> <code class="type"><a href="Glib.Convert.html#TYPEerror">error</a> * string</code></pre>
+
+<pre><span id="VALconvert"><span class="keyword">val</span> convert</span> : <code class="type">string -> to_codeset:string -> from_codeset:string -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Error</code> .</li>
+</ul>
+</div>
+
+<pre><span id="VALconvert_with_fallback"><span class="keyword">val</span> convert_with_fallback</span> : <code class="type">?fallback:string -><br>       to_codeset:string -> from_codeset:string -> string -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Error</code> .</li>
+</ul>
+</div>
+<p>All internal strings are encoded in utf8: you should use
+      the following conversion functions</p>
+
+<pre><span id="VALlocale_from_utf8"><span class="keyword">val</span> locale_from_utf8</span> : <code class="type">string -> string</code></pre><div class="info ">
+<div class="info-desc">
+<p>Converts the input string from <code class="code">UTF-8</code> to the encoding of the
+        current locale. If the locale's encoding is <code class="code">UTF-8</code>, the string
+        is simply validated and returned unmodified.</p>
+</div>
+<ul class="info-attributes">
+<li><b>Raises</b><ul><li><code>Error</code> if the conversion fails</li>
+<li><code>Error</code> if the string is not a valid <code class="code">UTF-8</code> string</li>
+</ul></li>
+</ul>
+</div>
+
+<pre><span id="VALlocale_to_utf8"><span class="keyword">val</span> locale_to_utf8</span> : <code class="type">string -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Error</code> .</li>
+</ul>
+</div>
+<p>Converts the input string from the encoding of the current locale
+        to <code class="code">UTF-8</code>. If the locale's encoding is <code class="code">UTF-8</code>, the string is
+        simply validated and returned unmodified.</p>
+
+<pre><span id="VALfilename_from_utf8"><span class="keyword">val</span> filename_from_utf8</span> : <code class="type">string -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Error</code> .</li>
+</ul>
+</div>
+
+<pre><span id="VALfilename_to_utf8"><span class="keyword">val</span> filename_to_utf8</span> : <code class="type">string -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Error</code> .</li>
+</ul>
+</div>
+
+<pre><span id="VALfilename_from_uri"><span class="keyword">val</span> filename_from_uri</span> : <code class="type">string -> string option * string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Error</code> .</li>
+</ul>
+</div>
+
+<pre><span id="VALfilename_to_uri"><span class="keyword">val</span> filename_to_uri</span> : <code class="type">?hostname:string -> string -> string</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Raises</b> <code>Error</code> .</li>
+</ul>
+</div>
+
+<pre><span id="VALget_charset"><span class="keyword">val</span> get_charset</span> : <code class="type">unit -> bool * string</code></pre><div class="info ">
+<div class="info-desc">
+<p>Obtains the character set for the current locale.</p>
+</div>
+<ul class="info-attributes">
+<li><b>Returns</b> the pair <code class="code">u,s</code> where <code class="code">u</code> is true if the character set is
+        <code class="code">UTF-8</code> and <code class="code">s</code> is the character set name</li>
+</ul>
+</div>
+</body></html>

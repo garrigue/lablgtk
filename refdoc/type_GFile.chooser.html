@@ -1,0 +1,58 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GFile.chooser</title>
+</head>
+<body>
+<code class="code"><span class="keyword">object</span><br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;action&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.file_chooser_action<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_filter&nbsp;:&nbsp;<span class="constructor">GFile</span>.filter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_shortcut_folder&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;add_shortcut_folder_uri&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;create_folders&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;current_folder&nbsp;:&nbsp;string&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;current_folder_uri&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;do_overwrite_confirmation&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;extra_widget&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;filename&nbsp;:&nbsp;string&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;filter&nbsp;:&nbsp;<span class="constructor">GFile</span>.filter<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_filenames&nbsp;:&nbsp;string&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_uris&nbsp;:&nbsp;string&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;list_filters&nbsp;:&nbsp;<span class="constructor">GFile</span>.filter&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;list_shortcut_folder_uris&nbsp;:&nbsp;string&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;list_shortcut_folders&nbsp;:&nbsp;string&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;local_only&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;preview_filename&nbsp;:&nbsp;string&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;preview_uri&nbsp;:&nbsp;string&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;preview_widget&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;preview_widget_active&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_filter&nbsp;:&nbsp;<span class="constructor">GFile</span>.filter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_shortcut_folder&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;remove_shortcut_folder_uri&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;select_all&nbsp;:&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;select_filename&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;select_multiple&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;select_uri&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_action&nbsp;:&nbsp;<span class="constructor">Gtk</span>.<span class="constructor">Tags</span>.file_chooser_action&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_create_folders&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_current_folder&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_current_folder_uri&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_current_name&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_do_overwrite_confirmation&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_extra_widget&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_filename&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_filter&nbsp;:&nbsp;<span class="constructor">GFile</span>.filter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_local_only&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_preview_widget&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_preview_widget_active&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_select_multiple&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_show_hidden&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_uri&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_use_preview_label&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;show_hidden&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;unselect_all&nbsp;:&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;unselect_filename&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;unselect_uri&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;uri&nbsp;:&nbsp;string&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;use_preview_label&nbsp;:&nbsp;bool<br>
+<span class="keyword">end</span></code></body></html>

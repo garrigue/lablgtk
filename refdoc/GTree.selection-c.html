@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GTree.selection_signals-c.html">
+<link rel="next" href="GTree.cell_layout-c.html">
+<link rel="Up" href="GTree.html">
+<title>LablGTK : GTree.selection</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GTree.selection_signals-c.html" title="GTree.selection_signals">Previous</a>
+&nbsp;<a class="up" href="GTree.html" title="GTree">Up</a>
+&nbsp;<a class="post" href="GTree.cell_layout-c.html" title="GTree.cell_layout">Next</a>
+</div>
+<h1>Class <a href="type_GTree.selection.html">GTree.selection</a></h1>
+
+<pre><span id="TYPEselection"><span class="keyword">class</span> selection</span> : <code class="type"><a href="Gtk.html#TYPEtree_selection">Gtk.tree_selection</a> -> </code><code class="code">object</code> <a href="GTree.selection-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<div class="info-desc">
+<p>The selection object for <a href="GTree.html#VALview"><code class="code">GTree.view</code></a></p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTreeSelection.html">GtkTreeSelection</a></small></ul>
+</div>
+<br><hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type"><a href="Gtk.html#TYPEtree_selection">Gtk.tree_selection</a></code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GTree.selection_signals-c.html">selection_signals</a></code></pre>
+<pre><span id="METHODmisc"><span class="keyword">method</span> misc</span> : <code class="type"><a href="GObj.gobject_ops-c.html">GObj.gobject_ops</a></code></pre>
+<pre><span id="METHODcount_selected_rows"><span class="keyword">method</span> count_selected_rows</span> : <code class="type">int</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.2</li>
+</ul>
+</div>
+
+<pre><span id="METHODget_mode"><span class="keyword">method</span> get_mode</span> : <code class="type">Gtk.Tags.selection_mode</code></pre>
+<pre><span id="METHODget_selected_rows"><span class="keyword">method</span> get_selected_rows</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> list</code></pre>
+<pre><span id="METHODiter_is_selected"><span class="keyword">method</span> iter_is_selected</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool</code></pre>
+<pre><span id="METHODpath_is_selected"><span class="keyword">method</span> path_is_selected</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> bool</code></pre>
+<pre><span id="METHODselect_all"><span class="keyword">method</span> select_all</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODselect_iter"><span class="keyword">method</span> select_iter</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> unit</code></pre>
+<pre><span id="METHODselect_path"><span class="keyword">method</span> select_path</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="METHODselect_range"><span class="keyword">method</span> select_range</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="METHODset_mode"><span class="keyword">method</span> set_mode</span> : <code class="type">Gtk.Tags.selection_mode -> unit</code></pre>
+<pre><span id="METHODset_select_function"><span class="keyword">method</span> set_select_function</span> : <code class="type">(<a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> bool -> bool) -> unit</code></pre>
+<pre><span id="METHODunselect_all"><span class="keyword">method</span> unselect_all</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODunselect_iter"><span class="keyword">method</span> unselect_iter</span> : <code class="type"><a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> unit</code></pre>
+<pre><span id="METHODunselect_path"><span class="keyword">method</span> unselect_path</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="METHODunselect_range"><span class="keyword">method</span> unselect_range</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.2</li>
+</ul>
+</div>
+</body></html>

@@ -1,0 +1,15 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : GdkEvent.Configure</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">CONFIGURE</span>&nbsp;]&nbsp;<span class="constructor">Gdk</span>.event<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cast&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.any&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Configure</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;x&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Configure</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_GdkEventConfigure_x"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;y&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Configure</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_GdkEventConfigure_y"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;width&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Configure</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"ml_GdkEventConfigure_width"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;height&nbsp;:&nbsp;<span class="constructor">GdkEvent</span>.<span class="constructor">Configure</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"ml_GdkEventConfigure_height"</span><br>
+<span class="keyword">end</span></code></body></html>

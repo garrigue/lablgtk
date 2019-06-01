@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="next" href="GtkWindow.Dialog.html">
+<link rel="Up" href="GtkWindow.html">
+<title>LablGTK : GtkWindow.Window</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="GtkWindow.html" title="GtkWindow">Up</a>
+&nbsp;<a class="post" href="GtkWindow.Dialog.html" title="GtkWindow.Dialog">Next</a>
+</div>
+<h1>Module <a href="type_GtkWindow.Window.html">GtkWindow.Window</a></h1>
+
+<pre><span id="MODULEWindow"><span class="keyword">module</span> Window</span>: <code class="code">sig</code> <a href="GtkWindow.Window.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span class="keyword">include</span> <a href="GtkBaseProps.Window.html">GtkBaseProps.Window</a></pre>
+
+<pre><span id="VALset_wmclass"><span class="keyword">val</span> set_wmclass</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> name:string -> clas:string -> unit</code></pre>
+<pre><span id="VALadd_accel_group"><span class="keyword">val</span> add_accel_group</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> unit</code></pre>
+<pre><span id="VALremove_accel_group"><span class="keyword">val</span> remove_accel_group</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEaccel_group">Gtk.accel_group</a> -> unit</code></pre>
+<pre><span id="VALactivate_focus"><span class="keyword">val</span> activate_focus</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre>
+<pre><span id="VALactivate_default"><span class="keyword">val</span> activate_default</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> bool</code></pre>
+<pre><span id="VALset_geometry_hints"><span class="keyword">val</span> set_geometry_hints</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       ?pos:bool -><br>       ?min_size:int * int -><br>       ?max_size:int * int -><br>       ?base_size:int * int -><br>       ?aspect:float * float -><br>       ?resize_inc:int * int -><br>       ?win_gravity:<a href="Gdk.Tags.html#TYPEgravity">Gdk.Tags.gravity</a> -><br>       ?user_pos:bool -> ?user_size:bool -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALlist_toplevels"><span class="keyword">val</span> list_toplevels</span> : <code class="type">unit -> <a href="Gtk.html#TYPEwindow">Gtk.window</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> list</code></pre>
+<pre><span id="VALadd_mnemonic"><span class="keyword">val</span> add_mnemonic</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALremove_mnemonic"><span class="keyword">val</span> remove_mnemonic</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALactivate_mnemonic"><span class="keyword">val</span> activate_mnemonic</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -> <a href="Gdk.html#TYPEkeysym">Gdk.keysym</a> -> unit</code></pre>
+<pre><span id="VALget_focus"><span class="keyword">val</span> get_focus</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALset_focus"><span class="keyword">val</span> set_focus</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALset_default"><span class="keyword">val</span> set_default</span> : <code class="type">[> `window ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre></body></html>

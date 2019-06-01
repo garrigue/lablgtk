@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GdkEvent.Property.html">
+<link rel="next" href="GdkEvent.Proximity.html">
+<link rel="Up" href="GdkEvent.html">
+<title>LablGTK : GdkEvent.Selection</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GdkEvent.Property.html" title="GdkEvent.Property">Previous</a>
+&nbsp;<a class="up" href="GdkEvent.html" title="GdkEvent">Up</a>
+&nbsp;<a class="post" href="GdkEvent.Proximity.html" title="GdkEvent.Proximity">Next</a>
+</div>
+<h1>Module <a href="type_GdkEvent.Selection.html">GdkEvent.Selection</a></h1>
+
+<pre><span id="MODULESelection"><span class="keyword">module</span> Selection</span>: <code class="code">sig</code> <a href="GdkEvent.Selection.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `SELECTION_CLEAR | `SELECTION_NOTIFY | `SELECTION_REQUEST ] <a href="Gdk.html#TYPEevent">Gdk.event</a></code> </pre>
+
+
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type"><a href="GdkEvent.html#TYPEany">GdkEvent.any</a> -> <a href="GdkEvent.Selection.html#TYPEt">t</a></code></pre>
+<pre><span id="VALselection"><span class="keyword">val</span> selection</span> : <code class="type"><a href="GdkEvent.Selection.html#TYPEt">t</a> -> <a href="Gdk.html#TYPEatom">Gdk.atom</a></code></pre>
+<pre><span id="VALtarget"><span class="keyword">val</span> target</span> : <code class="type"><a href="GdkEvent.Selection.html#TYPEt">t</a> -> <a href="Gdk.html#TYPEatom">Gdk.atom</a></code></pre>
+<pre><span id="VALproperty"><span class="keyword">val</span> property</span> : <code class="type"><a href="GdkEvent.Selection.html#TYPEt">t</a> -> <a href="Gdk.html#TYPEatom">Gdk.atom</a></code></pre>
+<pre><span id="VALrequestor"><span class="keyword">val</span> requestor</span> : <code class="type"><a href="GdkEvent.Selection.html#TYPEt">t</a> -> <a href="Gdk.html#TYPEnative_window">Gdk.native_window</a></code></pre>
+<pre><span id="VALtime"><span class="keyword">val</span> time</span> : <code class="type">[< <a href="GdkEvent.html#TYPEtimed">GdkEvent.timed</a> ] <a href="Gdk.html#TYPEevent">Gdk.event</a> -> int32</code></pre></body></html>

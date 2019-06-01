@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GTree.view_signals-c.html">
+<link rel="next" href="GTree.cell_renderer_impl-c.html">
+<link rel="Up" href="GTree.html">
+<title>LablGTK : GTree.view</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GTree.view_signals-c.html" title="GTree.view_signals">Previous</a>
+&nbsp;<a class="up" href="GTree.html" title="GTree">Up</a>
+&nbsp;<a class="post" href="GTree.cell_renderer_impl-c.html" title="GTree.cell_renderer_impl">Next</a>
+</div>
+<h1>Class <a href="type_GTree.view.html">GTree.view</a></h1>
+
+<pre><span id="TYPEview"><span class="keyword">class</span> view</span> : <code class="type"><a href="Gtk.html#TYPEtree_view">Gtk.tree_view</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GTree.view-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<div class="info-desc">
+<p>A widget for displaying both trees and lists</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTreeView.html">GtkTreeView</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GContainer.container-c.html"><code class="code">GContainer.container</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type"><a href="Gtk.html#TYPEtree_view">Gtk.tree_view</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODas_tree_view"><span class="keyword">method</span> as_tree_view</span> : <code class="type"><a href="Gtk.html#TYPEtree_view">Gtk.tree_view</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODconnect"><span class="keyword">method</span> connect</span> : <code class="type"><a href="GTree.view_signals-c.html">view_signals</a></code></pre>
+<pre><span id="METHODappend_column"><span class="keyword">method</span> append_column</span> : <code class="type"><a href="GTree.view_column-c.html">view_column</a> -> int</code></pre>
+<pre><span id="METHODcollapse_all"><span class="keyword">method</span> collapse_all</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODcollapse_row"><span class="keyword">method</span> collapse_row</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre>
+<pre><span id="METHODenable_search"><span class="keyword">method</span> enable_search</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODevent"><span class="keyword">method</span> event</span> : <code class="type"><a href="GObj.event_ops-c.html">GObj.event_ops</a></code></pre>
+<pre><span id="METHODexpand_all"><span class="keyword">method</span> expand_all</span> : <code class="type">unit -> unit</code></pre>
+<pre><span id="METHODexpand_row"><span class="keyword">method</span> expand_row</span> : <code class="type">?all:bool -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre><div class="info ">
+</div>
+<div class="param_info"><code class="code">all</code> : default value is <code class="code">false</code></div>
+
+<pre><span id="METHODexpand_to_path"><span class="keyword">method</span> expand_to_path</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.2</li>
+</ul>
+</div>
+
+<pre><span id="METHODexpander_column"><span class="keyword">method</span> expander_column</span> : <code class="type"><a href="GTree.view_column-c.html">view_column</a> option</code></pre>
+<pre><span id="METHODfixed_height_mode"><span class="keyword">method</span> fixed_height_mode</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODget_column"><span class="keyword">method</span> get_column</span> : <code class="type">int -> <a href="GTree.view_column-c.html">view_column</a></code></pre>
+<pre><span id="METHODget_cursor"><span class="keyword">method</span> get_cursor</span> : <code class="type">unit -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> option * <a href="GTree.view_column-c.html">view_column</a> option</code></pre>
+<pre><span id="METHODget_path_at_pos"><span class="keyword">method</span> get_path_at_pos</span> : <code class="type">x:int -> y:int -> (<a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> * <a href="GTree.view_column-c.html">view_column</a> * int * int) option</code></pre>
+<pre><span id="METHODget_cell_area"><span class="keyword">method</span> get_cell_area</span> : <code class="type">?path:<a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> ?col:<a href="GTree.view_column-c.html">view_column</a> -> unit -> <a href="Gdk.Rectangle.html#TYPEt">Gdk.Rectangle.t</a></code></pre>
+<pre><span id="METHODget_visible_range"><span class="keyword">method</span> get_visible_range</span> : <code class="type">unit -> (<a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> * <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a>) option</code></pre>
+<pre><span id="METHODhadjustment"><span class="keyword">method</span> hadjustment</span> : <code class="type"><a href="GData.adjustment-c.html">GData.adjustment</a></code></pre>
+<pre><span id="METHODheaders_visible"><span class="keyword">method</span> headers_visible</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODinsert_column"><span class="keyword">method</span> insert_column</span> : <code class="type"><a href="GTree.view_column-c.html">view_column</a> -> int -> int</code></pre>
+<pre><span id="METHODmodel"><span class="keyword">method</span> model</span> : <code class="type"><a href="GTree.model-c.html">model</a></code></pre>
+<pre><span id="METHODmove_column"><span class="keyword">method</span> move_column</span> : <code class="type"><a href="GTree.view_column-c.html">view_column</a> -> after:<a href="GTree.view_column-c.html">view_column</a> -> int</code></pre>
+<pre><span id="METHODremove_column"><span class="keyword">method</span> remove_column</span> : <code class="type"><a href="GTree.view_column-c.html">view_column</a> -> int</code></pre>
+<pre><span id="METHODreorderable"><span class="keyword">method</span> reorderable</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODrow_activated"><span class="keyword">method</span> row_activated</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> <a href="GTree.view_column-c.html">view_column</a> -> unit</code></pre>
+<pre><span id="METHODrow_expanded"><span class="keyword">method</span> row_expanded</span> : <code class="type"><a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> bool</code></pre>
+<pre><span id="METHODrules_hint"><span class="keyword">method</span> rules_hint</span> : <code class="type">bool</code></pre>
+<pre><span id="METHODscroll_to_cell"><span class="keyword">method</span> scroll_to_cell</span> : <code class="type">?align:float * float -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> <a href="GTree.view_column-c.html">view_column</a> -> unit</code></pre>
+<pre><span id="METHODscroll_to_point"><span class="keyword">method</span> scroll_to_point</span> : <code class="type">int -> int -> unit</code></pre>
+<pre><span id="METHODsearch_column"><span class="keyword">method</span> search_column</span> : <code class="type">int</code></pre>
+<pre><span id="METHODselection"><span class="keyword">method</span> selection</span> : <code class="type"><a href="GTree.selection-c.html">selection</a></code></pre>
+<pre><span id="METHODset_cursor"><span class="keyword">method</span> set_cursor</span> : <code class="type">'a.<br>         ?cell:(#<a href="GTree.cell_renderer-c.html">cell_renderer</a> as 'a) -><br>         ?edit:bool -> <a href="Gtk.html#TYPEtree_path">Gtk.tree_path</a> -> <a href="GTree.view_column-c.html">view_column</a> -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.2</li>
+</ul>
+</div>
+
+<pre><span id="METHODset_enable_search"><span class="keyword">method</span> set_enable_search</span> : <code class="type">bool -> unit</code></pre><div class="info ">
+</div>
+
+<pre><span id="METHODset_expander_column"><span class="keyword">method</span> set_expander_column</span> : <code class="type"><a href="GTree.view_column-c.html">view_column</a> option -> unit</code></pre>
+<pre><span id="METHODset_fixed_height_mode"><span class="keyword">method</span> set_fixed_height_mode</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_hadjustment"><span class="keyword">method</span> set_hadjustment</span> : <code class="type"><a href="GData.adjustment-c.html">GData.adjustment</a> -> unit</code></pre>
+<pre><span id="METHODset_headers_clickable"><span class="keyword">method</span> set_headers_clickable</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_headers_visible"><span class="keyword">method</span> set_headers_visible</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_model"><span class="keyword">method</span> set_model</span> : <code class="type"><a href="GTree.model-c.html">model</a> option -> unit</code></pre>
+<pre><span id="METHODset_reorderable"><span class="keyword">method</span> set_reorderable</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_rules_hint"><span class="keyword">method</span> set_rules_hint</span> : <code class="type">bool -> unit</code></pre>
+<pre><span id="METHODset_search_column"><span class="keyword">method</span> set_search_column</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_tooltip_column"><span class="keyword">method</span> set_tooltip_column</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_vadjustment"><span class="keyword">method</span> set_vadjustment</span> : <code class="type"><a href="GData.adjustment-c.html">GData.adjustment</a> -> unit</code></pre>
+<pre><span id="METHODtooltip_column"><span class="keyword">method</span> tooltip_column</span> : <code class="type">int</code></pre>
+<pre><span id="METHODvadjustment"><span class="keyword">method</span> vadjustment</span> : <code class="type"><a href="GData.adjustment-c.html">GData.adjustment</a></code></pre>
+<pre><span id="METHODhover_expand"><span class="keyword">method</span> hover_expand</span> : <code class="type">bool</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODset_hover_expand"><span class="keyword">method</span> set_hover_expand</span> : <code class="type">bool -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODhover_selection"><span class="keyword">method</span> hover_selection</span> : <code class="type">bool</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODset_hover_selection"><span class="keyword">method</span> set_hover_selection</span> : <code class="type">bool -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODset_row_separator_func"><span class="keyword">method</span> set_row_separator_func</span> : <code class="type">(<a href="GTree.model-c.html">model</a> -> <a href="Gtk.html#TYPEtree_iter">Gtk.tree_iter</a> -> bool) option -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.6</li>
+</ul>
+</div>
+
+<pre><span id="METHODenable_grid_lines"><span class="keyword">method</span> enable_grid_lines</span> : <code class="type"><a href="GtkEnums.html#TYPEtree_view_grid_lines">GtkEnums.tree_view_grid_lines</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.10</li>
+</ul>
+</div>
+
+<pre><span id="METHODenable_tree_lines"><span class="keyword">method</span> enable_tree_lines</span> : <code class="type">bool</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.10</li>
+</ul>
+</div>
+
+<pre><span id="METHODset_enable_grid_lines"><span class="keyword">method</span> set_enable_grid_lines</span> : <code class="type"><a href="GtkEnums.html#TYPEtree_view_grid_lines">GtkEnums.tree_view_grid_lines</a> -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.10</li>
+</ul>
+</div>
+
+<pre><span id="METHODset_enable_tree_lines"><span class="keyword">method</span> set_enable_tree_lines</span> : <code class="type">bool -> unit</code></pre><div class="info ">
+<ul class="info-attributes">
+<li><b>Since</b> GTK 2.10</li>
+</ul>
+</div>
+</body></html>

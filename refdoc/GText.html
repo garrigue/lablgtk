@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GSourceView3.html">
+<link rel="next" href="GToolbox.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GText</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GSourceView3.html" title="GSourceView3">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GToolbox.html" title="GToolbox">Next</a>
+</div>
+<h1>Module <a href="type_GText.html">GText</a></h1>
+
+<pre><span id="MODULEGText"><span class="keyword">module</span> GText</span>: <code class="code">sig</code> <a href="GText.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>The text widget and associated objects</p>
+
+<pre><span id="TYPEmark"><span class="keyword">type</span> <code class="type"></code>mark</span> = <code class="type">[ `INSERT | `MARK of <a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a> | `NAME of string | `SEL_BOUND ]</code> </pre>
+
+
+<pre><span id="TYPEchild_anchor"><span class="keyword">class</span> <a href="GText.child_anchor-c.html">child_anchor</a></span> : <code class="type"><a href="Gtk.html#TYPEtext_child_anchor">Gtk.text_child_anchor</a> -> </code><code class="code">object</code> <a href="GText.child_anchor-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="VALchild_anchor"><span class="keyword">val</span> child_anchor</span> : <code class="type">unit -> <a href="GText.child_anchor-c.html">child_anchor</a></code></pre><h4 id="3_GtkTextTag">GtkTextTag</h4>
+<pre><span id="TYPEtag_property"><span class="keyword">type</span> <code class="type"></code>tag_property</span> = <code class="type">[ `ACCUMULATIVE_MARGIN of bool<br>       | `BACKGROUND of string<br>       | `BACKGROUND_FULL_HEIGHT of bool<br>       | `BACKGROUND_FULL_HEIGHT_SET of bool<br>       | `BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `BACKGROUND_SET of bool<br>       | `DIRECTION of Gtk.Tags.text_direction<br>       | `EDITABLE of bool<br>       | `EDITABLE_SET of bool<br>       | `FAMILY of string<br>       | `FAMILY_SET of bool<br>       | `FONT of string<br>       | `FONT_DESC of <a href="Pango.html#TYPEfont_description">Pango.font_description</a><br>       | `FOREGROUND of string<br>       | `FOREGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `FOREGROUND_SET of bool<br>       | `INDENT of int<br>       | `INDENT_SET of bool<br>       | `INVISIBLE of bool<br>       | `INVISIBLE_SET of bool<br>       | `JUSTIFICATION of Gtk.Tags.justification<br>       | `JUSTIFICATION_SET of bool<br>       | `LANGUAGE of string<br>       | `LANGUAGE_SET of bool<br>       | `LEFT_MARGIN of int<br>       | `LEFT_MARGIN_SET of bool<br>       | `PARAGRAPH_BACKGROUND of string<br>       | `PARAGRAPH_BACKGROUND_GDK of <a href="Gdk.html#TYPEcolor">Gdk.color</a><br>       | `PARAGRAPH_BACKGROUND_SET of bool<br>       | `PIXELS_ABOVE_LINES of int<br>       | `PIXELS_ABOVE_LINES_SET of bool<br>       | `PIXELS_BELOW_LINES of int<br>       | `PIXELS_BELOW_LINES_SET of bool<br>       | `PIXELS_INSIDE_WRAP of int<br>       | `PIXELS_INSIDE_WRAP_SET of bool<br>       | `RIGHT_MARGIN of int<br>       | `RIGHT_MARGIN_SET of bool<br>       | `RISE of int<br>       | `RISE_SET of bool<br>       | `SCALE of <a href="Pango.Tags.html#TYPEscale">Pango.Tags.scale</a><br>       | `SCALE_SET of bool<br>       | `SIZE of int<br>       | `SIZE_POINTS of float<br>       | `SIZE_SET of bool<br>       | `STRETCH of <a href="Pango.Tags.html#TYPEstretch">Pango.Tags.stretch</a><br>       | `STRETCH_SET of bool<br>       | `STRIKETHROUGH of bool<br>       | `STRIKETHROUGH_SET of bool<br>       | `STYLE of <a href="Pango.Tags.html#TYPEstyle">Pango.Tags.style</a><br>       | `STYLE_SET of bool<br>       | `TABS_SET of bool<br>       | `UNDERLINE of <a href="Pango.Tags.html#TYPEunderline">Pango.Tags.underline</a><br>       | `UNDERLINE_SET of bool<br>       | `VARIANT of <a href="Pango.Tags.html#TYPEvariant">Pango.Tags.variant</a><br>       | `VARIANT_SET of bool<br>       | `WEIGHT of <a href="Pango.Tags.html#TYPEweight">Pango.Tags.weight</a><br>       | `WEIGHT_SET of bool<br>       | `WRAP_MODE of Gtk.Tags.wrap_mode<br>       | `WRAP_MODE_SET of bool ]</code> </pre>
+
+
+<pre><span id="TYPEtag_signals"><span class="keyword">class</span> <a href="GText.tag_signals-c.html">tag_signals</a></span> : <code class="type">[> `texttag ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.tag_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtag"><span class="keyword">class</span> <a href="GText.tag-c.html">tag</a></span> : <code class="type"><a href="Gtk.html#TYPEtext_tag">Gtk.text_tag</a> -> </code><code class="code">object</code> <a href="GText.tag-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A tag that can be applied to text in a <a href="GText.html#VALbuffer"><code class="code">GText.buffer</code></a></p>
+
+</div>
+<br>
+<pre><span id="VALtag"><span class="keyword">val</span> tag</span> : <code class="type">?name:string -> unit -> <a href="GText.tag-c.html">tag</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTextTag.html">GtkTextTag</a></small></ul>
+</div>
+<h4 id="3_Textbufferiterator">Text buffer iterator</h4>
+<pre><span id="TYPEcontents"><span class="keyword">type</span> <code class="type"></code>contents</span> = <code class="type">[ `CHAR of <a href="Glib.html#TYPEunichar">Glib.unichar</a><br>       | `CHILD of <a href="GText.child_anchor-c.html">child_anchor</a><br>       | `PIXBUF of <a href="GdkPixbuf.html#TYPEpixbuf">GdkPixbuf.pixbuf</a><br>       | `UNKNOWN ]</code> </pre>
+
+<p>Movement functions returning an iter are truly functional i.e. the
+   returned iter shares nothing with the originale one.</p>
+
+<p>If you need to move some iter in an imperative way use
+   <code class="code">#nocopy#...</code>.</p>
+
+<pre><span id="TYPEnocopy_iter"><span class="keyword">class</span> <a href="GText.nocopy_iter-c.html">nocopy_iter</a></span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> </code><code class="code">object</code> <a href="GText.nocopy_iter-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEiter"><span class="keyword">class</span> <a href="GText.iter-c.html">iter</a></span> : <code class="type"><a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> </code><code class="code">object</code> <a href="GText.iter-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="VALas_iter"><span class="keyword">val</span> as_iter</span> : <code class="type"><a href="GText.iter-c.html">iter</a> -> <a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/gtk-GtkTextIter.html">gtk-GtkTextIter</a></small></ul>
+</div>
+<h4 id="3_GtkTextTagTable">GtkTextTagTable</h4>
+<pre><span id="TYPEtag_table_signals"><span class="keyword">class</span> <a href="GText.tag_table_signals-c.html">tag_table_signals</a></span> : <code class="type">[> `texttagtable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.tag_table_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtag_table_skel"><span class="keyword">class</span> <a href="GText.tag_table_skel-c.html">tag_table_skel</a></span> : <code class="type">[> `texttagtable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.tag_table_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEtag_table"><span class="keyword">class</span> <a href="GText.tag_table-c.html">tag_table</a></span> : <code class="type">[> `texttagtable ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.tag_table-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Collection of tags that can be used together</p>
+
+</div>
+<br>
+<pre><span id="VALtag_table"><span class="keyword">val</span> tag_table</span> : <code class="type">unit -> <a href="GText.tag_table-c.html">tag_table</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTextTagTable.html">GtkTextTagTable</a></small></ul>
+</div>
+<h4 id="3_GtkTextBuffer">GtkTextBuffer</h4>
+<pre><span id="TYPEbuffer_signals_skel_type"><span class="keyword">class type</span> <a href="GText.buffer_signals_skel_type-c.html">buffer_signals_skel_type</a></span> = <code class="code">object</code> <a href="GText.buffer_signals_skel_type-c.html">..</a> <code class="code">end</code></pre>
+<pre><span id="TYPEbuffer_signals_type"><span class="keyword">class type</span> <code class="type">['b]</code> <a href="GText.buffer_signals_type-c.html">buffer_signals_type</a></span> = <code class="code">object</code> <a href="GText.buffer_signals_type-c.html">..</a> <code class="code">end</code></pre>
+<pre><span id="TYPEbuffer_signals_skel"><span class="keyword">class</span> <span class="keyword">virtual</span> <a href="GText.buffer_signals_skel-c.html">buffer_signals_skel</a></span> : <code class="type"></code><code class="code">object</code> <a href="GText.buffer_signals_skel-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="TYPEbuffer_signals"><span class="keyword">class</span> <a href="GText.buffer_signals-c.html">buffer_signals</a></span> : <code class="type">[> `textbuffer ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="type">[[> `textbuffer ] as 'b]</code> <code class="type"><a href="GText.buffer_signals_type-c.html">buffer_signals_type</a></code></pre><br>
+<pre><span id="EXCEPTIONNo_such_mark"><span class="keyword">exception</span> No_such_mark</span> <span class="keyword">of</span> <code class="type">string</code></pre>
+
+<pre><span id="TYPEposition"><span class="keyword">type</span> <code class="type"></code>position</span> = <code class="type">[ `END<br>       | `INSERT<br>       | `ITER of <a href="GText.iter-c.html">iter</a><br>       | `LINE of int<br>       | `LINEBYTE of int * int<br>       | `LINECHAR of int * int<br>       | `MARK of <a href="Gtk.html#TYPEtext_mark">Gtk.text_mark</a><br>       | `NAME of string<br>       | `OFFSET of int<br>       | `SEL_BOUND<br>       | `START ]</code> </pre>
+
+
+<pre><span id="TYPEbuffer_skel"><span class="keyword">class</span> <a href="GText.buffer_skel-c.html">buffer_skel</a></span> : <code class="type">[> `textbuffer ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.buffer_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Stores attributed text for display in a <a href="GText.html#VALview"><code class="code">GText.view</code></a></p>
+
+</div>
+<br>
+<pre><span id="TYPEbuffer"><span class="keyword">class</span> <a href="GText.buffer-c.html">buffer</a></span> : <code class="type">[> `textbuffer ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.buffer-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="VALbuffer"><span class="keyword">val</span> buffer</span> : <code class="type">?tag_table:<a href="GText.tag_table-c.html">tag_table</a> -> ?text:string -> unit -> <a href="GText.buffer-c.html">buffer</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTextBuffer.html">GtkTextBuffer</a></small></ul>
+</div>
+<h4 id="3_GtkTextView">GtkTextView</h4>
+<pre><span id="TYPEview_signals"><span class="keyword">class</span> <a href="GText.view_signals-c.html">view_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtext_view">Gtk.text_view</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.view_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEview_skel"><span class="keyword">class</span> <a href="GText.view_skel-c.html">view_skel</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtext_view">Gtk.text_view</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.view_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Widget that displays a <a href="GText.html#VALbuffer"><code class="code">GText.buffer</code></a></p>
+
+</div>
+<br>
+<pre><span id="TYPEview"><span class="keyword">class</span> <a href="GText.view-c.html">view</a></span> : <code class="type">[> <a href="Gtk.html#TYPEtext_view">Gtk.text_view</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GText.view-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="VALview"><span class="keyword">val</span> view</span> : <code class="type">?buffer:<a href="GText.buffer-c.html">buffer</a> -><br>       ?editable:bool -><br>       ?cursor_visible:bool -><br>       ?justification:Gtk.Tags.justification -><br>       ?wrap_mode:Gtk.Tags.wrap_mode -><br>       ?accepts_tab:bool -><br>       ?border_width:int -><br>       ?width:int -><br>       ?height:int -><br>       ?packing:(<a href="GObj.widget-c.html">GObj.widget</a> -> unit) -> ?show:bool -> unit -> <a href="GText.view-c.html">view</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkTextView.html">GtkTextView</a></small></ul>
+</div>
+</body></html>

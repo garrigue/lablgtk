@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkFile.FileFilter.html">
+<link rel="next" href="GtkFile.FileChooserButton.html">
+<link rel="Up" href="GtkFile.html">
+<title>LablGTK : GtkFile.FileChooser</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkFile.FileFilter.html" title="GtkFile.FileFilter">Previous</a>
+&nbsp;<a class="up" href="GtkFile.html" title="GtkFile">Up</a>
+&nbsp;<a class="post" href="GtkFile.FileChooserButton.html" title="GtkFile.FileChooserButton">Next</a>
+</div>
+<h1>Module <a href="type_GtkFile.FileChooser.html">GtkFile.FileChooser</a></h1>
+
+<pre><span id="MODULEFileChooser"><span class="keyword">module</span> FileChooser</span>: <code class="code">sig</code> <a href="GtkFile.FileChooser.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span class="keyword">include</span> <a href="GtkFileProps.FileChooser.html">GtkFileProps.FileChooser</a></pre>
+
+<pre><code><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.ERROR_NONEXISTENT"><span class="constructor">ERROR_NONEXISTENT</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.ERROR_BAD_FILENAME"><span class="constructor">ERROR_BAD_FILENAME</span></span></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="EXCEPTIONError"><span class="keyword">exception</span> Error</span> <span class="keyword">of</span> <code class="type"><a href="GtkFile.FileChooser.html#TYPEerror">error</a> * string</code></pre>
+
+<pre><span id="VALset_current_name"><span class="keyword">val</span> set_current_name</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALget_filename"><span class="keyword">val</span> get_filename</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string option</code></pre>
+<pre><span id="VALset_filename"><span class="keyword">val</span> set_filename</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> bool</code></pre>
+<pre><span id="VALselect_filename"><span class="keyword">val</span> select_filename</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> bool</code></pre>
+<pre><span id="VALunselect_filename"><span class="keyword">val</span> unselect_filename</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALselect_all"><span class="keyword">val</span> select_all</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALunselect_all"><span class="keyword">val</span> unselect_all</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALget_filenames"><span class="keyword">val</span> get_filenames</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string list</code></pre>
+<pre><span id="VALget_current_folder"><span class="keyword">val</span> get_current_folder</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string option</code></pre>
+<pre><span id="VALset_current_folder"><span class="keyword">val</span> set_current_folder</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> bool</code></pre>
+<pre><span id="VALget_uri"><span class="keyword">val</span> get_uri</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string option</code></pre>
+<pre><span id="VALset_uri"><span class="keyword">val</span> set_uri</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> bool</code></pre>
+<pre><span id="VALselect_uri"><span class="keyword">val</span> select_uri</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> bool</code></pre>
+<pre><span id="VALunselect_uri"><span class="keyword">val</span> unselect_uri</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALget_uris"><span class="keyword">val</span> get_uris</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string list</code></pre>
+<pre><span id="VALget_current_folder_uri"><span class="keyword">val</span> get_current_folder_uri</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string</code></pre>
+<pre><span id="VALset_current_folder_uri"><span class="keyword">val</span> set_current_folder_uri</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> bool</code></pre>
+<pre><span id="VALget_preview_filename"><span class="keyword">val</span> get_preview_filename</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string option</code></pre>
+<pre><span id="VALget_preview_uri"><span class="keyword">val</span> get_preview_uri</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string option</code></pre>
+<pre><span id="VALadd_filter"><span class="keyword">val</span> add_filter</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEfile_filter">Gtk.file_filter</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALremove_filter"><span class="keyword">val</span> remove_filter</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEfile_filter">Gtk.file_filter</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALlist_filters"><span class="keyword">val</span> list_filters</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> <a href="Gtk.html#TYPEfile_filter">Gtk.file_filter</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> list</code></pre>
+<pre><span id="VALadd_shortcut_folder"><span class="keyword">val</span> add_shortcut_folder</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALremove_shortcut_folder"><span class="keyword">val</span> remove_shortcut_folder</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALlist_shortcut_folders"><span class="keyword">val</span> list_shortcut_folders</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string list</code></pre>
+<pre><span id="VALadd_shortcut_folder_uri"><span class="keyword">val</span> add_shortcut_folder_uri</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALremove_shortcut_folder_uri"><span class="keyword">val</span> remove_shortcut_folder_uri</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string -> unit</code></pre>
+<pre><span id="VALlist_shortcut_folder_uris"><span class="keyword">val</span> list_shortcut_folder_uris</span> : <code class="type">[> <a href="Gtk.html#TYPEfile_chooser">Gtk.file_chooser</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> string list</code></pre>
+<pre><span id="VALdialog_create"><span class="keyword">val</span> dialog_create</span> : <code class="type">[ `bin | `container | `dialog | `filechooser | `giu | `widget | `window ]<br>       <a href="Gobject.html#TYPEparam">Gobject.param</a> list -><br>       [ `bin | `container | `dialog | `filechooser | `giu | `widget | `window ]<br>       <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALwidget_create"><span class="keyword">val</span> widget_create</span> : <code class="type">[ `filechooser | `giu | `widget ] <a href="Gobject.html#TYPEparam">Gobject.param</a> list -><br>       [ `filechooser | `giu | `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre></body></html>

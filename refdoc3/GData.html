@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GContainer.html">
+<link rel="next" href="GDraw.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GData</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GContainer.html" title="GContainer">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GDraw.html" title="GDraw">Next</a>
+</div>
+<h1>Module <a href="type_GData.html">GData</a></h1>
+
+<pre><span id="MODULEGData"><span class="keyword">module</span> GData</span>: <code class="code">sig</code> <a href="GData.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Non-Widgets objects carrying data</p>
+<h4 id="3_GtkAdjustement">GtkAdjustement</h4>
+<pre><span id="TYPEadjustment_signals"><span class="keyword">class</span> <a href="GData.adjustment_signals-c.html">adjustment_signals</a></span> : <code class="type">[> <a href="Gtk.html#TYPEadjustment">Gtk.adjustment</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GData.adjustment_signals-c.html">..</a> <code class="code">end</code></pre><div class="info">
+</div>
+<br>
+<pre><span id="TYPEadjustment"><span class="keyword">class</span> <a href="GData.adjustment-c.html">adjustment</a></span> : <code class="type"><a href="Gtk.html#TYPEadjustment">Gtk.adjustment</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GData.adjustment-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A GtkObject representing an adjustable bounded value</p>
+
+</div>
+<br>
+<pre><span id="VALadjustment"><span class="keyword">val</span> adjustment</span> : <code class="type">?value:float -><br>       ?lower:float -><br>       ?upper:float -><br>       ?step_incr:float -><br>       ?page_incr:float -> ?page_size:float -> unit -> <a href="GData.adjustment-c.html">adjustment</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkAdjustment.html">GtkAdjustment</a></small></ul>
+</div>
+<div class="param_info"><code class="code">lower</code> : default value is <code class="code">0.</code></div>
+<div class="param_info"><code class="code">upper</code> : default value is <code class="code">100.</code></div>
+<div class="param_info"><code class="code">step_incr</code> : default value is <code class="code">1.</code></div>
+<div class="param_info"><code class="code">page_incr</code> : default value is <code class="code">10.</code></div>
+<div class="param_info"><code class="code">page_size</code> : default value is <code class="code">10.</code></div>
+
+<pre><span id="VALas_adjustment"><span class="keyword">val</span> as_adjustment</span> : <code class="type"><a href="GData.adjustment-c.html">adjustment</a> -> <a href="Gtk.html#TYPEadjustment">Gtk.adjustment</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALconv_adjustment"><span class="keyword">val</span> conv_adjustment</span> : <code class="type"><a href="GData.adjustment-c.html">adjustment</a> <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a></code></pre>
+<pre><span id="VALconv_adjustment_option"><span class="keyword">val</span> conv_adjustment_option</span> : <code class="type"><a href="GData.adjustment-c.html">adjustment</a> option <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a></code></pre><h4 id="3_Clipboards">Clipboards</h4>
+<pre><span id="TYPEclipboard_skel"><span class="keyword">class</span> <a href="GData.clipboard_skel-c.html">clipboard_skel</a></span> : <code class="type"><a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a> Stdlib.Lazy.t -> </code><code class="code">object</code> <a href="GData.clipboard_skel-c.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>Storing data on clipboards</p>
+
+</div>
+<br>
+<pre><span id="TYPEclipboard"><span class="keyword">class</span> <a href="GData.clipboard-c.html">clipboard</a></span> : <code class="type">selection:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> </code><code class="code">object</code> <a href="GData.clipboard-c.html">..</a> <code class="code">end</code></pre><br>
+<pre><span id="VALclipboard"><span class="keyword">val</span> clipboard</span> : <code class="type"><a href="Gdk.html#TYPEatom">Gdk.atom</a> -> <a href="GData.clipboard-c.html">clipboard</a></code></pre><div class="info ">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/gtk-Clipboards.html">gtk-Clipboards</a></small></ul>
+</div>
+
+<pre><span id="VALas_clipboard"><span class="keyword">val</span> as_clipboard</span> : <code class="type"><a href="GData.clipboard-c.html">clipboard</a> -> <a href="Gtk.html#TYPEclipboard">Gtk.clipboard</a></code></pre></body></html>

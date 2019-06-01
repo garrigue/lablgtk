@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Pango.Tags.html">
+<link rel="next" href="Pango.FontMap.html">
+<link rel="Up" href="Pango.html">
+<title>LablGTK : Pango.Font</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Pango.Tags.html" title="Pango.Tags">Previous</a>
+&nbsp;<a class="up" href="Pango.html" title="Pango">Up</a>
+&nbsp;<a class="post" href="Pango.FontMap.html" title="Pango.FontMap">Next</a>
+</div>
+<h1>Module <a href="type_Pango.Font.html">Pango.Font</a></h1>
+
+<pre><span id="MODULEFont"><span class="keyword">module</span> Font</span>: <code class="code">sig</code> <a href="Pango.Font.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALfrom_string"><span class="keyword">val</span> from_string</span> : <code class="type">string -> <a href="Pango.html#TYPEfont_description">Pango.font_description</a></code></pre>
+<pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> string</code></pre>
+<pre><span id="VALcopy"><span class="keyword">val</span> copy</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> <a href="Pango.html#TYPEfont_description">Pango.font_description</a></code></pre>
+<pre><span id="VALset_family"><span class="keyword">val</span> set_family</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> string -> unit</code></pre>
+<pre><span id="VALget_family"><span class="keyword">val</span> get_family</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> string</code></pre>
+<pre><span id="VALset_style"><span class="keyword">val</span> set_style</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> <a href="Pango.Tags.html#TYPEstyle">Pango.Tags.style</a> -> unit</code></pre>
+<pre><span id="VALget_style"><span class="keyword">val</span> get_style</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> <a href="Pango.Tags.html#TYPEstyle">Pango.Tags.style</a></code></pre>
+<pre><span id="VALset_variant"><span class="keyword">val</span> set_variant</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> <a href="Pango.Tags.html#TYPEvariant">Pango.Tags.variant</a> -> unit</code></pre>
+<pre><span id="VALget_variant"><span class="keyword">val</span> get_variant</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> <a href="Pango.Tags.html#TYPEvariant">Pango.Tags.variant</a></code></pre>
+<pre><span id="VALset_weight"><span class="keyword">val</span> set_weight</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> int -> unit</code></pre>
+<pre><span id="VALset_weight"><span class="keyword">val</span> set_weight</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> <a href="Pango.Tags.html#TYPEweight">Pango.Tags.weight</a> -> unit</code></pre>
+<pre><span id="VALget_weight"><span class="keyword">val</span> get_weight</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> int</code></pre>
+<pre><span id="VALset_stretch"><span class="keyword">val</span> set_stretch</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> <a href="Pango.Tags.html#TYPEstretch">Pango.Tags.stretch</a> -> unit</code></pre>
+<pre><span id="VALget_stretch"><span class="keyword">val</span> get_stretch</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> <a href="Pango.Tags.html#TYPEstretch">Pango.Tags.stretch</a></code></pre>
+<pre><span id="VALset_size"><span class="keyword">val</span> set_size</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> int -> unit</code></pre>
+<pre><span id="VALget_size"><span class="keyword">val</span> get_size</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -> int</code></pre>
+<pre><span id="VALmodify"><span class="keyword">val</span> modify</span> : <code class="type"><a href="Pango.html#TYPEfont_description">Pango.font_description</a> -><br>       ?family:string -><br>       ?style:<a href="Pango.Tags.html#TYPEstyle">Pango.Tags.style</a> -><br>       ?variant:<a href="Pango.Tags.html#TYPEvariant">Pango.Tags.variant</a> -><br>       ?weight:<a href="Pango.Tags.html#TYPEweight">Pango.Tags.weight</a> -><br>       ?stretch:<a href="Pango.Tags.html#TYPEstretch">Pango.Tags.stretch</a> -> ?size:int -> unit -> unit</code></pre>
+<pre><span id="VALget_metrics"><span class="keyword">val</span> get_metrics</span> : <code class="type"><a href="Pango.html#TYPEfont">Pango.font</a> -> <a href="Pango.html#TYPElanguage">Pango.language</a> -> <a href="Pango.html#TYPEfont_metrics">Pango.font_metrics</a></code></pre>
+<pre><span id="VALget_ascent"><span class="keyword">val</span> get_ascent</span> : <code class="type"><a href="Pango.html#TYPEfont_metrics">Pango.font_metrics</a> -> <a href="Pango.html#TYPEunits">Pango.units</a></code></pre>
+<pre><span id="VALget_descent"><span class="keyword">val</span> get_descent</span> : <code class="type"><a href="Pango.html#TYPEfont_metrics">Pango.font_metrics</a> -> <a href="Pango.html#TYPEunits">Pango.units</a></code></pre>
+<pre><span id="VALget_approximate_char_width"><span class="keyword">val</span> get_approximate_char_width</span> : <code class="type"><a href="Pango.html#TYPEfont_metrics">Pango.font_metrics</a> -> <a href="Pango.html#TYPEunits">Pango.units</a></code></pre>
+<pre><span id="VALget_approximate_digit_width"><span class="keyword">val</span> get_approximate_digit_width</span> : <code class="type"><a href="Pango.html#TYPEfont_metrics">Pango.font_metrics</a> -> <a href="Pango.html#TYPEunits">Pango.units</a></code></pre></body></html>

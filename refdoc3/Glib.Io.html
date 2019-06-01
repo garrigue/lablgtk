@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Glib.Idle.html">
+<link rel="next" href="Glib.Message.html">
+<link rel="Up" href="Glib.html">
+<title>LablGTK : Glib.Io</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Glib.Idle.html" title="Glib.Idle">Previous</a>
+&nbsp;<a class="up" href="Glib.html" title="Glib">Up</a>
+&nbsp;<a class="post" href="Glib.Message.html" title="Glib.Message">Next</a>
+</div>
+<h1>Module <a href="type_Glib.Io.html">Glib.Io</a></h1>
+
+<pre><span id="MODULEIo"><span class="keyword">module</span> Io</span>: <code class="code">sig</code> <a href="Glib.Io.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>IO Channels</p>
+</div>
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/glib/stable/glib-IO-Channels.html">glib-IO-Channels</a></small></ul>
+</div>
+<hr width="100%">
+<p>Io condition, called from the main loop</p>
+
+<pre><span id="TYPEchannel"><span class="keyword">type</span> <code class="type"></code>channel</span> </pre>
+
+
+<pre><span id="TYPEcondition"><span class="keyword">type</span> <code class="type"></code>condition</span> = <code class="type">[ `ERR | `HUP | `IN | `NVAL | `OUT | `PRI ]</code> </pre>
+
+
+<pre><span id="TYPEid"><span class="keyword">type</span> <code class="type"></code>id</span> </pre>
+
+
+<pre><span id="VALchannel_of_descr"><span class="keyword">val</span> channel_of_descr</span> : <code class="type">Unix.file_descr -> <a href="Glib.Io.html#TYPEchannel">channel</a></code></pre>
+<pre><span id="VALadd_watch"><span class="keyword">val</span> add_watch</span> : <code class="type">cond:<a href="Glib.Io.html#TYPEcondition">condition</a> list -><br>       callback:(<a href="Glib.Io.html#TYPEcondition">condition</a> list -> bool) -><br>       ?prio:int -> <a href="Glib.Io.html#TYPEchannel">channel</a> -> <a href="Glib.Io.html#TYPEid">id</a></code></pre>
+<pre><span id="VALremove"><span class="keyword">val</span> remove</span> : <code class="type"><a href="Glib.Io.html#TYPEid">id</a> -> unit</code></pre>
+<pre><span id="VALread"><span class="keyword">val</span> read</span> : <code class="type"><a href="Glib.Io.html#TYPEchannel">channel</a> -> buf:bytes -> pos:int -> len:int -> int</code></pre>
+<pre><span id="VALread_chars"><span class="keyword">val</span> read_chars</span> : <code class="type"><a href="Glib.Io.html#TYPEchannel">channel</a> -> buf:bytes -> pos:int -> len:int -> int</code></pre></body></html>

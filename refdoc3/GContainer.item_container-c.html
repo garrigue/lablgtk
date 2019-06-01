@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GContainer.bin_impl-c.html">
+<link rel="Up" href="GContainer.html">
+<title>LablGTK : GContainer.item_container</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GContainer.bin_impl-c.html" title="GContainer.bin_impl">Previous</a>
+&nbsp;<a class="up" href="GContainer.html" title="GContainer">Up</a>
+&nbsp;</div>
+<h1>Class virtual <a href="type_GContainer.item_container.html">GContainer.item_container</a></h1>
+
+<pre><span id="TYPEitem_container"><span class="keyword">class</span> <span class="keyword">virtual</span> <code class="type">[< as_item : [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a>; .. >]</code> item_container</span> : <code class="type">[> <a href="Gtk.html#TYPEcontainer">Gtk.container</a> ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GContainer.item_container-c.html">..</a> <code class="code">end</code></pre><div class="info class top">
+<ul class="info-attributes">
+<small>GTK documentation:&nbsp;<a href="http://developer.gnome.org/gtk2/stable/gtk/stable/GtkContainer.html">GtkContainer</a></small></ul>
+</div>
+<br><b>Inherits</b><ul>
+<li><a href="GObj.widget-c.html"><code class="code">GObj.widget</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="ATTobj"><span class="keyword">val</span> obj</span> : <code class="type">([> <a href="Gtk.html#TYPEcontainer">Gtk.container</a> ] as 'c) <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="METHODadd"><span class="keyword">method</span> add</span> : <code class="type">(< as_item : [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a>; .. > as 'a) -> unit</code></pre>
+<pre><span id="METHODappend"><span class="keyword">method</span> append</span> : <code class="type">'a -> unit</code></pre>
+<pre><span id="METHODchildren"><span class="keyword">method</span> children</span> : <code class="type">'a list</code></pre>
+<pre><span id="METHODall_children"><span class="keyword">method</span> all_children</span> : <code class="type">'a list</code></pre>
+<pre><span id="METHODinsert"><span class="keyword">method</span> <span class="keyword">virtual</span> insert</span> : <code class="type">'a -> pos:int -> unit</code></pre>
+<pre><span id="METHODprepend"><span class="keyword">method</span> prepend</span> : <code class="type">'a -> unit</code></pre>
+<pre><span id="METHODremove"><span class="keyword">method</span> remove</span> : <code class="type">'a -> unit</code></pre>
+<pre><span id="METHODfocus"><span class="keyword">method</span> focus</span> : <code class="type"><a href="GContainer.focus-c.html">focus</a></code></pre>
+<pre><span id="METHODset_border_width"><span class="keyword">method</span> set_border_width</span> : <code class="type">int -> unit</code></pre>
+<pre><span id="METHODset_resize_mode"><span class="keyword">method</span> set_resize_mode</span> : <code class="type">Gtk.Tags.resize_mode -> unit</code></pre>
+<pre><span id="METHODborder_width"><span class="keyword">method</span> border_width</span> : <code class="type">int</code></pre>
+<pre><span id="METHODresize_mode"><span class="keyword">method</span> resize_mode</span> : <code class="type">Gtk.Tags.resize_mode</code></pre>
+<pre><span id="METHODwrap"><span class="keyword">method</span> <span class="keyword">private</span> <span class="keyword">virtual</span> wrap</span> : <code class="type"><a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> 'a</code></pre></body></html>

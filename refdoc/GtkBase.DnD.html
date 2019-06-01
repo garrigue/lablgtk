@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkBase.Selection.html">
+<link rel="next" href="GtkBase.Tooltip.html">
+<link rel="Up" href="GtkBase.html">
+<title>LablGTK : GtkBase.DnD</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkBase.Selection.html" title="GtkBase.Selection">Previous</a>
+&nbsp;<a class="up" href="GtkBase.html" title="GtkBase">Up</a>
+&nbsp;<a class="post" href="GtkBase.Tooltip.html" title="GtkBase.Tooltip">Next</a>
+</div>
+<h1>Module <a href="type_GtkBase.DnD.html">GtkBase.DnD</a></h1>
+
+<pre><span id="MODULEDnD"><span class="keyword">module</span> DnD</span>: <code class="code">sig</code> <a href="GtkBase.DnD.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALdest_set"><span class="keyword">val</span> dest_set</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       flags:Gtk.Tags.dest_defaults list -><br>       targets:<a href="Gtk.html#TYPEtarget_entry">Gtk.target_entry</a> array -> actions:<a href="Gdk.Tags.html#TYPEdrag_action">Gdk.Tags.drag_action</a> list -> unit</code></pre>
+<pre><span id="VALdest_unset"><span class="keyword">val</span> dest_unset</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALfinish"><span class="keyword">val</span> finish</span> : <code class="type"><a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> success:bool -> del:bool -> time:int32 -> unit</code></pre>
+<pre><span id="VALget_data"><span class="keyword">val</span> get_data</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       <a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> target:<a href="Gdk.html#TYPEatom">Gdk.atom</a> -> time:int32 -> unit</code></pre>
+<pre><span id="VALget_source_widget"><span class="keyword">val</span> get_source_widget</span> : <code class="type"><a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a></code></pre>
+<pre><span id="VALhighlight"><span class="keyword">val</span> highlight</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALunhighlight"><span class="keyword">val</span> unhighlight</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre>
+<pre><span id="VALset_icon_widget"><span class="keyword">val</span> set_icon_widget</span> : <code class="type"><a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> [> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> hot_x:int -> hot_y:int -> unit</code></pre>
+<pre><span id="VALset_icon_default"><span class="keyword">val</span> set_icon_default</span> : <code class="type"><a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> unit</code></pre>
+<pre><span id="VALsource_set"><span class="keyword">val</span> source_set</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -><br>       ?modi:<a href="Gdk.Tags.html#TYPEmodifier">Gdk.Tags.modifier</a> list -><br>       targets:<a href="Gtk.html#TYPEtarget_entry">Gtk.target_entry</a> array -> actions:<a href="Gdk.Tags.html#TYPEdrag_action">Gdk.Tags.drag_action</a> list -> unit</code></pre>
+<pre><span id="VALsource_unset"><span class="keyword">val</span> source_unset</span> : <code class="type">[> `widget ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> unit</code></pre></body></html>

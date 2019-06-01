@@ -1,0 +1,25 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<title>LablGTK : Gobject.Closure</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;args<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;argv&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;:&nbsp;<span class="constructor">Gobject</span>.g_value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;nargs&nbsp;:&nbsp;int;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;args&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.args;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;(<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_closure<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;nth&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_value<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;result&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_value<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_result_type&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_type<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_type&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.g_type<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.data_get<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;set_result&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Gobject</span>.data_set&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_args&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gobject</span>.data_get&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_pointer&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Gpointer</span>.boxed<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_nativeint&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;nativeint<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_int32&nbsp;:&nbsp;<span class="constructor">Gobject</span>.<span class="constructor">Closure</span>.argv&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;pos:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int32<br>
+<span class="keyword">end</span></code></body></html>

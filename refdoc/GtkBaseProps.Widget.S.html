@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkBaseProps.Widget.P.html">
+<link rel="Up" href="GtkBaseProps.Widget.html">
+<title>LablGTK : GtkBaseProps.Widget.S</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkBaseProps.Widget.P.html" title="GtkBaseProps.Widget.P">Previous</a>
+&nbsp;<a class="up" href="GtkBaseProps.Widget.html" title="GtkBaseProps.Widget">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_GtkBaseProps.Widget.S.html">GtkBaseProps.Widget.S</a></h1>
+
+<pre><span id="MODULES"><span class="keyword">module</span> S</span>: <code class="code">sig</code> <a href="GtkBaseProps.Widget.S.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="VALdestroy"><span class="keyword">val</span> destroy</span> : <code class="type">([> `widget ], unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALshow"><span class="keyword">val</span> show</span> : <code class="type">([> `widget ], unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALhide"><span class="keyword">val</span> hide</span> : <code class="type">([> `widget ], unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALmap"><span class="keyword">val</span> map</span> : <code class="type">([> `widget ], unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALunmap"><span class="keyword">val</span> unmap</span> : <code class="type">([> `widget ], unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALquery_tooltip"><span class="keyword">val</span> query_tooltip</span> : <code class="type">([> `widget ], x:int -> y:int -> kbd:bool -> <a href="Gtk.html#TYPEtooltip">Gtk.tooltip</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALrealize"><span class="keyword">val</span> realize</span> : <code class="type">([> `widget ], unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALunrealize"><span class="keyword">val</span> unrealize</span> : <code class="type">([> `widget ], unit -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALstate_changed"><span class="keyword">val</span> state_changed</span> : <code class="type">([> `widget ], <a href="GtkEnums.html#TYPEstate_type">GtkEnums.state_type</a> -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALparent_set"><span class="keyword">val</span> parent_set</span> : <code class="type">([> `widget ], <a href="Gtk.html#TYPEwidget">Gtk.widget</a> <a href="Gtk.html#TYPEobj">Gtk.obj</a> option -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALsize_allocate"><span class="keyword">val</span> size_allocate</span> : <code class="type">([> `widget ], <a href="Gtk.html#TYPErectangle">Gtk.rectangle</a> -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALstyle_set"><span class="keyword">val</span> style_set</span> : <code class="type">([> `widget ], <a href="Gtk.html#TYPEstyle">Gtk.style</a> option -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALselection_get"><span class="keyword">val</span> selection_get</span> : <code class="type">([> `widget ], <a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> info:int -> time:int32 -> unit)<br>       <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALselection_received"><span class="keyword">val</span> selection_received</span> : <code class="type">([> `widget ], <a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> time:int32 -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALdrag_begin"><span class="keyword">val</span> drag_begin</span> : <code class="type">([> `widget ], <a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALdrag_data_delete"><span class="keyword">val</span> drag_data_delete</span> : <code class="type">([> `widget ], <a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALdrag_data_get"><span class="keyword">val</span> drag_data_get</span> : <code class="type">([> `widget ],<br>        <a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> <a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> info:int -> time:int32 -> unit)<br>       <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALdrag_data_received"><span class="keyword">val</span> drag_data_received</span> : <code class="type">([> `widget ],<br>        <a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -><br>        x:int -> y:int -> <a href="Gtk.html#TYPEselection_data">Gtk.selection_data</a> -> info:int -> time:int32 -> unit)<br>       <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALdrag_drop"><span class="keyword">val</span> drag_drop</span> : <code class="type">([> `widget ], <a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> x:int -> y:int -> time:int32 -> bool)<br>       <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALdrag_end"><span class="keyword">val</span> drag_end</span> : <code class="type">([> `widget ], <a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALdrag_leave"><span class="keyword">val</span> drag_leave</span> : <code class="type">([> `widget ], <a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> time:int32 -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALdrag_motion"><span class="keyword">val</span> drag_motion</span> : <code class="type">([> `widget ], <a href="Gdk.html#TYPEdrag_context">Gdk.drag_context</a> -> x:int -> y:int -> time:int32 -> bool)<br>       <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALevent"><span class="keyword">val</span> event</span> : <code class="type">([> `widget ], <a href="GdkEvent.html#TYPEany">GdkEvent.any</a> -> bool) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre>
+<pre><span id="VALevent_after"><span class="keyword">val</span> event_after</span> : <code class="type">([> `widget ], <a href="GdkEvent.html#TYPEany">GdkEvent.any</a> -> unit) <a href="GtkSignal.html#TYPEt">GtkSignal.t</a></code></pre></body></html>

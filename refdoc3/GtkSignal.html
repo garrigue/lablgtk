@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GtkRangeProps.html">
+<link rel="next" href="GtkSpell.html">
+<link rel="Up" href="index.html">
+<title>LablGTK : GtkSignal</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GtkRangeProps.html" title="GtkRangeProps">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="GtkSpell.html" title="GtkSpell">Next</a>
+</div>
+<h1>Module <a href="type_GtkSignal.html">GtkSignal</a></h1>
+
+<pre><span id="MODULEGtkSignal"><span class="keyword">module</span> GtkSignal</span>: <code class="code">sig</code> <a href="GtkSignal.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<p>Signals</p>
+
+<pre><span id="TYPEid"><span class="keyword">type</span> <code class="type"></code>id</span> </pre>
+
+
+<pre><span id="TYPEmarshaller"><span class="keyword">type</span> <code class="type">'a</code> marshaller</span> = <code class="type">'a -> <a href="Gobject.Closure.html#TYPEargv">Gobject.Closure.argv</a> -> unit</code> </pre>
+
+
+<pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type">('a, 'b)</code> t</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.name">name</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.classe">classe</span>&nbsp;: <code class="type">'a</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.marshaller">marshaller</span>&nbsp;: <code class="type">'b <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code>;</code></td>
+
+</tr></table>
+}
+
+<div class="info ">
+<div class="info-desc">
+<p>When writing marshallers, beware that the list omits the 0th
+       argument of argv, which is the referent object</p>
+</div>
+</div>
+
+
+<pre><code><span id="TYPEquery"><span class="keyword">type</span> <code class="type"></code>query</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.id">id</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.signal_name">signal_name</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.itype">itype</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.flags">flags</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.return">return</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.params">params</span>&nbsp;: <code class="type">string array</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALstop_emit"><span class="keyword">val</span> stop_emit</span> : <code class="type">unit -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Call <code class="code">stop_emit ()</code> in a callback to prohibit further handling
+       of the current signal invocation, by calling <code class="code">emit_stop_by_name</code>.
+       Be careful about where you use it, since the concept of current
+       signal may be tricky.</p>
+</div>
+</div>
+
+<pre><span id="VALconnect"><span class="keyword">val</span> connect</span> : <code class="type">sgn:('a, 'b) <a href="GtkSignal.html#TYPEt">t</a> -><br>       callback:'b -> ?after:bool -> 'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="GtkSignal.html#TYPEid">id</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>You may use <code class="code">stop_emit</code> inside the callback</p>
+</div>
+</div>
+
+<pre><span id="VALconnect_property"><span class="keyword">val</span> connect_property</span> : <code class="type">prop:('a, 'b) <a href="Gobject.html#TYPEproperty">Gobject.property</a> -><br>       callback:('b -> unit) -> 'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="GtkSignal.html#TYPEid">id</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>Connect to the "notify::foo" signal associated with a property. These
+       are emitted each time the property "foo" is set (including when it is
+       set to the same value).</p>
+</div>
+</div>
+
+<pre><span id="VALuser_handler"><span class="keyword">val</span> user_handler</span> : <code class="type">(exn -> unit) Stdlib.ref</code></pre><div class="info ">
+<div class="info-desc">
+<p>A hook to allow changing the behaviour of exceptions in callbacks
+       The default behaviour of printing the exception and ignoring it
+       is obtained when <code class="code">user_handler</code> is set to <code class="code">Pervasives.raise</code></p>
+</div>
+</div>
+
+<pre><span id="VALsafe_call"><span class="keyword">val</span> safe_call</span> : <code class="type">?where:string -> ('a -> unit) -> 'a -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Safe wrapper for function calls. Tries to handle exceptions
+        with user_handler, and reports an error otherwise.</p>
+</div>
+</div>
+
+<pre><span id="VALsignal_new"><span class="keyword">val</span> signal_new</span> : <code class="type">string -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> <a href="Gobject.html#TYPEsignal_type">Gobject.signal_type</a> list -> unit</code></pre>
+<pre><span id="VALlist_ids"><span class="keyword">val</span> list_ids</span> : <code class="type"><a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> int array</code></pre>
+<pre><span id="VALquery"><span class="keyword">val</span> query</span> : <code class="type">int -> <a href="GtkSignal.html#TYPEquery">query</a></code></pre>
+<pre><span id="VALconnect_by_name"><span class="keyword">val</span> connect_by_name</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -><br>       name:string -> callback:<a href="Gobject.html#TYPEg_closure">Gobject.g_closure</a> -> after:bool -> <a href="GtkSignal.html#TYPEid">id</a></code></pre>
+<pre><span id="VALdisconnect"><span class="keyword">val</span> disconnect</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="GtkSignal.html#TYPEid">id</a> -> unit</code></pre>
+<pre><span id="VALemit_stop_by_name"><span class="keyword">val</span> emit_stop_by_name</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> name:string -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Unsafe: use <code class="code">stop_emit</code> instead.</p>
+</div>
+</div>
+
+<pre><span id="VALhandler_block"><span class="keyword">val</span> handler_block</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="GtkSignal.html#TYPEid">id</a> -> unit</code></pre>
+<pre><span id="VALhandler_unblock"><span class="keyword">val</span> handler_unblock</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> <a href="GtkSignal.html#TYPEid">id</a> -> unit</code></pre><h5 id="4_Marshallers">Marshallers</h5><p>Some marshaller functions, to build signals</p>
+
+<pre><span id="VALmarshal_unit"><span class="keyword">val</span> marshal_unit</span> : <code class="type">(unit -> unit) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal_int"><span class="keyword">val</span> marshal_int</span> : <code class="type">(int -> unit) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal_string"><span class="keyword">val</span> marshal_string</span> : <code class="type">(string -> unit) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal1"><span class="keyword">val</span> marshal1</span> : <code class="type">'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -> string -> ('a -> unit) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal2"><span class="keyword">val</span> marshal2</span> : <code class="type">'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'b <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -> string -> ('a -> 'b -> unit) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal3"><span class="keyword">val</span> marshal3</span> : <code class="type">'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'b <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'c <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       string -> ('a -> 'b -> 'c -> unit) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal4"><span class="keyword">val</span> marshal4</span> : <code class="type">'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'b <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'c <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'd <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       string -> ('a -> 'b -> 'c -> 'd -> unit) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal5"><span class="keyword">val</span> marshal5</span> : <code class="type">'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'b <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'c <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'd <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'e <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       string -> ('a -> 'b -> 'c -> 'd -> 'e -> unit) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal6"><span class="keyword">val</span> marshal6</span> : <code class="type">'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'b <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'c <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'd <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'e <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'f <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       string -> ('a -> 'b -> 'c -> 'd -> 'e -> 'f -> unit) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal0_ret"><span class="keyword">val</span> marshal0_ret</span> : <code class="type">ret:'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -> (unit -> 'a) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal1_ret"><span class="keyword">val</span> marshal1_ret</span> : <code class="type">ret:'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'b <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -> string -> ('b -> 'a) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal2_ret"><span class="keyword">val</span> marshal2_ret</span> : <code class="type">ret:'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'b <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'c <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -> string -> ('b -> 'c -> 'a) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal3_ret"><span class="keyword">val</span> marshal3_ret</span> : <code class="type">ret:'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'b <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'c <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'd <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -> string -> ('b -> 'c -> 'd -> 'a) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre>
+<pre><span id="VALmarshal4_ret"><span class="keyword">val</span> marshal4_ret</span> : <code class="type">ret:'a <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'b <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'c <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'd <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       'e <a href="Gobject.html#TYPEdata_conv">Gobject.data_conv</a> -><br>       string -> ('b -> 'c -> 'd -> 'e -> 'a) <a href="GtkSignal.html#TYPEmarshaller">marshaller</a></code></pre><h5 id="4_Emitterfunctions">Emitter functions</h5>
+<pre><span id="VALemit"><span class="keyword">val</span> emit</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -><br>       sgn:('a, 'b) <a href="GtkSignal.html#TYPEt">t</a> -><br>       emitter:(cont:('c <a href="Gobject.html#TYPEdata_set">Gobject.data_set</a> array -> 'd) -> 'b) -><br>       conv:(<a href="Gobject.html#TYPEg_value">Gobject.g_value</a> -> 'd) -> 'b</code></pre>
+<pre><span id="VALemit_unit"><span class="keyword">val</span> emit_unit</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> sgn:('a, unit -> unit) <a href="GtkSignal.html#TYPEt">t</a> -> unit</code></pre>
+<pre><span id="VALemit_int"><span class="keyword">val</span> emit_int</span> : <code class="type">'a <a href="Gobject.html#TYPEobj">Gobject.obj</a> -> sgn:('a, int -> unit) <a href="GtkSignal.html#TYPEt">t</a> -> int -> unit</code></pre><h5 id="4_Defaulthandleroverride">Default handler override</h5>
+<pre><span id="VALoverride_class_closure"><span class="keyword">val</span> override_class_closure</span> : <code class="type">('a, 'b) <a href="GtkSignal.html#TYPEt">t</a> -> <a href="Gobject.html#TYPEg_type">Gobject.g_type</a> -> <a href="Gobject.html#TYPEg_closure">Gobject.g_closure</a> -> unit</code></pre>
+<pre><span id="VALchain_from_overridden"><span class="keyword">val</span> chain_from_overridden</span> : <code class="type"><a href="Gobject.Closure.html#TYPEargv">Gobject.Closure.argv</a> -> unit</code></pre></body></html>

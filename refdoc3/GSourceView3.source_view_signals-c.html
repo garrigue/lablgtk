@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="previous" href="GSourceView3.source_buffer-c.html">
+<link rel="next" href="GSourceView3.source_view-c.html">
+<link rel="Up" href="GSourceView3.html">
+<title>LablGTK : GSourceView3.source_view_signals</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="GSourceView3.source_buffer-c.html" title="GSourceView3.source_buffer">Previous</a>
+&nbsp;<a class="up" href="GSourceView3.html" title="GSourceView3">Up</a>
+&nbsp;<a class="post" href="GSourceView3.source_view-c.html" title="GSourceView3.source_view">Next</a>
+</div>
+<h1>Class <a href="type_GSourceView3.source_view_signals.html">GSourceView3.source_view_signals</a></h1>
+
+<pre><span id="TYPEsource_view_signals"><span class="keyword">class</span> source_view_signals</span> : <code class="type">[> GtkSourceView3_types.source_view ] <a href="Gtk.html#TYPEobj">Gtk.obj</a> -> </code><code class="code">object</code> <a href="GSourceView3.source_view_signals-c.html">..</a> <code class="code">end</code></pre><br><b>Inherits</b><ul>
+<li><a href="GText.view_signals-c.html"><code class="code">GText.view_signals</code></a></li>
+</ul>
+<hr width="100%">
+
+<pre><span id="METHODline_mark_activated"><span class="keyword">method</span> line_mark_activated</span> : <code class="type">callback:(<a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> <a href="GdkEvent.html#TYPEany">GdkEvent.any</a> -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODmove_lines"><span class="keyword">method</span> move_lines</span> : <code class="type">callback:(bool -> int -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODmove_words"><span class="keyword">method</span> move_words</span> : <code class="type">callback:(int -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODredo"><span class="keyword">method</span> redo</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODshow_completion"><span class="keyword">method</span> show_completion</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODsmart_home_end"><span class="keyword">method</span> smart_home_end</span> : <code class="type">callback:(<a href="Gtk.html#TYPEtext_iter">Gtk.text_iter</a> -> int -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODundo"><span class="keyword">method</span> undo</span> : <code class="type">callback:(unit -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_auto_indent"><span class="keyword">method</span> notify_auto_indent</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_highlight_current_line"><span class="keyword">method</span> notify_highlight_current_line</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_indent_on_tab"><span class="keyword">method</span> notify_indent_on_tab</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_indent_width"><span class="keyword">method</span> notify_indent_width</span> : <code class="type">callback:(int -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_insert_spaces_instead_of_tabs"><span class="keyword">method</span> notify_insert_spaces_instead_of_tabs</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_right_margin_position"><span class="keyword">method</span> notify_right_margin_position</span> : <code class="type">callback:(int -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_show_line_marks"><span class="keyword">method</span> notify_show_line_marks</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_show_line_numbers"><span class="keyword">method</span> notify_show_line_numbers</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_show_right_margin"><span class="keyword">method</span> notify_show_right_margin</span> : <code class="type">callback:(bool -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_smart_home_end"><span class="keyword">method</span> notify_smart_home_end</span> : <code class="type">callback:(SourceView3Enums.source_smart_home_end_type -> unit) -><br>       <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre>
+<pre><span id="METHODnotify_tab_width"><span class="keyword">method</span> notify_tab_width</span> : <code class="type">callback:(int -> unit) -> <a href="GtkSignal.html#TYPEid">GtkSignal.id</a></code></pre></body></html>
