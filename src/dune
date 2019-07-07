@@ -1,4 +1,4 @@
-; Dune build file for lablgtk2
+; Dune build file for lablgtk3
 ; Written by EJGA, (c) 2018 MINES ParisTech
 ; This file is in the public domain
 
@@ -85,6 +85,7 @@
    gtkWindow gWindow
    gtkData gData
    gContainer
+   gPango cairo_pango
 
    gtkBuilderProps    ogtkBuilderProps    gtkBuilder   gBuilder
    gtkContainersProps ogtkContainersProps gtkContainers
@@ -108,6 +109,7 @@
    wrappers
    ml_glib ml_gvaluecaml ml_gpointer ml_gobject
    ml_pango
+   cairo_pango_stubs
    ml_gdk ml_gdkpixbuf
    ml_gtk ml_gtkmisc
 

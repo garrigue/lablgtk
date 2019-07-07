@@ -1,5 +1,10 @@
 LablGTK changes log
 
+## In Lablgtk-3.0.beta7
+
+2019.07.07 [Emilio]
+  * Include extended Cairo Support from #33 in the Dune build.
+
 ## In Lablgtk-3.0.beta6
 
 2019.04.09 [Jacques]
