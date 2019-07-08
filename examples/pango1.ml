@@ -59,6 +59,7 @@ let expose drawing_area cr =
   true
 
 let () =
+  let _ = GMain.Main.init () in
   let w = GWindow.window ~title:"Pango demo1" ~width:500 ~height:400 () in
   ignore(w#connect#destroy ~callback:GMain.quit);
 
