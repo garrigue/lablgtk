@@ -36,31 +36,35 @@ let print_lang_dirs (language_manager:GSourceView3.source_language_manager) =
     (fun dir -> incr i; prerr_endline (sprintf "%d: %s" !i dir))
     language_manager#search_path
 
-let win = GWindow.window ~title:"LablGtkSourceView 3 test" ()
-let vbox = GPack.vbox ~packing:win#add ()
-let hbox = GPack.hbox ~packing:(vbox#pack ~expand: false) ()
-let bracket_button = GButton.button ~label:"( ... )" ~packing:hbox#add ()
-let scrolled_win = GBin.scrolled_window
-    ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
-    ~packing:vbox#add ()
-let source_view =
-  GSourceView3.source_view
-    ~auto_indent:true
-     ~insert_spaces_instead_of_tabs:true ~tab_width:2
-    ~show_line_numbers:true
-    ~right_margin_position:30 ~show_right_margin:true
-    ~smart_home_end:`ALWAYS
-    ~packing:scrolled_win#add ~height:500 ~width:900
-    ()
 
-let language_manager = GSourceView3.source_language_manager ~default:true
+let () =
+  let win = GWindow.window ~title:"LablGtkSourceView 3 test" () in
+  let vbox = GPack.vbox ~packing:win#add () in
+  let hbox = GPack.hbox ~packing:(vbox#pack ~expand: false) () in
+  let bracket_button = GButton.button ~label:"( ... )" ~packing:hbox#add () in
+  let scrolled_win = GBin.scrolled_window
+      ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
+      ~packing:vbox#add ()
+  in
+  let source_view =
+    GSourceView3.source_view
+      ~auto_indent:true
+       ~insert_spaces_instead_of_tabs:true ~tab_width:2
+      ~show_line_numbers:true
+      ~right_margin_position:30 ~show_right_margin:true
+      ~smart_home_end:`ALWAYS
+      ~packing:scrolled_win#add ~height:500 ~width:900
+      ()
+  in
 
-let lang =
-  match language_manager#guess_language ~content_type:lang_mime_type () with
-    | None -> failwith (sprintf "no language for %s" lang_mime_type)
-    | Some lang -> lang
+  let language_manager = GSourceView3.source_language_manager ~default:true in
 
-let _ =
+  let lang =
+    match language_manager#guess_language ~content_type:lang_mime_type () with
+      | None -> failwith (sprintf "no language for %s" lang_mime_type)
+      | Some lang -> lang
+  in
+
   let text =
     let ic = open_in "test.ml" in
     let size = in_channel_length ic in
@@ -93,7 +97,7 @@ let _ =
       (source_view#source_buffer#get_iter `START) 
   in
   ignore (source_view#source_buffer#connect#mark_set 
-	    (fun where mark ->
+            (fun where mark ->
                if GtkText.Mark.get_name mark = Some "insert"
                then begin
                  let prio = source_view#get_mark_priority ~category in

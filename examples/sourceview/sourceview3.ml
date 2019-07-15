@@ -17,7 +17,7 @@
 
 let locale = GtkMain.Main.init ()
 
-let provider =
+let make_provider () =
   let open GSourceView3 in
   let provider_ref = ref None in
   let provided_list = ["toto"; "titi"; "tata"] in
@@ -58,25 +58,26 @@ let provider =
   provider_ref := (Some provider);
   provider
 
-module C = GSourceView3
-
-let window = GWindow.window ~width:400 ~height:400 ()
-let box = GPack.vbox ~packing:window#add ()
-let button = GButton.button ~label:"Click" ~packing:(box#pack) ()
-let v = GSourceView3.source_view ~packing:(box#pack ~expand:true) ()
-let cpl = v#completion
-let _ = cpl#add_provider provider
-let () = window#show ()
-let cb () =
-  let itr = v#buffer#start_iter in
-  let ctx = cpl#create_context itr in
-  ignore (cpl#show [provider] ctx)
-
-let _ = button#connect#clicked cb
-
-(* let _ = cpl#add_provider provider *)
-(* let _ = Glib.Timeout.add 1000 (fun _ -> cpl#show [provider] ctx) *)
-(*   let _ = completion#add_provider provider in *)
-
 let () =
+  let window = GWindow.window ~width:400 ~height:400 () in
+  let box = GPack.vbox ~packing:window#add () in
+  let button = GButton.button ~label:"Click" ~packing:(box#pack) () in
+  let v = GSourceView3.source_view ~packing:(box#pack ~expand:true) () in
+
+  let provider = make_provider () in
+  let cpl = v#completion in
+  let _ = cpl#add_provider provider in
+  let cb () =
+    let itr = v#buffer#start_iter in
+    let ctx = cpl#create_context itr in
+    ignore (cpl#show [provider] ctx)
+  in
+  let _ = button#connect#clicked cb in
+
+  (* let _ = cpl#add_provider provider *)
+  (* let _ = Glib.Timeout.add 1000 (fun _ -> cpl#show [provider] ctx) *)
+  (*   let _ = completion#add_provider provider in *)
+
+  ignore (window#connect#destroy (fun _ -> GMain.quit ()));
+  window#show ();
   GMain.Main.main ()
