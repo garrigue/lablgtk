@@ -1,5 +1,5 @@
 (executables
- (names test2 sourceview2 example2)
- (modules test2 sourceview2 example2)
+ (names test3 sourceview3 example3)
+ (modules test3 sourceview3 example3)
  (flags :standard -w -3-6-7-10-24-26-27-33-35 -no-strict-sequence)
  (libraries lablgtk3 lablgtk3-sourceview3))

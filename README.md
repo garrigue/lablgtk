@@ -320,7 +320,7 @@ it, you may use compaction through `Gc.compact` where it is safe
 		This binding was contributed by Benjamin Monate, and
 		adapted by Hugo Herbelin.
 		It requires libgtksourceview-3.x.
-		See examples in examples/sourceview/*2.ml
+		See examples in examples/sourceview/*3.ml
 		The executable must be linked with lablgtksourceview3.cma.
 
 ### Windows port
