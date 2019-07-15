@@ -10,9 +10,18 @@
    ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview3.cma gtkInit.cmo test2.ml
    Run with 
    CAML_LD_LIBRARY_PATH=../../src ./viewer
+
+   OR
+
+   Compile with
+   dune build test2.exe
+   Run with
+   ../../_build/default/examples/sourceview/test2.exe
 *)
 
 open Printf
+
+let locale = GtkMain.Main.init ()
 
 let lang_mime_type = "text/x-ocaml"
 let use_mime_type = false
@@ -27,7 +36,7 @@ let print_lang_dirs (language_manager:GSourceView3.source_language_manager) =
     (fun dir -> incr i; prerr_endline (sprintf "%d: %s" !i dir))
     language_manager#search_path
 
-let win = GWindow.window ~title:"LablGtkSourceView 2 test" ()
+let win = GWindow.window ~title:"LablGtkSourceView 3 test" ()
 let vbox = GPack.vbox ~packing:win#add ()
 let hbox = GPack.hbox ~packing:(vbox#pack ~expand: false) ()
 let bracket_button = GButton.button ~label:"( ... )" ~packing:hbox#add ()

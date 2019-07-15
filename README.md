@@ -129,6 +129,14 @@ Otherwise, use something similar to:
 ocamlc -I +lablgtk3 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
 ```
 
+Failing to add this init line will result in the following runtime error
+
+```
+(process:19985): Gtk-CRITICAL **: 20:09:13.764: _gtk_style_provider_private_get_settings: assertion 'GTK_IS_STYLE_PROVIDER_PRIVATE (provider)' failed
+
+Segmentation fault (core dumped)
+```
+
 ### How to use the threaded toplevel
 ```
 % lablgtk3 -thread

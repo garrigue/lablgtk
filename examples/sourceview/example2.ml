@@ -5,9 +5,16 @@
 (*    You may freely copy parts of it in your application.                *)
 (*                                                                        *)
 (**************************************************************************)
-(* Run with ../../src/lablgtk2 -localdir example2.ml  *)
+
+(* Compile with
+   dune build test2.exe
+   Run with
+   ../../_build/default/examples/sourceview/test2.exe
+*)
 
 open Printf
+
+let locale = GtkMain.Main.init ()
 
 let lang_mime_type = "text/x-ocaml"
 let lang_name = "ocaml"
@@ -48,7 +55,7 @@ let scrolled_win = GBin.scrolled_window
     ~packing:win#add ()
 
 let source_view =
-  GSourceView2.source_view
+  GSourceView3.source_view
     ~auto_indent:true
     ~insert_spaces_instead_of_tabs:true ~tab_width:2
     ~show_line_numbers:true
@@ -57,7 +64,7 @@ let source_view =
     ~packing:scrolled_win#add ~height:500 ~width:650
     ()
 
-let language_manager = GSourceView2.source_language_manager ~default:true
+let language_manager = GSourceView3.source_language_manager ~default:true
 
 let lang =
   if use_mime_type then
@@ -74,7 +81,7 @@ let () =
   print_lang lang
 
 let style_scheme_manager = 
-  GSourceView2.source_style_scheme_manager ~default:true
+  GSourceView3.source_style_scheme_manager ~default:true
 
 let () =
   print_style_schemes style_scheme_manager
@@ -88,7 +95,6 @@ let () =
     close_in ic;
     buf
   in
-  win#set_allow_shrink true;
   source_view#misc#modify_font_by_name font_name;
   source_view#source_buffer#set_highlight_matching_brackets true;
   source_view#source_buffer#set_language (Some lang);
@@ -115,7 +121,7 @@ let () =
   ignore (source_view#connect#undo (fun _ -> prerr_endline "undo"));
 
   source_view#source_buffer#begin_not_undoable_action ();
-  source_view#source_buffer#set_text text;
+  source_view#source_buffer#set_text (Bytes.to_string text);
   source_view#source_buffer#end_not_undoable_action ();
 
   win#show ();
