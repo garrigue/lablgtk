@@ -129,6 +129,14 @@ Otherwise, use something similar to:
 ocamlc -I +lablgtk3 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
 ```
 
+Failing to add this init line will result in the following runtime error
+
+```
+(process:19985): Gtk-CRITICAL **: 20:09:13.764: _gtk_style_provider_private_get_settings: assertion 'GTK_IS_STYLE_PROVIDER_PRIVATE (provider)' failed
+
+Segmentation fault (core dumped)
+```
+
 ### How to use the threaded toplevel
 ```
 % lablgtk3 -thread
@@ -312,7 +320,7 @@ it, you may use compaction through `Gc.compact` where it is safe
 		This binding was contributed by Benjamin Monate, and
 		adapted by Hugo Herbelin.
 		It requires libgtksourceview-3.x.
-		See examples in examples/sourceview/*2.ml
+		See examples in examples/sourceview/*3.ml
 		The executable must be linked with lablgtksourceview3.cma.
 
 ### Windows port

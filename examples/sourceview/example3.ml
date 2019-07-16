@@ -5,9 +5,16 @@
 (*    You may freely copy parts of it in your application.                *)
 (*                                                                        *)
 (**************************************************************************)
-(* Run with ../../src/lablgtk2 -localdir example2.ml  *)
+
+(* Compile with
+   dune build test2.exe
+   Run with
+   ../../_build/default/examples/sourceview/test2.exe
+*)
 
 open Printf
+
+let locale = GtkMain.Main.init ()
 
 let lang_mime_type = "text/x-ocaml"
 let lang_name = "ocaml"
@@ -20,75 +27,75 @@ let print_lang_ids language_manager =
   let i = ref 0 in
   prerr_endline "language_ids:";
   List.iter
-    (fun id -> incr i; 
+    (fun id -> incr i;
       match language_manager#language id with
-	Some lang ->
-          let name = lang#name in
-          let section = lang#section in
-          prerr_endline 
-   	    (sprintf "%d: %s %s (%s)" !i id name section)
-        | None -> ())
+      | Some lang ->
+        let name = lang#name in
+        let section = lang#section in
+        prerr_endline
+          (sprintf "%d: %s %s (%s)" !i id name section)
+      | None -> ())
     language_manager#language_ids
 
 let print_style_schemes mgr =
   let i = ref 0 in
   prerr_endline "style schemes:";
-  List.iter (fun id -> 
+  List.iter (fun id ->
       incr i;
       match mgr#style_scheme id with
-          Some scm ->
-            prerr_endline
-	      (sprintf "%d: %s %s" !i id scm#description)
-        | None -> ())
+      | Some scm ->
+        prerr_endline
+          (sprintf "%d: %s %s" !i id scm#description)
+      | None -> ())
     mgr#style_scheme_ids
 
-let win = GWindow.window ~title:"LablGtkSourceView test" ()
-let scrolled_win = GBin.scrolled_window
-    ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
-    ~packing:win#add ()
-
-let source_view =
-  GSourceView2.source_view
-    ~auto_indent:true
-    ~insert_spaces_instead_of_tabs:true ~tab_width:2
-    ~show_line_numbers:true
-    ~right_margin_position:80 ~show_right_margin:true
-    (* ~smart_home_end:true *)
-    ~packing:scrolled_win#add ~height:500 ~width:650
-    ()
-
-let language_manager = GSourceView2.source_language_manager ~default:true
-
-let lang =
-  if use_mime_type then
-    (match language_manager#guess_language ~content_type:lang_mime_type () with
-        Some x -> x
-      | None -> failwith (sprintf "no language for %s" lang_mime_type))
-  else
-    (match language_manager#language lang_name with
-        Some x -> x
-      | None -> failwith (sprintf "can't load %s" lang_name))
-
 let () =
+  let win = GWindow.window ~title:"LablGtkSourceView test" () in
+  let scrolled_win = GBin.scrolled_window
+      ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
+      ~packing:win#add ()
+  in
+  let source_view =
+    GSourceView3.source_view
+      ~auto_indent:true
+      ~insert_spaces_instead_of_tabs:true ~tab_width:2
+      ~show_line_numbers:true
+      ~right_margin_position:80 ~show_right_margin:true
+      (* ~smart_home_end:true *)
+      ~packing:scrolled_win#add ~height:500 ~width:650
+      ()
+  in
+
+  let language_manager = GSourceView3.source_language_manager ~default:true in
+
+  let lang =
+    if use_mime_type then
+      (match language_manager#guess_language ~content_type:lang_mime_type () with
+       | Some x -> x
+       | None -> failwith (sprintf "no language for %s" lang_mime_type))
+    else
+      (match language_manager#language lang_name with
+       | Some x -> x
+       | None -> failwith (sprintf "can't load %s" lang_name))
+  in
+
   print_lang_ids language_manager;
-  print_lang lang
+  print_lang lang;
 
-let style_scheme_manager = 
-  GSourceView2.source_style_scheme_manager ~default:true
+  let style_scheme_manager =
+    GSourceView3.source_style_scheme_manager ~default:true
+  in
 
-let () =
-  print_style_schemes style_scheme_manager
+  print_style_schemes style_scheme_manager;
 
-let () =
   let text =
-    let ic = open_in "example2.ml" in
+    let ic = open_in "example3.ml" in
     let size = in_channel_length ic in
     let buf = String.create size in
     really_input ic buf 0 size;
     close_in ic;
     buf
   in
-  win#set_allow_shrink true;
   source_view#misc#modify_font_by_name font_name;
   source_view#source_buffer#set_highlight_matching_brackets true;
   source_view#source_buffer#set_language (Some lang);
@@ -115,7 +122,7 @@ let () =
   ignore (source_view#connect#undo (fun _ -> prerr_endline "undo"));
 
   source_view#source_buffer#begin_not_undoable_action ();
-  source_view#source_buffer#set_text text;
+  source_view#source_buffer#set_text (Bytes.to_string text);
   source_view#source_buffer#end_not_undoable_action ();
 
   win#show ();
