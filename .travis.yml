@@ -23,7 +23,9 @@ env:
   - TEST_TARGET="build"       COMPILER="4.05.0"
   - TEST_TARGET="build-all"   COMPILER="4.06.1"
   - TEST_TARGET="build-all"   COMPILER="4.07.1"
+  - TEST_TARGET="build-all"   COMPILER="4.08.0"
   - TEST_TARGET="opam"        COMPILER="4.07.1"
+  - TEST_TARGET="opam"        COMPILER="4.08.0"
 
 matrix:
   include:
@@ -44,7 +46,7 @@ matrix:
         brew install ccache opam pkg-config gtk+3 gtksourceview3 gtkspell3
 
 before_install: |
-  sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.1/opam-2.0.1-x86_64-linux -o /usr/bin/opam
+  sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.4/opam-2.0.4-x86_64-linux -o /usr/bin/opam
   sudo chmod 755 /usr/bin/opam
 
 install: |
