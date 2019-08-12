@@ -1,0 +1,11 @@
+; Dune build file for lablgtk3
+; Written by EJGA, (c) 2018-2019 MINES ParisTech
+; This file is in the public domain
+
+(env
+ (_
+  (binaries
+    ./tools/dune_config.exe
+    ./tools/varcc.exe
+    ./tools/propcc.exe)))
+

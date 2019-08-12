@@ -9,6 +9,9 @@ LablGTK changes log
   * Add the LinkButton activate-link signal #83
 
 2019.08.12 [Emilio J. Gallego Arias]
+  * Reorganize source code, move orphaned files to unsupported,
+    bump to Dune >= 1.6
+2019.08.12 [Emilio J. Gallego Arias]
   * Remove stale makefiles, lablgtk must be built using Dune now.
 
 2019.07.07 [Emilio J. Gallego Arias]

@@ -4,7 +4,7 @@
 
 - ocaml >= 4.05.0
 - gtk+ >= 3.18
-- dune >= 1.4
+- dune >= 1.6
 
 ## Info/upgrades
 

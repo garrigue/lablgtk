@@ -25,9 +25,9 @@
 
 #include <caml/mlvalues.h>
 
-#include "wrappers.h"
-#include "ml_gobject.h"
-#include "ml_glib.h"
+#include <wrappers.h>
+#include <ml_gobject.h>
+#include <ml_glib.h>
 
 CAMLprim value
 ml_gtkspell_init (value unit)
