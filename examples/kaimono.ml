@@ -12,16 +12,21 @@ open StdLabels
 open GMain
 open Printf
 
+let _ = GMain.Main.init ()
+
 let file_dialog ~title ~callback ?filename () =
-  let sel = GWindow.file_selection ~title ~modal:true ?filename () in
-  sel#cancel_button#connect#clicked ~callback:sel#destroy;
-  sel#ok_button#connect#clicked ~callback:
-    begin fun () ->
-      let name = sel#filename in
-      sel#destroy ();
-      callback name
-    end;
-  sel#show ()
+  let sel = GWindow.file_chooser_dialog ~action:`OPEN ~title ?filename () in
+  sel#add_button_stock `CANCEL `CANCEL ;
+  sel#add_select_button_stock `OPEN `OPEN ;
+  begin match sel#run () with
+  | `OPEN -> begin
+      match sel#filename with
+      | Some name -> callback name
+      | _ -> ()
+    end
+  | `DELETE_EVENT | `CANCEL -> ()
+  end ;
+  sel#destroy ()
 
 let w = GWindow.window ~title:"Okaimono" ()
 let vb = GPack.vbox ~packing:w#add ()

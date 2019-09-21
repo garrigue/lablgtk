@@ -2,7 +2,7 @@
 
 (executables
  (names
-   about ; accel_tree
+   about accel_tree
    action ; assistant
    assistant_tutorial
    buttons
@@ -10,17 +10,19 @@
    combobox counter dcalendar
    dialog-thread drawing
    editor2
-   entry2 entrycompletion ; entry
+   entry2 entrycompletion entry
    eventbox events2 events expander
-   fifteen filechooser ; fixed_editor fixpoint
-   gioredirect giotest hello iconview ; image kaimono
+   fifteen filechooser ; fixed_editor
+   fixpoint
+   gioredirect giotest hello iconview ; image
+   kaimono
    ; label link_button lissajous
    nihongo notebook
    pango1 pango2
    ; pixview pousse
-   progressbar radiobuttons ; rpn
+   progressbar radiobuttons rpn
    ; runthread
-   scrolledwin ; seppala signal_override slide_show
+   scrolledwin seppala signal_override ; slide_show
    socket spin
    ; testdnd testgtk
    testthread ; timer toolbar

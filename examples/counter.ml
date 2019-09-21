@@ -8,6 +8,8 @@
 
 (* $Id$ *)
 
+let _ = GtkMain.Main.init()
+
 let w = GWindow.window ()
 
 let vb = GPack.vbox ~packing:w#add ()
@@ -20,8 +22,8 @@ let incB = GButton.button ~label:"Inc" ~packing:hb#add ()
 
 let adj =
   GData.adjustment ~lower:0. ~upper:100. ~step_incr:1. ~page_incr:10. ()
+
 let sc = GRange.scale `HORIZONTAL ~adjustment:adj ~draw_value:false
-    ~update_policy:`DISCONTINUOUS
     ~packing:vb#pack ()
 
 let counter = new GUtil.variable 0

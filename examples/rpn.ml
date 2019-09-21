@@ -13,6 +13,8 @@
 open StdLabels
 open GMain
 
+let _ = GMain.Main.init ()
+
 let wow _ = prerr_endline "Wow!"; ()
 let main () =
   let stack = Stack.create () in	
@@ -62,7 +64,7 @@ let main () =
      if (txt = "0") then
        entry#set_text n
      else begin
-       entry#append_text n
+       entry#set_text (entry#text ^ n) (* entry#append_text n *)
      end in
   let rec loop1 labels n =
     match labels with [] -> ()
@@ -77,7 +79,9 @@ let main () =
   (* Period *)
   let periodClicked _ = 
      let txt = entry#text in
-     if not (String.contains txt '.') then entry#append_text "." in
+     if not (String.contains txt '.') then
+       entry#set_text (entry#text ^ ".") (* entry#append_text "." *)
+  in
   (GButton.button ~label:" . "
      ~packing:(table1#attach ~left:1 ~top:3 ~expand:`BOTH) ())
     #connect#clicked ~callback:periodClicked;

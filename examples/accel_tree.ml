@@ -53,6 +53,7 @@ let setup_tree_view (store:GTree.list_store) (treeview:GTree.view) =
     
 
 let () = 
+  GMain.init ();
   let window = 
     GWindow.window ~kind:`TOPLEVEL ~title:"Accelerator Keys"
       ~border_width:10
@@ -66,7 +67,7 @@ let () =
        let row = store#append () in
 	 store#set ~row ~column:action a;
 	 store#set ~row ~column:mask 
-	   (Gpointer.encode_flags GdkEnums.modifier m);
+	   (Gpointer.encode_flags GdkEnums.Conv.modifier_tbl m);
 	 store#set ~row ~column:value v;
     )
     list;

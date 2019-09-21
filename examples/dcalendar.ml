@@ -137,7 +137,7 @@ let create_GUI () =
 
   let win =
     GWindow.window ~title: "Camlendar" ~show: true
-      ~allow_shrink: false ~allow_grow: false () in
+      ~resizable: false () in
   win#event#connect#delete
     ~callback: (fun _ -> GMain.Main.quit (); false);
 
@@ -159,10 +159,13 @@ let create_GUI () =
   let packing = vbox#add in
   let toolbar = GButton.toolbar ~style: `TEXT ~packing () in
 
-  let prev =
-    toolbar#insert_button ~text: "Prev" ~tooltip: "Show previous month" () in
-  let next =
-    toolbar#insert_button ~text: "Next" ~tooltip: "Show next month" () in
+  let prev = GButton.tool_button ~label: "Prev" () in
+  prev#set_tooltip_text "Show previous month";
+  toolbar#insert prev;
+
+  let next = GButton.tool_button ~label: "Next" () in
+  next#set_tooltip_text "Show next month";
+  toolbar#insert next;
   
   let calendar =
     GPack.table ~homogeneous: true ~rows: 7 ~columns: 7
