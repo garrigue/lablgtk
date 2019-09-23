@@ -145,7 +145,8 @@ class Toolbar set wrap wrapsig : Container {
 }
 
 class LinkButton wrap : LinkButton {
-  "uri"                gchararray           : Read / Write 
+  "uri"                gchararray           : Read / Write
+  signal activate_link
 }
 
 (* Not tested yet. For Gtk 2.12. 
