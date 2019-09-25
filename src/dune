@@ -68,7 +68,8 @@
 (library
  (name lablgtk3)
  (public_name lablgtk3)
- (flags :standard -w -6-7-9-10-27-32-33-34-35-36-50-52 -no-strict-sequence)
+ (flags :standard -w -6-7-9-10-27-32-33-34-35-36-50-52 -no-strict-sequence
+        -warn-error A-3) ; needed for Obj.truncate
  (wrapped false)
  (modules
    ; gtkBrokenProps ogtkBrokenProps gtkBroken gBroken
