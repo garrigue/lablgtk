@@ -3,7 +3,7 @@
 (executables
  (names
    about accel_tree
-   action ; assistant
+   action assistant
    assistant_tutorial
    buttons
    cairo_demo calc calendar cgets
@@ -16,7 +16,8 @@
    fixpoint
    gioredirect giotest hello iconview ; image
    kaimono
-   ; label link_button lissajous
+   ; label
+   link_button ; lissajous
    nihongo notebook
    pango1 pango2
    ; pixview pousse
