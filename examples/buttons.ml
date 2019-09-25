@@ -8,8 +8,6 @@
 
 (* $Id$ *)
 
-open GMain
-
 let xpm_label_box ~(window : #GContainer.container)
     ~file ~text ?packing ?(show=true) () =
   if not (Sys.file_exists file) then failwith (file ^ " does not exist");
@@ -22,7 +20,7 @@ let xpm_label_box ~(window : #GContainer.container)
 let main () =
   GMain.init ();
   let window = GWindow.window ~title:"Pixmap'd Buttons!" ~border_width:10 () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
   let hbox = GPack.hbox ~packing:window#add () in
   let button = GButton.button ~packing:(hbox#pack ~padding:5) () in
   button#connect#clicked ~callback:
@@ -36,6 +34,6 @@ let main () =
   button#connect#clicked ~callback:
     (fun () -> prerr_endline "Stock buttons look nice");
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()

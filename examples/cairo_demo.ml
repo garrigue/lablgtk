@@ -40,7 +40,7 @@ let expose drawing_area cr =
   true
 
 let () =
-  let _ = GMain.Main.init () in
+  let _ = GMain.init () in
   let w = GWindow.window ~title:"Cairo demo" ~width:500 ~height:400 () in
   ignore(w#connect#destroy ~callback:GMain.quit);
 
@@ -48,4 +48,4 @@ let () =
   ignore(d#misc#connect#draw ~callback:(expose d));
 
   w#show();
-  GMain.Main.main()
+  GMain.main()

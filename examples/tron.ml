@@ -9,7 +9,8 @@
 (* $Id$ *)
 
 (* Tron? Game *)
-open GMain
+
+let _ = GMain.init ()
 
 let m_pi = acos (-1.)
 let clRed   = `NAME "red"  (* `BLACK *)
@@ -48,7 +49,7 @@ let main () =
   let window = GWindow.window ~border_width:10 ~title:"tron(?)" () in
   window#event#connect#delete
      ~callback:(fun _ -> prerr_endline "Delete event occured"; false);
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
   let vbx = GPack.vbox ~packing:window#add () in
   let area = GMisc.drawing_area ~width:((gameSize+2)*4) ~height:((gameSize+2)*4)
       ~packing:vbx#add () in
@@ -204,7 +205,7 @@ let main () =
   restartClicked ();
 
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = Printexc.print main ()
 

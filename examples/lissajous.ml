@@ -9,14 +9,12 @@
 (* $Id$ *)
 (* Lissajous 図形 *)
 
-open GMain
-
 
 let main () =
   let window = GWindow.window ~border_width: 10 () in
   window#event#connect#delete
      ~callback:(fun _ -> prerr_endline "Delete event occured"; true);
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
   let vbx = GPack.vbox ~packing:window#add () in
   let quit = GButton.button ~label:"Quit" ~packing:vbx#add () in
   quit#connect#clicked ~callback:window#destroy;
@@ -51,6 +49,6 @@ let main () =
 		  true in 
   Timeout.add ~ms:500 ~callback:timeout;
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = Printexc.print main()

@@ -9,7 +9,6 @@
 (* $Id$ *)
 
 open Printf
-open GMain
 
 let enter_callback entry =
   printf "Entry contents: %s\n" entry#text;
@@ -25,7 +24,7 @@ let main () =
   GMain.init ();
   let window =
     GWindow.window ~title: "GTK Entry" ~width: 200 ~height: 100 () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
 
   let vbox = GPack.vbox ~packing: window#add () in
 
@@ -55,6 +54,6 @@ let main () =
 
   window#show ();
 
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()

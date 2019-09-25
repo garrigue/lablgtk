@@ -40,9 +40,9 @@ let openfile = [|
 "....................";
 "...................." |]
 
-open GMain
 
 let main () =
+  GMain.init ();
   let w = GWindow.window ~border_width:2 () in
   w#misc#realize ();
   let hbox = GPack.hbox ~spacing:10 ~packing:w#add () in
@@ -50,7 +50,7 @@ let main () =
   GMisc.pixmap pm ~packing:hbox#add ();
   GMisc.label ~text:"Embedded xpm" ~packing:hbox#add ();
   w#show ();
-  w#connect#destroy ~callback:Main.quit;
-  Main.main ()
+  w#connect#destroy ~callback:GMain.quit;
+  GMain.main ()
 
 let () = main ()

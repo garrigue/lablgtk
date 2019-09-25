@@ -12,9 +12,10 @@
 open Gaux
 open Gtk
 open GObj
-open GMain
 
 (* GtkThread.start() *)
+
+let _ = GMain.init ()
 
 let drag_icon_xpm = [|
 "36 48 9 1";
@@ -502,7 +503,7 @@ object (self)
 end
 
 let main () =
-  window#connect#destroy ~callback: Main.quit;
+  window#connect#destroy ~callback: GMain.quit;
   let table = GPack.table ~rows:2 ~columns:2 ~packing:window#add () in
   let attach = table#attach ~expand:`BOTH in
   new label_drag ~packing:(attach ~left:0 ~top:0) ();
@@ -511,7 +512,7 @@ let main () =
   new popsite ~packing:(attach ~left:1 ~top:1) ();
 
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ =
   main ()

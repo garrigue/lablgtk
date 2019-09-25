@@ -8,12 +8,10 @@
 
 (* $Id$ *)
 
-open GMain
-
 let main () =
   GMain.init ();
   let window = GWindow.window () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
 
   let calendar = GMisc.calendar ~packing:window#add () in
   calendar#connect#day_selected ~callback:
@@ -25,6 +23,6 @@ let main () =
     end;
 
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()

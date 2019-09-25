@@ -21,9 +21,10 @@ let body () =
   done
 
 let () =
+  GMain.init ();
   start#connect#clicked
     (fun () -> cont:= true; ignore (Thread.create body ()));
   stop#connect#clicked (fun () -> cont := false);
   w#connect#destroy GMain.quit;
   w#show ();
-  main ()
+  GMain.main ()

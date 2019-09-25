@@ -7,7 +7,6 @@
 (**************************************************************************)
 
 open Printf
-open GMain
 
 let pr_targets targets =
   printf "%d targets\n" (List.length targets);
@@ -21,7 +20,7 @@ let get_contents targets =
     | [] -> []
     | atom::xs ->
         try
-	  let content = (atom, clipboard#get_contents ~target:atom) in
+	  let content = (atom, GMain.clipboard#get_contents ~target:atom) in
 	  content :: loop xs
         with _ -> loop xs
   in
@@ -42,7 +41,7 @@ let pr_contents cnt_list =
   List.iter pr cnt_list
 
 let get_targets () =
-  let targets = clipboard#targets in
+  let targets = GMain.clipboard#targets in
   pr_targets targets;
   let contents = get_contents targets in
   pr_contents contents;

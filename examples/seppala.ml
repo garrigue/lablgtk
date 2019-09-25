@@ -8,7 +8,7 @@
 
 open Gtk
 
-let destroy () = GMain.Main.quit ()
+let destroy () = GMain.quit ()
 
 let main () =
  GMain.init ();

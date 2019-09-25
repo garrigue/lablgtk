@@ -11,9 +11,8 @@
 (* reverse polish calculator *)
 
 open StdLabels
-open GMain
 
-let _ = GMain.Main.init ()
+let _ = GMain.init ()
 
 let wow _ = prerr_endline "Wow!"; ()
 let main () =
@@ -22,7 +21,7 @@ let main () =
   (* toplevel window *)
   let window =
     GWindow.window ~border_width: 10 ~title:"Reverse Polish Calculator" () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
 
 
   (* vbox *)
@@ -132,6 +131,6 @@ let main () =
 
   (* show all and enter event loop *)
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = Printexc.print main()

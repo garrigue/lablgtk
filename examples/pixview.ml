@@ -33,6 +33,7 @@ let da = GMisc.drawing_area ~packing:w#add ()
 let dw = da#misc#realize (); new GDraw.drawable da#misc#window
 
 let () =
+  GMain.init ();
   da#event#connect#expose (fun _ -> dw#put_pixmap ~x:0 ~y:0 pm; true);
   w#connect#destroy GMain.quit;
   w#show ();

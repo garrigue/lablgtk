@@ -9,10 +9,9 @@
 (* $Id$ *)
 
 open StdLabels
-open GMain
 open Printf
 
-let _ = GMain.Main.init ()
+let _ = GMain.init ()
 
 let file_dialog ~title ~callback ?filename () =
   let sel = GWindow.file_chooser_dialog ~action:`OPEN ~title ?filename () in
@@ -120,7 +119,7 @@ let save name =
 open GdkKeysyms
 
 let _ =
-  w#connect#destroy ~callback:Main.quit;
+  w#connect#destroy ~callback:GMain.quit;
   w#event#connect#key_press ~callback:
     begin fun ev ->
       let key = GdkEvent.Key.keyval ev and adj = vp#vadjustment in
@@ -142,4 +141,4 @@ let _ =
   let ef = new GMenu.factory edit_menu ~accel_group:factory#accel_group in
   ef#add_item ~key:_A "Add line" ~callback:add_entry;
   w#show ();
-  Main.main ()
+  GMain.main ()

@@ -36,4 +36,4 @@ let () =
   ignore(d#misc#connect#draw ~callback:(expose d));
 
   w#show();
-  GMain.Main.main()
+  GMain.main ()

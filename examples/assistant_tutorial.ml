@@ -138,7 +138,7 @@ it is time to leave!" ()
   assistant#connect#close ~callback:(assistant_close assistant);
 
   assistant#show ();
-  GMain.Main.main ()
+  GMain.main ()
 
 
 let () = 

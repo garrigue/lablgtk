@@ -179,7 +179,7 @@ let create_view_and_model () : GTree.view =
   view
 
 let _ =
-  ignore (GtkMain.Main.init ());
+  GMain.init ();
   let window = GWindow.window ~width:200 ~height:400 () in
   ignore 
     (window#event#connect#delete 
@@ -188,4 +188,4 @@ let _ =
   let view = create_view_and_model () in
   scrollwin#add view#coerce;
   window#show ();
-  GtkMain.Main.main ()
+  GMain.main ()

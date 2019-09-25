@@ -139,7 +139,7 @@ let create_GUI () =
     GWindow.window ~title: "Camlendar" ~show: true
       ~resizable: false () in
   win#event#connect#delete
-    ~callback: (fun _ -> GMain.Main.quit (); false);
+    ~callback: (fun _ -> GMain.quit (); false);
 
   let style = win#misc#style#copy in
   styles.(s_normal) <- style;
@@ -255,8 +255,8 @@ let create_GUI () =
   update_view ();
   buttons.(0)#focus_on;;
 
-GMain.Main.init ();
+GMain.init ();
 print_endline (Glib.Main.setlocale `ALL None);
 flush stdout;
 create_GUI ();
-GMain.Main.main ()
+GMain.main ()

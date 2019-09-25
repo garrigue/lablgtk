@@ -8,8 +8,6 @@
 
 (* $Id$ *)
 
-open GMain
-
 let main () =
 
   let window = GWindow.window ~title: "Link button" ~border_width: 0 () in
@@ -26,6 +24,6 @@ let main () =
     (fun _ s -> Format.printf "Got url '%s'@." s;   button#set_uri "AGAIN");
   window#connect#destroy GMain.quit;
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()

@@ -8,7 +8,7 @@
 
 (* $Id$ *)
 
-let _ = GtkMain.Main.init()
+let _ = GMain.init()
 
 let w = GWindow.window ()
 
@@ -28,8 +28,6 @@ let sc = GRange.scale `HORIZONTAL ~adjustment:adj ~draw_value:false
 
 let counter = new GUtil.variable 0
 
-open GMain
-
 let _ =
   decB#connect#clicked
     ~callback:(fun () -> adj#set_value (float(counter#get-1)));
@@ -41,6 +39,6 @@ let _ =
     ~callback:(fun () -> counter#set (truncate adj#value));
   counter#connect#changed ~callback:(fun n -> lbl#set_text (string_of_int n));
   counter#set 0;
-  w#connect#destroy ~callback:Main.quit;
+  w#connect#destroy ~callback:GMain.quit;
   w#show ();
-  Main.main ()
+  GMain.main ()

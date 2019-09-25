@@ -12,7 +12,6 @@ open StdLabels
 open Gaux
 open Gtk
 open GObj
-open GMain
 
 class position ~init_x ~init_y ~min_x ~min_y ~max_x ~max_y = object
   val mutable x = init_x
@@ -54,7 +53,7 @@ let game_init () = (* generate initial puzzle state *)
 let _ = Random.init (int_of_float (Sys.time () *. 1000.))
 let _ = GMain.init ()
 let window = GWindow.window ()
-let _ = window#connect#destroy ~callback:GMain.Main.quit
+let _ = window#connect#destroy ~callback:GMain.quit
 
 let tbl = GPack.table ~rows:4 ~columns:4 ~homogeneous:true ~packing:window#add ()
 let dummy = GMisc.label ~text:"" ~packing:(tbl#attach ~left:3 ~top:3) ()
@@ -82,7 +81,7 @@ let _ =
       let (x0, y0) = pos#current in
       let wid0 = arr.(x0).(y0) in
       let key = GdkEvent.Key.keyval ev in
-      if key = _q || key = _Escape then (Main.quit (); exit 0) else
+      if key = _q || key = _Escape then (GMain.quit (); exit 0) else
       let (x1, y1) =
 	if key = _h || key = _Left then 
           pos#right ()
@@ -102,6 +101,6 @@ let _ =
 	      
 let main () = 
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()

@@ -133,7 +133,7 @@ let window () =
 	window#show ();
 	window#move ~x: 10 ~y: 10
 
-let locale = GtkMain.Main.init ()
+let locale = GMain.init ()
 
 let main () =
 	window ();

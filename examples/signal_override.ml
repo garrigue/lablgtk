@@ -35,7 +35,7 @@ let create_derived_frame =
 	  new GBin.frame (GtkObject.make derived_frame_name pl : Gtk.frame Gtk.obj)))
 
 let main =
-  GMain.Main.init ();
+  GMain.init ();
   let w = GWindow.window ~title:"Overriding signals demo" () in
   w#connect#destroy GMain.quit ;
 

@@ -9,7 +9,6 @@
 open Gdk  
 open Gtk
 open GObj
-open GMain
 
 let dnd_source_window () =
   let window = GWindow.window ~position:`MOUSE () in
@@ -258,7 +257,7 @@ class fix_editor ~width ~height ~packing =
 (* the following is for test only *)
 let window1 () =    
   let window = GWindow.window () in
-  let _ = window#connect#destroy ~callback: Main.quit in
+  let _ = window#connect#destroy ~callback: GMain.quit in
   let fix = new fix_editor ~width:640 ~height:480 ~packing:window#add in
   fix#set_grid 5;
   let setter = fix#new_child ~name:"hello" ~x:100 ~y:200 ~width:32 ~height:32
@@ -274,10 +273,10 @@ let window1 () =
 
     
 let main () =
-  let _ = Main.init () in
+  let _ = GMain.init () in
   window1 ();
   dnd_source_window ();
-  Main.main ()
+  GMain.main ()
   
 let _ = main ()
 
