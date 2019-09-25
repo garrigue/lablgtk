@@ -1,5 +1,10 @@
 LablGTK changes log
 
+2019.09.25 [Jacques]
+  * Fix several gtk3 examples, and remove some obsolete ones
+   (#84) [Martin de Mello]
+  * Disable -warn-error 3 in src/dune, because of Obj.truncate
+
 2019.09.23 [Martin de Mello]
   * Add the LinkButton activate-link signal #83
 
