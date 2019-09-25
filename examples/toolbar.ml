@@ -6,6 +6,8 @@
 (*                                                                        *)
 (**************************************************************************)
 
+let _ = GMain.init ()
+
 let change_orientation button (table : #GPack.table) toolbar () =
   let toolbar_w = (toolbar :> GObj.widget) in
   let orientation = if button#active then `VERTICAL else `HORIZONTAL in
@@ -100,7 +102,7 @@ let context_menu_cb toolbar x y button =
     let label = Printf.sprintf "Item _%d" i in
     GMenu.menu_item ~label ~use_mnemonic:true ~packing:menu#append ()
   done ;
-  menu#popup ~button:0 ~time:(GtkMain.Main.get_current_event_time ()) ;
+  menu#popup ~button:0 ~time:(GMain.get_current_event_time ()) ;
   true
 
 

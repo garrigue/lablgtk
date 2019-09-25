@@ -10,12 +10,10 @@
 
 (* See comments in events.ml *)
 
-open GMain
-
 let _ =
   GMain.init ();
   let window = GWindow.window () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
 
   let text = GText.view ~width:200 ~height:100 ~packing:window#add () in
   text#event#connect#button_press ~callback:
@@ -36,4 +34,4 @@ let _ =
       end
     end;
   window#show ();
-  Main.main ()
+  GMain.main ()

@@ -105,8 +105,6 @@ let print_string s =
 #install_printer print_string;;
 *)
 
-open GMain
-
 let field_widths =
   [ "i", 0;
     "ATTR", 0;
@@ -178,12 +176,12 @@ let main () =
   Arg.parse ["-fields", Arg.Set_string fields, "fields to display"]
     ((:=) file) "Usage: csview <csv file>";
   let fields = parse_fields (Stream.of_string !fields) in
-  let locale = Main.init ~setlocale:true () in
+  let locale = GMain.init ~setlocale:true () in
   let ic = if !file = "" then stdin else open_in !file in
   let data = read_file ic in
   if !file <> "" then close_in ic;
   let w = GWindow.window () in
-  w#connect#destroy ~callback:Main.quit;
+  w#connect#destroy ~callback:GMain.quit;
   let vbox = GPack.vbox ~packing:w#add () in
   let mbar = new GMenu.factory (GMenu.menu_bar ~packing:vbox#pack ()) in
   let columns = new GMenu.factory (mbar#add_submenu "Columns") in
@@ -234,7 +232,7 @@ let main () =
       succ col
     end;
   w#show ();
-  Main.main ()
+  GMain.main ()
 
 let () =
   if not !Sys.interactive then main ()

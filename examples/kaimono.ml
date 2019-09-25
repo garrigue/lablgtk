@@ -9,19 +9,23 @@
 (* $Id$ *)
 
 open StdLabels
-open GMain
 open Printf
 
+let _ = GMain.init ()
+
 let file_dialog ~title ~callback ?filename () =
-  let sel = GWindow.file_selection ~title ~modal:true ?filename () in
-  sel#cancel_button#connect#clicked ~callback:sel#destroy;
-  sel#ok_button#connect#clicked ~callback:
-    begin fun () ->
-      let name = sel#filename in
-      sel#destroy ();
-      callback name
-    end;
-  sel#show ()
+  let sel = GWindow.file_chooser_dialog ~action:`OPEN ~title ?filename () in
+  sel#add_button_stock `CANCEL `CANCEL ;
+  sel#add_select_button_stock `OPEN `OPEN ;
+  begin match sel#run () with
+  | `OPEN -> begin
+      match sel#filename with
+      | Some name -> callback name
+      | _ -> ()
+    end
+  | `DELETE_EVENT | `CANCEL -> ()
+  end ;
+  sel#destroy ()
 
 let w = GWindow.window ~title:"Okaimono" ()
 let vb = GPack.vbox ~packing:w#add ()
@@ -115,7 +119,7 @@ let save name =
 open GdkKeysyms
 
 let _ =
-  w#connect#destroy ~callback:Main.quit;
+  w#connect#destroy ~callback:GMain.quit;
   w#event#connect#key_press ~callback:
     begin fun ev ->
       let key = GdkEvent.Key.keyval ev and adj = vp#vadjustment in
@@ -137,4 +141,4 @@ let _ =
   let ef = new GMenu.factory edit_menu ~accel_group:factory#accel_group in
   ef#add_item ~key:_A "Add line" ~callback:add_entry;
   w#show ();
-  Main.main ()
+  GMain.main ()

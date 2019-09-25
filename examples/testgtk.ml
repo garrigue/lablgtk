@@ -10,7 +10,6 @@
 
 open StdLabels
 open GdkKeysyms
-open GMain
 open GObj
 
 let create_bbox direction title spacing child_w child_h layout =
@@ -324,7 +323,7 @@ let create_menus =
 (* Modal windows *)
 
 let cmw_destroy_cb _ =
-  Main.quit ()
+  GMain.quit ()
 
 let cmw_color parent _ =
   let csd = GWindow.color_selection_dialog ~modal:true
@@ -334,7 +333,7 @@ let cmw_color parent _ =
   csd # ok_button # connect#clicked ~callback:csd#destroy;
   csd # cancel_button # connect#clicked ~callback:csd#destroy;
   csd # show ();
-  Main.main ()
+  GMain.main ()
 
 let cmw_file parent _ =
   let fs = GWindow.file_selection ~modal:true
@@ -344,7 +343,7 @@ let cmw_file parent _ =
   fs # ok_button # connect#clicked ~callback:fs#destroy;
   fs # cancel_button # connect#clicked ~callback:fs#destroy;
   fs # show ();
-  Main.main ()
+  GMain.main ()
 
 let create_modal_window () =
   let window = GWindow.window ~modal:true ~title:"This window is modal" () in
@@ -366,7 +365,7 @@ let create_modal_window () =
   btnColor #connect#clicked ~callback: (cmw_color window);
   btnFile #connect#clicked ~callback: (cmw_file window);
   window # show ();
-  Main.main ()
+  GMain.main ()
 
 
 (* corrected bug in testgtk.c *)
@@ -1087,7 +1086,7 @@ let create_main_window () =
   let window = GWindow.window ~title:"main window" ~width:200 ~height:400 () in
   window#move ~x:20 ~y:20;
 
-  window #connect#destroy ~callback: Main.quit;
+  window #connect#destroy ~callback: GMain.quit;
 
   let box1 = GPack.vbox ~packing: window#add () in
 
@@ -1123,7 +1122,7 @@ let create_main_window () =
   let tray_icon = GMisc.status_icon_from_file "gnome-fs-directory.png" in
   ignore(tray_icon#connect#activate
    (fun () -> GToolbox.message_box "testgtk" "Tray icon activated!"));
-  Main.main ()
+  GMain.main ()
 
 let _ = create_main_window ()
 

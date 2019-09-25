@@ -78,8 +78,6 @@ let m =
 
 (* The physical calculator. Inherits from the abstract one *)
 
-open GMain
-
 class calculator ?packing ?show () =
   let table = GPack.table ~rows:5 ~columns:4 ~homogeneous:true ~show:false () in
   object (calc)
@@ -96,7 +94,7 @@ class calculator ?packing ?show () =
 
     method set = label#set_text
     method get = label#text
-    method quit = Main.quit
+    method quit = GMain.quit
 
     initializer
       for i = 0 to 3 do for j = 0 to 3 do
@@ -110,15 +108,15 @@ class calculator ?packing ?show () =
 
 (* Finally start everything *)
 
-let _ = Main.init ()
+let _ = GMain.init ()
 
 let w = GWindow.window ()
 
 let applet = new calculator ~packing: w#add ()
 
 let _ =
-  w#connect#destroy ~callback: Main.quit;
+  w#connect#destroy ~callback: GMain.quit;
   w#event#connect#key_press
     ~callback:(fun ev -> applet#command (GdkEvent.Key.string ev); true);
   w#show ();
-  Main.main ()
+  GMain.main ()

@@ -8,8 +8,6 @@
 
 (* $Id$ *)
 
-open GMain
-
 let rec fix ~f ~eq x =
   let x' = f x in
   if eq x x' then x
@@ -18,13 +16,13 @@ let rec fix ~f ~eq x =
 let eq_float x y = abs_float (x -. y) < 1e-13
 
 let _ =
-  let _ = Main.init () in
-  let top = GWindow.window () in
-  top#connect#destroy ~callback:Main.quit;
+  let _ = GMain.init () in
+  let top = GWindow.window ~resizable: false () in
+  top#connect#destroy ~callback:GMain.quit;
   let vbox = GPack.vbox ~packing: top#add () in
+  let label = GMisc.label ~text: "Fixed point of cos(x)" ~packing: vbox#add () in
   let entry = GEdit.entry ~max_length: 20 ~packing: vbox#add () in
-  let tips = GData.tooltips () in
-  tips#set_tip entry#coerce ~text:"Initial value for fix-point";
+  entry#set_tooltip_text "Initial value for fix-point";
   let result =
     GEdit.entry ~max_length: 20 ~editable: false ~packing: vbox#add () in
 
@@ -36,4 +34,4 @@ let _ =
       result#set_text (string_of_float res)
     end;
   top#show ();
-  Main.main ()
+  GMain.main ()

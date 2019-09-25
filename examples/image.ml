@@ -8,7 +8,6 @@
 
 (* $Id$ *)
 
-open GMain
 open Gdk
 
 (* load image *)
@@ -97,11 +96,11 @@ let display =
 let () =
   flush stdout;
   (* Bind callbacks *)
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
   window#event#connect#after#expose ~callback:
     begin fun _ ->
       display (); false
     end;
 
   window#show ();
-  Main.main ()
+  GMain.main ()

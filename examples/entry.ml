@@ -9,7 +9,6 @@
 (* $Id$ *)
 
 open Printf
-open GMain
 
 let enter_callback entry =
   printf "Entry contents: %s\n" entry#text;
@@ -22,17 +21,19 @@ let entry_toggle_visibility button entry =
   entry#set_visibility button#active
 
 let main () =
-
+  GMain.init ();
   let window =
     GWindow.window ~title: "GTK Entry" ~width: 200 ~height: 100 () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
 
   let vbox = GPack.vbox ~packing: window#add () in
 
   let entry = GEdit.entry ~max_length: 50 ~packing: vbox#add () in
   entry#connect#activate ~callback:(fun () -> enter_callback entry);
   entry#set_text "Hello";
-  entry#append_text " world";
+  (* Appending text now requires getting the underlying buffer, and
+   * entry#buffer is not exposed in the bindings yet *)
+  (*entry#append_text " world";*)
   entry#select_region ~start:0 ~stop:entry#text_length;
 
   let hbox = GPack.hbox ~packing: vbox#add () in
@@ -53,6 +54,6 @@ let main () =
 
   window#show ();
 
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()

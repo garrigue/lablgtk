@@ -8,6 +8,8 @@
 
 (* $Id$ *)
 
+let _ = GMain.init()
+
 let w = GWindow.window ()
 
 let vb = GPack.vbox ~packing:w#add ()
@@ -20,13 +22,11 @@ let incB = GButton.button ~label:"Inc" ~packing:hb#add ()
 
 let adj =
   GData.adjustment ~lower:0. ~upper:100. ~step_incr:1. ~page_incr:10. ()
+
 let sc = GRange.scale `HORIZONTAL ~adjustment:adj ~draw_value:false
-    ~update_policy:`DISCONTINUOUS
     ~packing:vb#pack ()
 
 let counter = new GUtil.variable 0
-
-open GMain
 
 let _ =
   decB#connect#clicked
@@ -39,6 +39,6 @@ let _ =
     ~callback:(fun () -> counter#set (truncate adj#value));
   counter#connect#changed ~callback:(fun n -> lbl#set_text (string_of_int n));
   counter#set 0;
-  w#connect#destroy ~callback:Main.quit;
+  w#connect#destroy ~callback:GMain.quit;
   w#show ();
-  Main.main ()
+  GMain.main ()

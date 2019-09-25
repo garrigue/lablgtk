@@ -105,6 +105,7 @@ class timer ?packing ?show () =
   end
 
 let () =
+  GMain.init ();
   let w = GWindow.window () in
   w#connect#destroy ~callback:GMain.quit;
   let hbox = GPack.hbox ~packing:w#add () in

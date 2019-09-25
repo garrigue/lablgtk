@@ -8,12 +8,10 @@
 
 (* $Id$ *)
 
-open GMain
-
 let main () =
   GMain.init ();
   let window = GWindow.window ~title:"Notebook" ~border_width:10 () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
   let notebook = GPack.notebook ~packing:window#add () in
   let button = GButton.button ~label:"Page 1" 
     ~packing:(fun w -> ignore (notebook#append_page w)) () in
@@ -30,7 +28,7 @@ let main () =
   button#connect#clicked ~callback:
     (fun () -> prerr_endline "Coucou");
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()
 

@@ -8,8 +8,6 @@
 
 (* $Id$ *)
 
-open GMain
-
 let main () =
   GMain.init ();
 
@@ -27,6 +25,6 @@ let main () =
     (fun () -> Format.printf "Got url '%s'@." button#uri;   button#set_uri "AGAIN");
   window#connect#destroy GMain.quit;
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()

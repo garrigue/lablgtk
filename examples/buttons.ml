@@ -8,21 +8,19 @@
 
 (* $Id$ *)
 
-open GMain
-
 let xpm_label_box ~(window : #GContainer.container)
     ~file ~text ?packing ?(show=true) () =
   if not (Sys.file_exists file) then failwith (file ^ " does not exist");
   let box = GPack.hbox ~border_width: 2 ?packing ~show:false () in
-  let pixmap = GDraw.pixmap_from_xpm ~file ~window () in
-  GMisc.pixmap pixmap ~packing:(box#pack ~padding:3) ();
+  let image = GMisc.image ~file ~packing:(box#pack ~padding:3) () in
   GMisc.label ~text ~packing:(box#pack ~padding:3) ();
   if show then box#misc#show ();
   new GObj.widget_full box#as_widget
 
 let main () =
+  GMain.init ();
   let window = GWindow.window ~title:"Pixmap'd Buttons!" ~border_width:10 () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
   let hbox = GPack.hbox ~packing:window#add () in
   let button = GButton.button ~packing:(hbox#pack ~padding:5) () in
   button#connect#clicked ~callback:
@@ -36,6 +34,6 @@ let main () =
   button#connect#clicked ~callback:
     (fun () -> prerr_endline "Stock buttons look nice");
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()

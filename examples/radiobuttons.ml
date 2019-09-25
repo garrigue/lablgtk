@@ -8,13 +8,11 @@
 
 (* $Id$ *)
 
-open GMain
-
 let main () =
 
   GMain.init ();
   let window = GWindow.window ~title: "radio buttons" ~border_width: 0 () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
 
   let box1 = GPack.vbox ~packing: window#add () in
 
@@ -38,11 +36,11 @@ let main () =
       ~packing: box1#pack () in
 
   let button = GButton.button ~label: "close" ~packing: box3#add () in
-  button#connect#clicked ~callback:Main.quit;
+  button#connect#clicked ~callback:GMain.quit;
   button#grab_default ();
 
   window#show ();
 
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()

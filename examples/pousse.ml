@@ -72,7 +72,7 @@ end
 
 (* GUI *)
 
-open GMain
+let _ = GMain.init ()
 
 (* Toplevel window *)
 
@@ -204,6 +204,6 @@ let game = new game ~frame ~label ~statusbar:bar
 (* Start *)
 
 let _ =
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
   window#show ();
-  Main.main ()
+  GMain.main ()

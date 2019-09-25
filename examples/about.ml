@@ -30,6 +30,6 @@ let show () =
 
 
 let () = 
-  GMain.Main.init ();
+  GMain.init ();
   show ()
     

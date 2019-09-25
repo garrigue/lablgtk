@@ -36,6 +36,7 @@ class directory ~path = object (self)
 end
 
 let () =
+  GMain.init ();
   let w = GWindow.window () in
   let da = GMisc.drawing_area ~packing:w#add () in
   da#misc#realize ();

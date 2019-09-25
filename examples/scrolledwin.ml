@@ -8,13 +8,11 @@
 
 (* $Id$ *)
 
-open GMain
-
 let main () =
   GMain.init ();
   let window = GWindow.dialog ~title: "dialog"
       ~border_width: 10 ~width: 300 ~height: 300 () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
 
   let scrolled_window = GBin.scrolled_window
       ~border_width: 10 ~hpolicy: `AUTOMATIC ~packing: window#vbox#add ()
@@ -35,10 +33,9 @@ let main () =
 
   let button =
     GButton.button ~label: "close" ~packing: window#action_area#add () in
-  button#connect#clicked ~callback: Main.quit;
+  button#connect#clicked ~callback: GMain.quit;
   button#grab_default ();
   window#show ();
-  Main.main ()
+  GMain.main ()
 
 let _ = main ()
-    

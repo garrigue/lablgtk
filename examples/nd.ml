@@ -211,6 +211,7 @@ let motion_notify d b =
  true
 
 let () =
+  let _ = GMain.init () in
   let w = GWindow.window ~title:"Natural deduction demo" () in
   w#set_default_size ~width:400 ~height:(Gdk.Screen.height () * 3 / 4);
   ignore(w#connect#destroy ~callback:GMain.quit);

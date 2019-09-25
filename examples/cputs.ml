@@ -7,7 +7,6 @@
 (**************************************************************************)
 
 open Printf
-open GMain
 
 let print_msg msg = printf "%s" msg; flush stdout
 let flush_stdout () = flush stdout

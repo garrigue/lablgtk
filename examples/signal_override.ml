@@ -21,7 +21,8 @@ let derived_frame_gtype =
   lazy begin
     let parent = Gobject.Type.from_name "GtkFrame" in
     let t = Gobject.Type.register_static ~parent ~name:derived_frame_name in
-    GtkSignal.override_class_closure GtkBase.Container.S.add t (C.create add_closure) ;
+    GtkSignal.override_class_closure GtkContainers.Container.S.add t
+      (C.create add_closure) ;
     t
   end
 
@@ -33,7 +34,8 @@ let create_derived_frame =
 	  ignore (Lazy.force derived_frame_gtype) ;
 	  new GBin.frame (GtkObject.make derived_frame_name pl : Gtk.frame Gtk.obj)))
 
-let main = 
+let main =
+  GMain.init ();
   let w = GWindow.window ~title:"Overriding signals demo" () in
   w#connect#destroy GMain.quit ;
 
