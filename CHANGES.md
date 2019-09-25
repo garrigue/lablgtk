@@ -1,11 +1,14 @@
 LablGTK changes log
 
-## In Lablgtk-3.0.beta7
+2019.09.23 [Martin de Mello]
+  * Add the LinkButton activate-link signal #83
 
 2019.08.12 [Emilio J. Gallego Arias]
   * Remove stale makefiles, lablgtk must be built using Dune now.
+
 2019.07.07 [Emilio J. Gallego Arias]
   * Include extended Cairo Support from #33 in the Dune build.
+
 2019.06.27 [Anton Kochkov]
   * Upgrade CI to OCaml 4.08
 

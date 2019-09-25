@@ -522,6 +522,16 @@ val menu_tool_button :
 
 (** @gtkdoc gtk GtkLinkButton
     @since GTK 2.10 *)
+class link_button_signals :
+  ([> Gtk.link_button] as 'a) Gtk.obj ->
+  object
+    inherit button_signals
+    val obj : 'a Gtk.obj
+    method activate_link : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+(** @gtkdoc gtk GtkLinkButton
+    @since GTK 2.10 *)
 class link_button :
   ([> Gtk.link_button] as 'a) Gtk.obj ->
   object
@@ -529,6 +539,7 @@ class link_button :
     val obj : 'a Gtk.obj
     method uri : string
     method set_uri : string -> unit
+    method connect : link_button_signals
   end
 
 (** A button for URL

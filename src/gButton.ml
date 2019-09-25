@@ -285,9 +285,15 @@ let menu_tool_button ?menu =
        (Gaux.may_map (fun m -> m#as_menu) menu)
        [])
     
+class link_button_signals obj = object (self)
+  inherit button_signals obj
+  method activate_link = self#connect LinkButton.S.activate_link
+end
+
 class link_button obj = object
   inherit button_skel obj
   inherit link_button_props
+  method connect = new link_button_signals obj
 end
 
 let link_button ?label =
