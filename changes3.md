@@ -1,9 +1,37 @@
 LablGTK changes log
 
+2019.09.25 [Jacques]
+  * Fix several gtk3 examples, and remove some obsolete ones
+   (#84) [Martin de Mello]
+  * Disable -warn-error 3 in src/dune, because of Obj.truncate
+
+2019.09.23 [Martin de Mello]
+  * Add the LinkButton activate-link signal #83
+
+2019.08.12 [Emilio J. Gallego Arias]
+  * Remove stale makefiles, lablgtk must be built using Dune now.
+
+2019.07.07 [Emilio J. Gallego Arias]
+  * Include extended Cairo Support from #33 in the Dune build.
+
+2019.06.27 [Anton Kochkov]
+  * Upgrade CI to OCaml 4.08
+
+## In Lablgtk-3.0.beta6
+
+2019.04.09 [Jacques]
+  * Add gdk_window_get_origin binding (#60) [Pierre-Marie Pedrot]
+  * Convert README to markdown (#57) [Anton Kochkov]
+  * Add additional Pango.Layout functions (#58) [Milo Turner]
+
 ## In Lablgtk-3.0.beta5:
 
-2019.02.12 [Emilio]
-  * Update OPAM files so they work better with dune-release
+2019.02.20 [Emilio J. Gallego Arias]
+  * Add GtkBuilder back to the build (#54, #55), fix #53, reported by
+    C. Sacerdoti
+
+2019.02.12 [Emilio J. Gallego Arias]
+  * Update OPAM files so they work better with dune-release (#48)
 
 ## In Lablgtk-3.0.beta4:
 
