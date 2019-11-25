@@ -1,15 +1,3 @@
-config.make
-config.cache
-config.status
-config.log
-configure.lineno
-aclocal.m4
-autom4te.cache
-test_dynlink.*
-*~
-*.sw[po]
-
-# Dune stuff
 _build
 .merlin
 *.install

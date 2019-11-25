@@ -31,19 +31,20 @@
 #include <caml/custom.h>
 #include <caml/callback.h>
 
-#include "wrappers.h"
-#include "ml_glib.h"
-#include "ml_gdk.h"
-#include "ml_gtk.h"
-#include "ml_gobject.h"
-#include "ml_gdkpixbuf.h"
-#include "ml_pango.h"
-#include "ml_gtktext.h"
-#include "gtk_tags.h"
-#include "gdk_tags.h"
+#include <wrappers.h>
+#include <ml_glib.h>
+#include <ml_gdk.h>
+#include <ml_gtk.h>
+#include <ml_gobject.h>
+#include <ml_gdkpixbuf.h>
+#include <ml_pango.h>
+#include <ml_gtktext.h>
+#include <gtk_tags.h>
+#include <gdk_tags.h>
 #include "sourceView3_tags.h"
-#include <string.h>
 #include "sourceView3_tags.c"
+
+#include <string.h>
 
 /* Not in gtksourceview 3.0
 Make_OptFlags_val(Source_search_flag_val)

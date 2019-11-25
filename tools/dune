@@ -1,0 +1,26 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Common setup and tools                                               ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; We use a bash rule to ensure we call the byte version and thus we
+; avoid the auto-printer selection in Camlp4AutoPrinter.
+(rule
+ (targets varcc.ml)
+ (deps (:source varcc.ml4))
+ (mode promote)
+ (action (bash "camlp4o pr_o.cmo -impl %{source} -o %{targets}")))
+
+(rule
+ (targets propcc.ml)
+ (deps (:source propcc.ml4))
+ (mode promote)
+ (action (bash "camlp4o pr_o.cmo -impl %{source} -o %{targets}")))
+
+(executables
+ (names varcc propcc)
+ (modules varcc propcc))
+
+(executable
+ (name dune_config)
+ (modules dune_config)
+ (libraries dune.configurator))

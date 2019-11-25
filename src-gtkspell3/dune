@@ -1,0 +1,22 @@
+; Dune build file for lablgtk3
+; Written by EJGA, (c) 2018-2019 MINES ParisTech
+; This file is in the public domain
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk3-gtkspell                                                    ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(rule
+ (targets
+   cflag-gtkspell3-3.0.sexp
+   clink-gtkspell3-3.0.sexp)
+ (action (run dune_config -pkg gtkspell3-3.0 -version 3.0.4)))
+
+(library
+ (name lablgtk3_gtkspell3)
+ (public_name lablgtk3-gtkspell3)
+ (wrapped false)
+ (flags :standard -w -6-50)
+ (c_names ml_gtkspell)
+ (c_flags         (:include cflag-gtkspell3-3.0.sexp))
+ (c_library_flags (:include clink-gtkspell3-3.0.sexp))
+ (libraries lablgtk3))

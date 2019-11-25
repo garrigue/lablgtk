@@ -1,171 +1,39 @@
 ; Dune build file for lablgtk3
-; Written by EJGA, (c) 2018 MINES ParisTech
+; Written by EJGA, (c) 2018-2019 MINES ParisTech
 ; This file is in the public domain
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Common setup and tools                                               ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(executable
- (name dune_config)
- (modules dune_config)
- (libraries dune.configurator))
-
-; We use a bash rule to ensure we call the byte version and thus we
-; avoid the auto-printer selection in Camlp4AutoPrinter.
-(rule
- (targets varcc.ml)
- (deps (:source varcc.ml4))
- (mode promote)
- (action (bash "camlp4o pr_o.cmo -impl %{source} -o %{targets}")))
-
-(rule
- (targets propcc.ml)
- (deps (:source propcc.ml4))
- (mode promote)
- (action (bash "camlp4o pr_o.cmo -impl %{source} -o %{targets}")))
-
-(executables
- (names varcc propcc)
- (modules varcc propcc))
 
 ; Maybe auto-generate?
 (include dune-enum.sexp)
 (include dune-prop.sexp)
 
 (rule
- (targets cflag-extraflags.sexp)
- (action (with-outputs-to cflag-extraflags.sexp (echo "(%{env:LABLGTK_EXTRA_FLAGS=})"))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Helper executables                                                   ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(executable
- (name lablgladecc)
- (public_name lablgladecc3)
- (package lablgtk3)
- (modules xml_lexer lablgladecc)
- (flags :standard -w -3-6-27)
- (libraries lablgtk3))
-
-(ocamllex xml_lexer)
-
-(executable
- (name gdk_pixbuf_mlsource)
- (public_name gdk_pixbuf_mlsource3)
- (package lablgtk3)
- (modules gdk_pixbuf_mlsource)
- (libraries lablgtk3))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Base lablgtk3                                                        ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(rule
  (targets
    cflag-gtk+-3.0.sexp
    clink-gtk+-3.0.sexp)
- (action (run ./dune_config.exe -pkg gtk+-3.0 -version 3.18)))
+ (action (run dune_config -pkg gtk+-3.0 -version 3.18)))
+
+(rule
+ (targets cflag-extraflags.sexp)
+ (action (with-outputs-to cflag-extraflags.sexp (echo "(%{env:LABLGTK_EXTRA_FLAGS=})"))))
 
 (library
  (name lablgtk3)
  (public_name lablgtk3)
- (flags :standard -w -6-7-9-10-27-32-33-34-35-36-50-52 -no-strict-sequence
-        -warn-error A-3) ; needed for Obj.truncate
  (wrapped false)
- (modules
-   ; gtkBrokenProps ogtkBrokenProps gtkBroken gBroken
-   gToolbox
-   gpointer gobject gutf8 gaux glib
-   gdkPixbuf pangoEnums pango
-   gdkEnums gdk gdkEvent gdkKeysyms
-   gtkEnums gtk gtkObject gtkSignal
-   gtkStock
-   gPango gDraw
-   gObj gUtil
-   gtkMain gMain
-   gtkThread
-   gtkWindow gWindow
-   gtkData gData
-   gContainer
-   gPango cairo_pango
-
-   gtkBuilderProps    ogtkBuilderProps    gtkBuilder   gBuilder
-   gtkContainersProps ogtkContainersProps gtkContainers
-   gtkActionProps     ogtkActionProps                  gAction
-   gtkAssistantProps  ogtkAssistantProps  gtkAssistant gAssistant
-   gtkBaseProps       ogtkBaseProps       gtkBase
-   gtkBinProps        ogtkBinProps        gtkBin       gBin
-   gtkButtonProps     ogtkButtonProps     gtkButton    gButton
-   gtkEditProps       ogtkEditProps       gtkEdit      gEdit
-   gtkFileProps       ogtkFileProps       gtkFile      gFile
-   ; gtkListProps      ogtkListProps      gtkList      gList
-   gtkMenuProps       ogtkMenuProps       gtkMenu      gMenu
-   gtkMiscProps       ogtkMiscProps       gtkMisc      gMisc
-   gtkPackProps       ogtkPackProps       gtkPack      gPack
-   gtkRangeProps      ogtkRangeProps      gtkRange     gRange
-   gtkTextProps       ogtkTextProps       gtkText      gText
-   gtkTreeProps       ogtkTreeProps       gtkTree      gTree
-
- )
+ (flags :standard -w -6-7-9-10-27-32-33-34-35-36-50-52 -no-strict-sequence)
+ (install_c_headers
+   wrappers ml_glib ml_gdk ml_gtk ml_gobject ml_gdkpixbuf pango_tags ml_pango ml_gtktext gtk_tags gdk_tags)
  (c_names
    wrappers
    ml_glib ml_gvaluecaml ml_gpointer ml_gobject
-   ml_pango
-   cairo_pango_stubs
+   ml_pango cairo_pango_stubs
    ml_gdk ml_gdkpixbuf
    ml_gtk ml_gtkmisc
-
    ml_gtkbuilder
    ml_gtkaction ml_gtkbin ml_gtkbutton ml_gtktext ml_gtkedit
    ml_gtkmenu ml_gtkfile ml_gtktree ml_gtkpack
-   ; ml_gtkbroken ml_gtklist
    ml_gtkstock ml_gtkrange ml_gtkassistant
  )
- ; Note we disable -Wdeprecated-declarations, but that should eventually be fixed.
  (c_flags         (:include cflag-gtk+-3.0.sexp) (:include cflag-extraflags.sexp) -Wno-deprecated-declarations)
  (c_library_flags (:include clink-gtk+-3.0.sexp))
  (libraries threads cairo2))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; lablgtk3-sourceview3                                                 ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(rule
- (targets
-   cflag-gtksourceview-3.0.sexp
-   clink-gtksourceview-3.0.sexp)
- (action (run ./dune_config.exe -pkg gtksourceview-3.0 -version 3.18)))
-
-(library
- (name lablgtk3_sourceview3)
- (public_name lablgtk3-sourceview3)
- (flags :standard -w -6-7-27-32-33-34-36)
- (wrapped false)
- (modules_without_implementation
-   gtkSourceView3_types)
- (modules
-   sourceView3Enums gtkSourceView3_types gtkSourceView3Props
-   ogtkSourceView3Props gtkSourceView3 gSourceView3)
- (c_names ml_gtksourceview3)
- (c_flags         (:include cflag-gtksourceview-3.0.sexp) (:include cflag-extraflags.sexp) -Wno-deprecated-declarations)
- (c_library_flags (:include clink-gtksourceview-3.0.sexp))
- (libraries lablgtk3))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; lablgtk3-gtkspell                                                    ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(rule
- (targets
-   cflag-gtkspell3-3.0.sexp
-   clink-gtkspell3-3.0.sexp)
- (action (run ./dune_config.exe -pkg gtkspell3-3.0 -version 3.0.4)))
-
-(library
- (name lablgtk3_gtkspell3)
- (public_name lablgtk3-gtkspell3)
- (flags :standard -w -6-50)
- (wrapped false)
- (modules gtkSpell)
- (c_names ml_gtkspell)
- (c_flags         (:include cflag-gtkspell3-3.0.sexp))
- (c_library_flags (:include clink-gtkspell3-3.0.sexp))
- (libraries lablgtk3))
