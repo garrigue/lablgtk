@@ -7,13 +7,11 @@
 (rule
  (targets varcc.ml)
  (deps (:source varcc.ml4))
- (mode promote)
  (action (bash "camlp5o pr_o.cmo -impl %{source} -o %{targets}")))
 
 (rule
  (targets propcc.ml)
  (deps (:source propcc.ml4))
- (mode promote)
  (action (bash "camlp5o pr_o.cmo -impl %{source} -o %{targets}")))
 
 (executables
