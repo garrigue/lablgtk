@@ -1,5 +1,13 @@
 LablGTK changes log
 
+## In Lablgtk-3.0beta7
+
+2019.11.25 [Jacques]
+  * Split source code in terms of packages (#77) [Emilio]
+  * Update README to better document build system (#80) [Emilio]
+  * Switch from camlp4 to camlp5 (required for 4.09)
+  * Add `[@warnerror "-3"]` to call to `Obj.truncate`
+
 2019.09.25 [Jacques]
   * Fix several gtk3 examples, and remove some obsolete ones
    (#84) [Martin de Mello]

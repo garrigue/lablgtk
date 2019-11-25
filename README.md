@@ -1,14 +1,15 @@
-# LablGTK3 3.0.beta6 : an interface to the GIMP Tool Kit
+# LablGTK3 3.0.beta7 : an interface to the GIMP Tool Kit
 
 ## Dependencies
 
 - ocaml >= 4.05.0
 - gtk+ >= 3.18
 - dune >= 1.6
+- camlp5 (for developer build only)
 
 ## Info/upgrades
 
-- http://lablgtk.forge.ocamlcore.org/
+- https://garrigue.github.io/lablgtk/
 - https://github.com/garrigue/lablgtk
 
 ## Status
@@ -16,14 +17,13 @@
 LablGtk3 is still an experimental port of LablGtk2 to Gtk-3.
 Currently it is more or less a subset of LablGtk2.
 
-An important change in gtk-2 was the use of unicode (utf8) for
-all strings. If you use non-ascii strings, you must imperatively
-convert them to unicode. This can be done with the
-`Glib.Convert.locale_to_utf8` function. If your input is already in
-utf8, it is still a good idea to validate it with
+LablGtk uses unicode (utf8) for all strings. If you use non-ascii
+strings, you must imperatively convert them to unicode. This can be
+done with the `Glib.Convert.locale_to_utf8` function. If your input is
+already in utf8, it is still a good idea to validate it with
 `Glib.Utf8.validate`, as malformed utf8 strings may cause segmentation
 faults.
-Note that `setlocale` is now always called (except if you set
+The `setlocale` function is always called (except if you set
 `GTK_SETLOCALE` to 0 in the environment), but `LC_NUMERIC` is reverted
 to `"C"` to avoid problems with floating point conversion in OCaml.
 
@@ -44,7 +44,7 @@ Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x < 2.4"
 $ dune build
 ```
   this will compile all the public artifacts of all the included packages, and does require
-  having developer tools installed [`camlp4` for instance].
+  having developer tools installed [`camlp5` for instance].
 
   You *must not* use the developer mode to build `lablgtk3` packages, for that you should use
 
