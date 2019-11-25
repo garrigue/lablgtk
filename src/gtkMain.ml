@@ -46,7 +46,7 @@ module Main = struct
     if setlocale then ignore (Glib.Main.setlocale `NUMERIC (Some "C"));
     Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
       ~src_pos:0 ~dst_pos:0;
-    Obj.truncate (Obj.repr Sys.argv) (Array.length argv);
+    Obj.truncate (Obj.repr Sys.argv) (Array.length argv) [@warnerror "-3"];
     if setlocale then Glib.Main.setlocale `ALL None else ""
   open Glib
   let loops = ref []
