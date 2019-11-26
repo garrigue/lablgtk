@@ -24,3 +24,8 @@
  (name dune_config)
  (modules dune_config)
  (libraries dune.configurator))
+
+(library
+ (name gtkdoc)
+ (modules gtkdoc)
+ (libraries str ocamldoc))
