@@ -2,6 +2,7 @@ LablGTK changes log
 
 2019.11.27 [Jacques]
   * remove declaration of young_start for ocaml 4.10 (#97)
+  * add CI support for 4.10 [Emilio]
 
 ## In Lablgtk-3.0beta7
 

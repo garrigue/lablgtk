@@ -1,4 +1,4 @@
-.PHONY: build build-all opam clean
+.PHONY: build build-all nopromote opam clean
 
 build:
 	dune build
@@ -6,6 +6,9 @@ build:
 # This also builds examples
 build-all:
 	dune build @all
+
+nopromote:
+	dune build @all --ignore-promoted-rules
 
 # We first pin lablgtk3 as to avoid problems with parallel make
 opam:

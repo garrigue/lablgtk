@@ -1,15 +1,22 @@
 dist: xenial
 sudo: required
 language: c
+
+branches:
+  only:
+  - lablgtk3
+
 cache:
   apt: true
   directories:
   - $HOME/.opam
+
 addons:
   apt:
     packages:
     - libgtksourceview-3.0-dev
     - libgtkspell3-3-dev
+
 env:
   global:
   - OPAMJOBS="2"
@@ -25,6 +32,7 @@ env:
   - TEST_TARGET="build-all"   COMPILER="4.07.1"
   - TEST_TARGET="build-all"   COMPILER="4.08.0"
   - TEST_TARGET="build-all"   COMPILER="4.09.0"
+  - TEST_TARGET="nopromote"   COMPILER="4.10.0+trunk"
   - TEST_TARGET="opam"        COMPILER="4.07.1"
   - TEST_TARGET="opam"        COMPILER="4.08.0"
   - TEST_TARGET="opam"        COMPILER="4.09.0"
@@ -53,7 +61,9 @@ before_install: |
   sudo chmod 755 /usr/bin/opam
 
 install: |
-  opam init -c "$COMPILER" --disable-sandboxing
+  opam init --bare --disable-sandboxing
+  opam repo add -a beta https://github.com/ocaml/ocaml-beta-repository.git
+  opam switch create "$COMPILER" --repositories=default,beta
   opam switch set "$COMPILER"
   eval $(opam env)
   opam install $BASE_OPAM
