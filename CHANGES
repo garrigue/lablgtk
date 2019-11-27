@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2019.11.27 [Jacques]
+  * remove declaration of young_start for ocaml 4.10 (#93)
+
 In Lablgtk-2.18.8:
 
 2019.4.25 [Jacques]

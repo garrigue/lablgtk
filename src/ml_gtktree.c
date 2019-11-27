@@ -1489,8 +1489,8 @@ CAMLprim value ml_register_custom_model_callback_object(value custom_model,
   GObject *obj = GObject_val(custom_model);
   g_return_val_if_fail (IS_CUSTOM_MODEL (obj),Val_unit);
   if(Is_block(callback_object) &&
-      (char*)callback_object < (char*)caml_young_end &&
-      (char*)callback_object > (char*)caml_young_start)
+      (char*)callback_object < (char*)young_end &&
+      (char*)callback_object > (char*)young_start)
     {
       caml_register_global_root (&callback_object);
       caml_minor_collection();
