@@ -4,6 +4,9 @@ LablGTK changes log
   * remove declaration of young_start for ocaml 4.10 (#97)
   * add CI support for 4.10 [Emilio]
 
+2019.11.26 [Emilio]
+  * Require Dune 1.8, use improved configurator API (#95)
+
 ## In Lablgtk-3.0beta7
 
 2019.11.25 [Jacques]
