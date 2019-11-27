@@ -1148,9 +1148,9 @@ encode_iter(Custom_model *custom_model, GtkTreeIter *iter, value v)
   /* Ideally, the user would already have ensured all these were stable...
      and in any case, it is always up to the user to ensure that they will
      not get garbage collected */
-    if((Is_block(v1) && (char*)v1 < (char*)caml_young_end && (char*)v1 > (char*)caml_young_start) ||
-       (Is_block(v2) && (char*)v2 < (char*)caml_young_end && (char*)v2 > (char*)caml_young_start) ||
-       (Is_block(v3) && (char*)v3 < (char*)caml_young_end && (char*)v3 > (char*)caml_young_start))
+    if((Is_block(v1) && (char*)v1 < (char*)young_end && (char*)v1 > (char*)young_start) ||
+       (Is_block(v2) && (char*)v2 < (char*)young_end && (char*)v2 > (char*)young_start) ||
+       (Is_block(v3) && (char*)v3 < (char*)young_end && (char*)v3 > (char*)young_start))
       {
 	caml_register_global_root (&v1);
 	caml_register_global_root (&v2);
