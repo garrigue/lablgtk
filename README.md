@@ -4,7 +4,7 @@
 
 - ocaml >= 4.05.0
 - gtk+ >= 3.18
-- dune >= 1.6
+- dune >= 1.8
 - camlp5 (for developer build only)
 
 ## Info/upgrades
