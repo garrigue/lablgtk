@@ -39,7 +39,7 @@ $(GIR).props: $(GIR).gir gir_to_props.xsl
 	#g-ir-generate -o $@ $<
 
 propcc.ml: propcc.ml4
-	camlp4o -impl $< -o $@
+	camlp5o -impl $< -o $@
 
 propcc.cmo: propcc.ml genlex.cmo
 	ocamlc -c $<
