@@ -17,9 +17,9 @@ doc: "https://garrigue.github.io/lablgtk/lablgtk3-gtkspell3"
 license: "LGPL with linking exception"
 
 depends: [
-  "ocaml"                { >= "4.05.0"    }
-  "dune"                 { >= "1.8.0"     }
-  "lablgtk3"             { >= "3.0.beta6" }
+  "ocaml"                { >= "4.05.0" }
+  "dune"                 { >= "1.8.0"  }
+  "lablgtk3"             {  = version  }
 ]
 depexts: [
   ["gtkspell3-dev"] {os-distribution = "alpine"}
