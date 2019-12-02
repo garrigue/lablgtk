@@ -33,5 +33,5 @@ let main () =
 let _ = main ()
 
 (* Local Variables: *)
-(* compile-command: "ocamlc -I ../src -w s lablgtk.cma gtkInit.cmo notebook.ml" *)
+(* compile-command: "ocamlc -I ../src -w s lablgtk.cma notebook.ml" *)
 (* End: *)

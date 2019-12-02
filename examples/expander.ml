@@ -28,6 +28,6 @@ let main () =
 let _ = main ()
 
 (* Local Variables: *)
-(* compile-command: "ocamlc -I ../src -w s lablgtk.cma gtkInit.cmo expander.ml" *)
+(* compile-command: "ocamlc -I ../src -w s lablgtk.cma expander.ml" *)
 (* End: *)
 
