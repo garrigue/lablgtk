@@ -1,5 +1,9 @@
 LablGTK changes log
 
+2019.12.03 [Jacques]
+  * update toplevel loop instructions in README.md
+  * keep Gtk{Th,}Init in tools for reference
+
 2019.12.02 [Emilio]
   * remove Gtk{Th,}Init static initializers, applications should init
     Gtk manually instead of using a linking side-effect (#100)
