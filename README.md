@@ -80,9 +80,9 @@ You can start a thread session using utop:
 $ dune utop src
 # #thread;;
 # let locale = GMain.init ();;
+# let thread = GtkThread.start();;
 # let w = GWindow.window ~show:true ();;
 # let b = GButton.button ~packing:w#add ~label:"Hello!" ();;
-# let thread = GtkThread.start();;
 ```
 
 You should at once see a window appear, and then a button.
