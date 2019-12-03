@@ -148,6 +148,6 @@ let _ = main ()
 
 
 (* Local Variables: *)
-(* compile-command: "ocamlc -I ../src -w s lablgtk.cma gtkInit.cmo action.ml" *)
+(* compile-command: "ocamlc -I ../src -w s lablgtk.cma action.ml" *)
 (* End: *)
 

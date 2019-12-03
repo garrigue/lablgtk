@@ -290,11 +290,12 @@ in them. Also, non-graphical operations are thread-safe.
 Here is an example using the lablgtk toplevel with threads:
 ```
 % dune utop src
-# #threads;;
+# #thread;;
 # open GtkThread;;
 # let w = sync (GWindow.window ~show:true) ();;
 # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
 # b#connect#clicked (fun () -> prerr_endline "Hello");;
+# let thread = GtkThread.start();;
 ```
 
 ### OSX/Quartz port

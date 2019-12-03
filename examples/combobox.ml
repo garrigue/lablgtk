@@ -120,5 +120,5 @@ let main () =
 let _ = main ()
 
 (* Local Variables: *)
-(* compile-command: "ocamlc -I ../src -w s lablgtk.cma gtkInit.cmo combobox.ml" *)
+(* compile-command: "ocamlc -I ../src -w s lablgtk.cma combobox.ml" *)
 (* End: *)

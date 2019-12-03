@@ -7,7 +7,7 @@
 (**************************************************************************)
 
 (* Compile with 
-   ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview3.cma gtkInit.cmo test2.ml
+   ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview3.cma test2.ml
    Run with 
    CAML_LD_LIBRARY_PATH=../../src ./viewer
 
@@ -120,6 +120,6 @@ let () =
 
 (*
 Local Variables:
-compile-command: "ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview3.cma gtkInit.cmo test2.ml"
+compile-command: "ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview3.cma test2.ml"
 End:
 *)

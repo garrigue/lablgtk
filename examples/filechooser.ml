@@ -67,5 +67,5 @@ let main () =
 let _ = main ()
 
 (* Local Variables: *)
-(* compile-command: "ocamlc -I ../src -w s lablgtk.cma gtkInit.cmo filechooser.ml" *)
+(* compile-command: "ocamlc -I ../src -w s lablgtk.cma filechooser.ml" *)
 (* End: *)
