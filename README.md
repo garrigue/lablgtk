@@ -317,9 +317,7 @@ commands
 % dune utop src
 # #thread;;
 # GMain.init ();;
-# let thread = Thread.create (fun () -> Toploop.loop Format.std_formatter) ()
-  and () = GtkThread.main ();;
-# #thread;;
+# let thread = Thread.create UTop_main.main () and () = GtkThread.main ();;
 # open GtkThread;;
 # let w = sync (GWindow.window ~show:true) ();;
 # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
@@ -327,8 +325,8 @@ commands
 ```
 
 This launches a toplevel thread, and runs main in the application thread.
-Note however that the new toplevel thread is not handle by utop, so
-that you have to call `#thread` again.
+This version utop-specific; `tool/gtkThTop.ml` has a version for the
+ocaml vanilla toplevel.
 
 ## Authors
 - Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
