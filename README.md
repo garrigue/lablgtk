@@ -79,7 +79,7 @@ You can start a thread session using utop:
 ```
 $ dune utop src
 # #thread;;
-# let locale = GtkMain.Main.init ();;
+# let locale = GMain.init ();;
 # let w = GWindow.window ~show:true ();;
 # let b = GButton.button ~packing:w#add ~label:"Hello!" ();;
 # let thread = GtkThread.start();;
@@ -266,6 +266,10 @@ it, you may use compaction through `Gc.compact` where it is safe
 - SVG support: not available in Gtk3
 - GnomeCanvas support: not available in Gtk3
 
+### Running lablgtk3 in the toplevel
+
+The X11 version of lablgt3
+
 ### Windows port
 
 If you want to use threads, you must be aware of windows specific
@@ -291,21 +295,40 @@ Here is an example using the lablgtk toplevel with threads:
 ```
 % dune utop src
 # #thread;;
+# GMain.init ();;
 # open GtkThread;;
+# let thread = start ();;
 # let w = sync (GWindow.window ~show:true) ();;
 # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
 # b#connect#clicked (fun () -> prerr_endline "Hello");;
-# let thread = GtkThread.start();;
 ```
 
 ### OSX/Quartz port
 
 Since Darwin is Unix, this port compiles as usual.
 Note however that Quartz imposes even stronger restrictions than
-Windows on threads: only the main thread of the application can do
-GUI work. Just apply the same techniques as described above, being
-careful to ensure that your first call to `GtkThread.main` occurs in
-the main thread. This is done automatically in the threaded toplvel.
+Windows on threads: only the main thread of the application can do GUI
+work. Just apply the same techniques as described in the Windos port,
+being careful to ensure that your first call to `GtkThread.main`
+occurs in the main thread. This can be done by issueing the following
+commands
+
+```
+% dune utop src
+# #thread;;
+# GMain.init ();;
+# let thread = Thread.create (fun () -> Toploop.loop Format.std_formatter) ()
+  and () = GtkThread.main ();;
+# #thread;;
+# open GtkThread;;
+# let w = sync (GWindow.window ~show:true) ();;
+# let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
+# b#connect#clicked (fun () -> prerr_endline "Hello");;
+```
+
+This launches a toplevel thread, and runs main in the application thread.
+Note however that the new toplevel thread is not handle by utop, so
+that you have to call `#thread` again.
 
 ## Authors
 - Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
