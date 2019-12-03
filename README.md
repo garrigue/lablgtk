@@ -1,4 +1,4 @@
-# LablGTK3 3.0.beta7 : an interface to the GIMP Tool Kit
+# LablGTK3 3.0.beta8 : an interface to the GIMP Tool Kit
 
 ## Dependencies
 

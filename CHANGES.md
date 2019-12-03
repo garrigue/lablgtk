@@ -1,5 +1,7 @@
 LablGTK changes log
 
+## In Lablgtk-3.0beta8
+
 2019.12.03 [Jacques]
   * update toplevel loop instructions in README.md
   * keep Gtk{Th,}Init in tools for reference
