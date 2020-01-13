@@ -1,5 +1,11 @@
 LablGTK changes log
 
+In Lablgtk-2.18.9:
+
+2020.01.13 [Jacques]
+  * release new version, du to C header changes in ocaml 4.10
+  * fix example for sourceview2 (#66) [Pieter Goetschalckx]
+
 2019.11.27 [Jacques]
   * remove declaration of young_start for ocaml 4.10 (#93)
 
