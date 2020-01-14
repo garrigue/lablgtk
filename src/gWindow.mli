@@ -174,8 +174,6 @@ class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
     method response : 'a -> unit
     method set_response_sensitive : 'a -> bool -> unit
     method set_default_response : 'a -> unit
-    method has_separator : bool
-    method set_has_separator : bool -> unit
     method run : unit -> 'a
     method private encode : 'a -> int
     method private decode : int -> 'a
@@ -202,7 +200,6 @@ class ['a] dialog : [> Gtk.dialog] obj ->
 
 (** @gtkdoc gtk GtkDialog *)
 val dialog :
-  ?no_separator:bool ->
   ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->

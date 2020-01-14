@@ -126,7 +126,6 @@ and rhelp = resp `HELP
 
 class virtual ['a] dialog_base obj = object (self)
   inherit window_skel obj
-  inherit dialog_props
   method action_area = new GPack.button_box (Dialog.action_area obj)
   method vbox = new GPack.box (Dialog.vbox obj)
   method private virtual encode : 'a -> int
@@ -181,13 +180,8 @@ let make_dialog pl ?parent ?destroy_with_parent ~create =
     may d#set_destroy_with_parent destroy_with_parent ;
     d) pl
 
-let dialog ?(no_separator=false) =
-  make_dialog [] ~create:(fun pl ->
-    let pl = 
-      if no_separator 
-      then (Gobject.param Dialog.P.has_separator false) :: pl
-      else pl in
-    new dialog (Dialog.create pl))
+let dialog ?parent =
+  make_dialog [] ~create:(fun pl -> new dialog (Dialog.create pl)) ?parent
 
 type any_response = [GtkEnums.response | `OTHER of int]
 
