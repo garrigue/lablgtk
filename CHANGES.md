@@ -1,5 +1,11 @@
 LablGTK changes log
 
+2020.01.14 [Jacques]
+  * remove GtkDialog#has_separator property (report by Thomas Leonard, #68)
+  * add GMisc.icon_status#set_tooltip_markup/text (report by T. Leonard, #69)
+  * add #orientation to GPack.box/paned, GRange.range and GMisc.separator
+    (report by Martin de Mello, #73)
+
 ## In Lablgtk-3.0beta8
 
 2019.12.03 [Jacques]
