@@ -76,6 +76,8 @@ class status_icon_signals : Gtk.status_icon Gobject.obj ->
     method size_changed : callback:(int -> unit) -> GtkSignal.id
     method notify_screen : callback:(Gdk.screen -> unit) -> GtkSignal.id
     method notify_visible : callback:(bool -> unit) -> GtkSignal.id
+    method notify_tooltip_markup : callback:(string -> unit) -> GtkSignal.id
+    method notify_tooltip_text : callback:(string -> unit) -> GtkSignal.id
   end
 
 (** Display an icon in the system tray.
@@ -96,19 +98,28 @@ class status_icon : Gtk.gtk_status_icon ->
     method set_from_pixbuf : GdkPixbuf.pixbuf -> unit
     method set_from_stock : string -> unit
     method set_screen : Gdk.screen -> unit
+    method set_tooltip_markup : string -> unit
+    method set_tooltip_text : string -> unit
     method set_visible : bool -> unit
+    method tooltip_markup : string
+    method tooltip_text : string
   end
 
 val status_icon :
-  ?screen:Gdk.screen -> ?visible:bool -> unit -> status_icon
+  ?screen:Gdk.screen -> ?visible:bool ->
+  ?tooltip_markup:string -> ?tooltip_text:string -> unit -> status_icon
 val status_icon_from_pixbuf :
-  ?screen:Gdk.screen -> ?visible:bool -> GdkPixbuf.pixbuf -> status_icon
+  ?screen:Gdk.screen -> ?visible:bool -> ?tooltip_markup:string ->
+  ?tooltip_text:string -> GdkPixbuf.pixbuf -> status_icon
 val status_icon_from_file :
-  ?screen:Gdk.screen -> ?visible:bool -> string -> status_icon
+  ?screen:Gdk.screen -> ?visible:bool ->
+  ?tooltip_markup:string -> ?tooltip_text:string -> string -> status_icon
 val status_icon_from_stock :
-  ?screen:Gdk.screen -> ?visible:bool -> string -> status_icon
+  ?screen:Gdk.screen -> ?visible:bool ->
+  ?tooltip_markup:string -> ?tooltip_text:string -> string -> status_icon
 val status_icon_from_icon_name :
-  ?screen:Gdk.screen -> ?visible:bool -> string -> status_icon
+  ?screen:Gdk.screen -> ?visible:bool ->
+  ?tooltip_markup:string -> ?tooltip_text:string -> string -> status_icon
 
 
 (** {3 Calendar} *)
