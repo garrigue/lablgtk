@@ -47,6 +47,8 @@ class box_skel : ([> box] as 'a) obj ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
     method set_homogeneous : bool -> unit
     method homogeneous : bool
+    method set_orientation : Gtk.Tags.orientation -> unit
+    method orientation : Gtk.Tags.orientation
     method set_spacing : int -> unit
     method spacing : int
   end
@@ -369,6 +371,8 @@ class paned :
         @param shrink default value is [false] *)
     method child1 : widget
     method child2 : widget
+    method set_orientation : Gtk.Tags.orientation -> unit
+    method orientation : Gtk.Tags.orientation
     method set_position : int -> unit
     method position : int
     method max_position : int (** @since GTK 2.4 *)

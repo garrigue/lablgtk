@@ -20,6 +20,7 @@ class Range abstract set wrap wrapsig : Widget {
   "show-fill-level"      gboolean             :	Read / Write
   "lower-stepper-sensitivity" GtkSensitivityType : Read / Write
   "upper-stepper-sensitivity" GtkSensitivityType : Read / Write
+  "orientation"          GtkOrientation       : Read / Write / NoSet
   signal adjust_bounds : gdouble
   signal move_slider : GtkScrollType
   signal change_value : GtkScrollType gdouble

@@ -36,12 +36,9 @@ module P = Box.P
 
 class box_skel obj = object
   inherit [[> Gtk.box]] container_impl obj
+  inherit box_props
   method pack ?from:f ?expand ?fill ?padding w =
     Box.pack obj (as_widget w) ?from:f ?expand ?fill ?padding
-  method set_homogeneous = set P.homogeneous obj
-  method homogeneous = get P.homogeneous obj
-  method set_spacing = set P.spacing obj
-  method spacing = get P.spacing obj
   method set_child_packing ?from:f ?expand ?fill ?padding w =
     Box.set_child_packing obj (as_widget w) ?from:f ?expand ?fill ?padding
   method reorder_child w = Box.reorder_child obj (as_widget w)

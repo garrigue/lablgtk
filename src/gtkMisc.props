@@ -167,4 +167,6 @@ class Calendar wrap wrapsig : Widget {
 class DrawingArea : Widget {
 }
 
-class Separator hv : Widget {}
+class Separator hv : Widget {
+  "orientation"          GtkOrientation       : Read / Write / NoSet
+}

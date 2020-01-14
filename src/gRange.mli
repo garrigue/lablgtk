@@ -78,6 +78,8 @@ class range_signals : [> Gtk.range] obj ->
     method notify_inverted : callback:(bool -> unit) -> GtkSignal.id
     method notify_lower_stepper_sensitivity :
         callback:(Tags.sensitivity_type -> unit) -> GtkSignal.id
+    method notify_orientation :
+        callback:(Tags.orientation -> unit) -> GtkSignal.id
     method notify_restrict_to_fill_level :
         callback:(bool -> unit) -> GtkSignal.id
     method notify_round_digits : callback:(int -> unit) -> GtkSignal.id
@@ -99,12 +101,14 @@ class range : ([> Gtk.range] as 'a) obj ->
     method fill_level : float
     method inverted : bool
     method lower_stepper_sensitivity : Tags.sensitivity_type
+    method orientation : Tags.orientation
     method restrict_to_fill_level : bool
     method round_digits : int
     method set_adjustment : GData.adjustment -> unit
     method set_fill_level : float -> unit
     method set_inverted : bool -> unit
     method set_lower_stepper_sensitivity : Tags.sensitivity_type -> unit
+    method set_orientation : Tags.orientation -> unit
     method set_restrict_to_fill_level : bool -> unit
     method set_round_digits : int -> unit
     method set_show_fill_level : bool -> unit

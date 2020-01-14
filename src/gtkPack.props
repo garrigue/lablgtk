@@ -15,9 +15,10 @@ classes {
   GtkAdjustment "Gtk.adjustment obj"
 }
 
-class Box hv set : Container {
+class Box hv set wrap : Container {
   "homogeneous"          gboolean             : Read / Write
   "spacing"              gint                 : Read / Write
+  "orientation"          GtkOrientation       : Read / Write / NoSet
   method pack_start :
       "[>`widget] obj -> expand:bool -> fill:bool -> padding:int -> unit"
   method pack_end :
@@ -47,6 +48,7 @@ class Paned hv wrap : Container {
   "position-set"         gboolean             : Read / Write / NoWrap
   "max-position"         gint                 : Read
   "min-position"         gint                 : Read
+  "orientation"          GtkOrientation       : Read / Write / NoSet
   method add1 : "[>`widget] obj -> unit"
   method add2 : "[>`widget] obj -> unit"
   method pack1 : "[>`widget] obj -> resize:bool -> shrink:bool -> unit"
