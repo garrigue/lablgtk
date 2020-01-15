@@ -43,26 +43,29 @@ Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x < 2.4"
 ```
 $ dune build
 ```
-  this will compile all the public artifacts of all the included packages, and does require
-  having developer tools installed [`camlp5` for instance].
+  this will compile all the public artifacts of all the included packages,
+  and does require having developer tools installed [`camlp5` for instance].
 
-  You *must not* use the developer mode to build `lablgtk3` packages, for that you should use
+  You *must not* use the developer mode to build `lablgtk3` packages,
+  for that you should use
 
 ```
 $ dune build -p $package
 ```
-  where package is, as of today, one of `lablgtk3`, `lablgtk3-gtksourceview3`, `lablgtk3-gtkspell3`.
+  where package is, as of today, one of `lablgtk3`, `lablgtk3-gtksourceview3`,
+  `lablgtk3-gtkspell3`.
 
-  LablGTK uses a standard Dune build setup, see the Dune documentation for more options.
+  LablGTK uses a standard Dune build setup, see the Dune documentation for
+  more options.
 
 ## Contents
 
-- `src/gdk.ml`				low-level interface to the General Drawing Kit
-- `src/gtk.ml`		        low-level interface to the GIMP Tool Kit
-- `src/gtkThread.ml`		main loop for threaded version
-- `src/g[A-Z]*.ml`			object-oriented interface to GTK
-- `src/gdkObj.ml`			object-oriented interface to GDK
-- `examples/*.ml`			various examples
+- `src/gdk.ml`              low-level interface to the General Drawing Kit
+- `src/gtk.ml`              low-level interface to the GIMP Tool Kit
+- `src/gtkThread.ml`        main loop for threaded version
+- `src/g[A-Z]*.ml`          object-oriented interface to GTK
+- `src/gdkObj.ml`           object-oriented interface to GDK
+- `examples/*.ml`           various examples
 - `applications/browser`    an ongoing port of ocamlbrowser
 - `applications/camlirc`    an IRC client (by Nobuaki Yoshida)
 
@@ -71,7 +74,8 @@ $ dune build -p $package
 The examples are compiled by calling `dune build @all`, you can build
 `lablgtk3` applications using a standard Dune or `ocamlfind` workflow.
 
-Remember to call `GtkMain.Main.init ()` in your application, or it will fail to properly initialize.
+Remember to call `GMain.init ()` in your application, or it will fail
+to properly initialize.
 
 ### How to use the threaded toplevel
 
@@ -121,16 +125,18 @@ Here are the widget classes contained in each module:
 - **GObj**          gtkobj, widget, style
 - **GData**         data, adjustment, tooltips
 - **GContainer**    container, item_container
-- **GWindow**       window, dialog, color_selection_dialog, file_selection, plug
-- **GPack**         box, button_box, table, fixed, layout, packer, paned, notebook
+- **GWindow**       window, dialog, color_selection_dialog, file_selection,
+                    plug
+- **GPack**         box, button_box, table, fixed, layout, packer, paned,
+                    notebook
 - **GBin**          scrolled_window, event_box, handle_box, frame,
-                aspect_frame, viewport, socket
+                    aspect_frame, viewport, socket
 - **GButton**       button, toggle_button, check_button, radio_button, toolbar
 - **GMenu**         menu_item, tearoff_item, check_menu_item, radio_menu_item,
-                menu_shell, menu, option_menu, menu_bar, factory
+                    menu_shell, menu, option_menu, menu_bar, factory
 - **GMisc**         separator, statusbar, calendar, drawing_area,
-                misc, arrow, image, pixmap, label, tips_query,
-                color_selection, font_selection
+                    misc, arrow, image, pixmap, label, tips_query,
+                    color_selection, font_selection
 - **GTree**         tree_item, tree, view (also tree/list_store, model)
 - **GList**         list_item, liste, clist
 - **GEdit**         editable, entry, spin_button, combo
@@ -160,23 +166,23 @@ Practically, each widget class is composed of:
 
 Here is a diagram of the structure (- for methods, + for sub-objects)
 ```
-	- coerce : widget
-	- as_widget : Gtk.widget obj
-	- destroy : unit -> unit
-	- get_oid : int
-	- ...
-	+ connect : mywidget_signals
-	|   - after
-	|   - signal_name : callback:(... -> ...) -> GtkSignal.id
-	+ misc : misc_ops
-	|   - show, hide, disconnect, ...
-	|   + connect : misc_signals
-	+ drag : drag_ops
-	|   - ...
-	|   + connect : drag_signals
-	+ event : event_ops
-	|   - add, ...
-	|   + connect : event_signals
+        - coerce : widget
+        - as_widget : Gtk.widget obj
+        - destroy : unit -> unit
+        - get_oid : int
+        - ...
+        + connect : mywidget_signals
+        |   - after
+        |   - signal_name : callback:(... -> ...) -> GtkSignal.id
+        + misc : misc_ops
+        |   - show, hide, disconnect, ...
+        |   + connect : misc_signals
+        + drag : drag_ops
+        |   - ...
+        |   + connect : drag_signals
+        + event : event_ops
+        |   - add, ...
+        |   + connect : event_signals
 ```
 
 You create a widget by `<Module>.<widget name> options ... ()`.
@@ -252,11 +258,11 @@ it, you may use compaction through `Gc.compact` where it is safe
 ### Libraries support
 
 - GtkSourceView 3 support:
-		This binding was contributed by Benjamin Monate, and
-		adapted by Hugo Herbelin.
-		It requires libgtksourceview-3.x.
-		See examples in examples/sourceview/*3.ml
-		The executable must be linked with lablgtksourceview3.cma.
+                This binding was contributed by Benjamin Monate, and
+                adapted by Hugo Herbelin.
+                It requires libgtksourceview-3.x.
+                See examples in examples/sourceview/*3.ml
+                The executable must be linked with lablgtksourceview3.cma.
 - GtkSpell 3 support: 
 
 #### Not available in Gtk3
