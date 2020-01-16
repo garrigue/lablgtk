@@ -1,0 +1,37 @@
+; Dune build file for lablgtk3
+; Written by EJGA, (c) 2018-2019 MINES ParisTech
+; This file is in the public domain
+
+(rule
+ (targets sourceView4_tags.h sourceView4_tags.c sourceView4Enums.ml)
+ (action (run varcc %{dep:sourceView4_tags.var})))
+
+(rule
+ (targets gtkSourceView4Props.ml ogtkSourceView4Props.ml)
+ (action (run propcc %{dep:gtkSourceView4.props})))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk3-sourceview3                                                 ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(rule
+ (targets
+   cflag-gtksourceview-4.sexp
+   clink-gtksourceview-4.sexp)
+ (action (run dune_config -pkg gtksourceview-4 -version 4.2.0)))
+
+(rule
+ (targets cflag-extraflags.sexp)
+ (action (with-outputs-to cflag-extraflags.sexp (echo "(%{env:LABLGTK_EXTRA_FLAGS=})"))))
+
+(library
+ (name lablgtk3_sourceview4)
+ (public_name lablgtk3-sourceview4)
+ (wrapped false)
+ (flags :standard -w -6-7-27-32-33-34-36)
+ (modules_without_implementation gtkSourceView4_types)
+ (c_names ml_gtksourceview4)
+ (c_flags         (:include cflag-gtksourceview-4.sexp) (:include cflag-extraflags.sexp) -Wno-deprecated-declarations)
+ (c_library_flags (:include clink-gtksourceview-4.sexp))
+ (libraries lablgtk3))
+
