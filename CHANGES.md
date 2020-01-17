@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2020.01.18 [Emilio]
+  * Beginnings of gtksourceview4 bindings
+
 2020.01.14 [Jacques]
   * remove GtkDialog#has_separator property (report by Thomas Leonard, #68)
   * add GMisc.icon_status#set_tooltip_markup/text (report by T. Leonard, #69)

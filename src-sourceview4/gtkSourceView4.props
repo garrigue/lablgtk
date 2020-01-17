@@ -1,0 +1,250 @@
+(*********************************************************************************)
+(*                                                                               *)
+(*   lablgtksourceview, OCaml binding for the GtkSourceView text widget          *)
+(*                                                                               *)
+(*   Copyright (C) 2005  Stefano Zacchiroli <zack@cs.unibo.it>                   *)
+(*   Copyright (C) 2006  Stefano Zacchiroli <zack@cs.unibo.it>                   *)
+(*                       Maxence Guesdon <maxence.guesdon@inria.fr>              *)
+(*                                                                               *)
+(*   This library is free software; you can redistribute it and/or modify        *)
+(*   it under the terms of the GNU Lesser General Public License as              *)
+(*   published by the Free Software Foundation; either version 2.1 of the        *)
+(*   License, or (at your option) any later version.                             *)
+(*                                                                               *)
+(*   This library is distributed in the hope that it will be useful, but         *)
+(*   WITHOUT ANY WARRANTY; without even the implied warranty of                  *)
+(*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU           *)
+(*   Lesser General Public License for more details.                             *)
+(*                                                                               *)
+(*   You should have received a copy of the GNU Lesser General Public            *)
+(*   License along with this library; if not, write to the Free Software         *)
+(*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307         *)
+(*   USA                                                                         *)
+(*                                                                               *)
+(*********************************************************************************)
+
+prefix "Gtk"
+initializer "ml_gtk_source_view_init"
+
+header {
+  open GtkSourceView4_types
+  open SourceView4Enums
+}
+
+boxed {
+  GdkEvent    "GdkEvent.any"
+  GdkRGBA     "Gdk.rgba"
+}
+
+classes {
+  GdkPixbuf "GdkPixbuf.pixbuf"
+}
+
+class SourceStyleScheme type "source_style_scheme obj" set wrapsig : GObject {
+}
+
+class SourceStyleSchemeManager type "source_style_scheme_manager obj" wrap : GObject {
+(*  "scheme-ids"          GStrv                 : Read *)
+(*  "search-path"         GStrv                 : Read / Write *)
+
+  method get_search_path : "string list"
+  method set_search_path : "string list -> unit"
+  method get_scheme_ids : "string list"
+
+  method append_search_path : "string -> unit" / Wrap
+  method prepend_search_path : "string -> unit" / Wrap
+  method get_scheme : "string -> source_style_scheme obj option"
+  method force_rescan : "unit -> unit" / Wrap
+}
+
+class SourceCompletionInfo type "source_completion_info obj" wrap wrapsig : GtkWidget {
+  "max-height"               gint                  : Read / Write / Construct
+  "max-width"                gint                  : Read / Write / Construct
+  "shrink-height"            gboolean              : Read / Write / Construct
+  "shrink-width"             gboolean              : Read / Write / Construct
+
+  method move_to_iter : "Gtk.text_view obj -> Gtk.text_iter -> unit"
+(*
+  method set_sizing :
+    "width:int -> height:int -> shrink_width:bool -> shrink_height:bool -> unit" / Wrap
+*)
+(*  method set_widget : "Gtk.widget obj -> unit" *)
+(*  method get_widget : "Gtk.widget obj" *)
+(*  method process_resize : "unit" / Wrap*)
+
+  signal before_show
+}
+
+class SourceCompletionProposal type "source_completion_proposal obj" wrap wrapsig : GObject {
+  "icon"                     GdkPixbuf           : Read
+  "info"                     string               : Read
+  "label"                    string              : Read
+  "markup"                   string                : Read
+  "text"                     string               : Read
+
+  signal changed
+}
+
+class SourceCompletionItem type "source_completion_proposal obj" tag "sourcecompletionproposal" wrap wrapsig : GObject {
+  "icon"                     GdkPixbuf           : Read / Write
+  "info"                     string               : Read / Write
+  "label"                    string              : Read / Write
+  "markup"                   string                : Read / Write
+  "text"                     string               : Read / Write
+
+  signal changed
+}
+
+class SourceCompletionProvider type "source_completion_provider obj" abstract wrap wrapsig : GObject {
+  method get_name : "string"
+  method get_icon : "GdkPixbuf.pixbuf option"
+  method populate : "source_completion_context obj -> unit"
+  method get_activation : "source_completion_activation_flags list"
+  (* method match : "source_completion_context obj -> bool" *)
+  method get_info_widget : "source_completion_proposal obj -> Gtk.widget obj option"
+  method update_info : "source_completion_proposal obj -> source_completion_info obj -> unit"
+  method get_start_iter : "source_completion_context obj -> source_completion_proposal obj -> Gtk.text_iter"
+  method activate_proposal : "source_completion_proposal obj -> Gtk.text_iter -> bool"
+  method get_interactive_delay : "int"
+  method get_priority : "int"
+
+}
+
+class SourceCompletionContext type "source_completion_context obj" wrap wrapsig : GObject {
+  "completion"               GtkSourceCompletion  : Read / Write / Construct Only / NoWrap
+  "iter"                     GtkTextIter          : Read / Write / NoWrap
+
+
+  method get_activation : "source_completion_activation_flags list"
+  method set_activation : "source_completion_activation_flags list -> unit" / Wrap
+  method add_proposals :  "source_completion_provider obj -> source_completion_proposal obj list -> bool -> unit"
+
+  signal cancelled
+
+}
+
+class SourceCompletion type "source_completion obj" wrap wrapsig : GObject {
+  "accelerators"             guint                 : Read / Write / Construct
+  "auto-complete-delay"      guint                 : Read / Write / Construct
+  "proposal-page-size"       guint                 : Read / Write / Construct
+  "provider-page-size"       guint                 : Read / Write / Construct
+  "remember-info-visibility" gboolean              : Read / Write / Construct
+  "select-on-show"           gboolean              : Read / Write / Construct
+  "show-headers"             gboolean              : Read / Write / Construct
+  "show-icons"               gboolean              : Read / Write / Construct
+  "view"                     GtkSourceView        : Read / Write / Construct Only / NoWrap
+
+  method add_provider : "source_completion_provider obj -> bool"
+  method remove_provider : "source_completion_provider obj -> bool"
+  method block_interactive : "unit" / Wrap
+  method get_providers : "source_completion_provider obj list"
+  method create_context : "Gtk.text_iter -> source_completion_context obj"
+  method hide : "unit" / Wrap
+(*  method move_window : "Gtk.text_iter -> unit" *)
+(*  method show : "source_completion_provider obj list -> source_completion_context obj -> bool" *)
+  method unblock_interactive : "unit" / Wrap
+
+  signal activate_proposal
+  signal hide
+  signal move_cursor: GtkScrollStep gint
+  signal move_page: GtkScrollStep gint
+  signal populate_context : GtkSourceCompletionContext / NoWrap
+  signal show
+}
+
+class SourceLanguage type "source_language obj" set wrap wrapsig : GObject {
+  (* Property access is broken in gtkSourceView 2.4.1 (see Bugzilla #564142),
+     so we use methods instead: *)
+}
+
+class SourceLanguageManager type "source_language_manager obj" set wrapsig : GObject {
+(*       "search-path"      GStrv             : Read / Write
+       "language-ids"     GStrv             : Read / Write
+*)
+}
+
+class SourceMark type "source_mark obj" set wrap wrapsig : GObject {
+ "category"                 gchararray_opt  : Read / Write / Construct Only
+}
+
+class SourceMarkAttributes type "source_mark_attributes obj" set wrap wrapsig: GObject {
+"background" GdkRGBA  : Read / Write
+(* "icon" GIcon does not seem to have been ported in lablgtk *)
+"icon-name" string : Read / Write
+"pixbuf" GdkPixbuf : Read / Write
+}
+
+class SourceUndoManager type "source_undo_manager obj" set wrap wrapsig : GObject {
+
+  method can_undo : "bool" / Wrap
+  method can_redo : "bool" / Wrap
+  method undo : "unit" / Wrap
+  method redo : "unit" / Wrap
+  method begin_not_undoable_action : "unit" / Wrap
+  method end_not_undoable_action : "unit" / Wrap
+  method can_undo_changed : "unit" / Wrap
+  method can_redo_changed : "unit" / Wrap
+
+  signal can_redo_changed
+  signal can_undo_changed
+}
+
+class SourceBuffer type "source_buffer obj" set wrap wrapsig : GObject {
+  "can-redo"     gboolean 	       	      : Read
+  "can-undo"     gboolean		      : Read
+  "highlight-matching-brackets"   gboolean    : Read / Write
+  "highlight-syntax"     gboolean             : Read / Write
+  "language"             GtkSourceLanguage_opt: Read / Write / NoWrap
+
+  "max-undo-levels"      gint                 : Read / Write
+  "style-scheme"         GtkSourceStyleScheme_opt : Read / Write / NoWrap
+  "undo-manager"             GtkSourceUndoManager  : Read / Write / Construct / NoWrap
+
+  signal highlight_updated: GtkTextIter GtkTextIter
+  signal source_mark_updated: GtkSourceMark
+}
+
+class SourceView type "source_view obj" set wrap wrapsig : Widget {
+  "auto-indent"          gboolean             : Read / Write
+  "highlight-current-line"  gboolean          : Read / Write
+  "indent-on-tab"       gboolean              : Read / Write
+  "indent-width"        gint                  : Read / Write
+  "insert-spaces-instead-of-tabs" gboolean    : Read / Write
+  "right-margin-position" guint               : Read / Write
+  "show-line-marks"      gboolean             : Read / Write
+  "show-line-numbers"    gboolean             : Read / Write
+  "show-right-margin"    gboolean             : Read / Write
+  "smart-home-end"  Gtk4SourceSmartHomeEndType : Read / Write
+  "tab-width"          guint		      : Read / Write
+
+  method get_completion : "source_completion obj"
+
+(*  method get_draw_spaces : "source_draw_spaces_flags list" *)
+(*  method set_draw_spaces : "source_draw_spaces_flags list -> unit" *)
+
+  method set_mark_attributes:
+   "category:string -> source_mark_attributes obj -> int -> unit"
+
+(*
+  method get_mark_category_priority :
+      "category:string -> int" / Wrap
+  method set_mark_category_priority:
+      "category:string -> int -> unit" / Wrap
+  method get_mark_category_pixbuf:
+      "category:string -> GdkPixbuf.pixbuf option" / Wrap
+  method set_mark_category_pixbuf:
+      "category:string -> GdkPixbuf.pixbuf option -> unit" / Wrap
+  method get_mark_category_background:
+      "category:string -> Gdk.color option" / Wrap
+  method set_mark_category_background:
+      "category:string -> Gdk.color option -> unit" / Wrap
+*)
+
+  signal line_mark_activated : GtkTextIter GdkEvent
+  signal move_lines : gboolean gint
+  signal move_words : gint
+  signal redo
+  signal show_completion
+  signal smart_home_end : GtkTextIter gint
+  signal undo
+}

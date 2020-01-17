@@ -11,13 +11,12 @@ nopromote:
 	dune build @all --ignore-promoted-rules
 
 # We first pin lablgtk3 as to avoid problems with parallel make
+OPAM_PKGS=lablgtk3 lablgtk3-sourceview3 lablgtk3-sourceview4 lablgtk3-gtkspell3
 opam:
-	opam pin add lablgtk3 . --kind=path -y
-	opam install lablgtk3
-	opam pin add lablgtk3-sourceview3 . --kind=path -y
-	opam install lablgtk3-sourceview3
-	opam pin add lablgtk3-gtkspell3 . --kind=path -y
-	opam install lablgtk3-gtkspell3
+	for pkg in $(OPAM_PKGS) ; do \
+		opam pin add $$pkg . --kind=path -y ; \
+		opam install $$pkg ; \
+	done
 
 clean:
 	dune clean

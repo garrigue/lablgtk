@@ -1,0 +1,27 @@
+opam-version: "2.0"
+
+synopsis: "OCaml interface to GTK+ gtksourceview library"
+description: """
+OCaml interface to GTK+3, gtksourceview4 library.
+
+See https://garrigue.github.io/lablgtk/ for more information.
+"""
+
+maintainer: "garrigue@math.nagoya-u.ac.jp"
+authors: ["Jacques Garrigue et al., Nagoya University"]
+homepage: "https://github.com/garrigue/lablgtk"
+bug-reports: "https://github.com/garrigue/lablgtk/issues"
+dev-repo: "git+https://github.com/garrigue/lablgtk.git"
+doc: "https://garrigue.github.io/lablgtk/lablgtk3-sourceview3"
+license: "LGPL with linking exception"
+
+depends: [
+  "ocaml"                {         >= "4.05.0" }
+  "dune"                 {         >= "1.8.0"  }
+  "lablgtk3"             {          = version  }
+  # "conf-gtksourceview4"  { build & >= "0"      }
+]
+
+build: [
+  [ "dune" "build" "-p" name "-j" jobs ]
+]

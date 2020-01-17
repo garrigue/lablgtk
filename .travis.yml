@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 sudo: required
 language: c
 
@@ -14,6 +14,8 @@ cache:
 addons:
   apt:
     packages:
+    - valac
+    - meson                     # until libgtksourceview-4-dev arrives
     - libgtksourceview-3.0-dev
     - libgtkspell3-3-dev
 
@@ -55,10 +57,14 @@ matrix:
         brew update
         brew upgrade wget
         brew unlink python@2
-        brew install curl ccache opam pkg-config gtk+3 gtksourceview3 gtkspell3
+        brew install curl ccache opam pkg-config gtk+3 gtksourceview3 gtksourceview4 gtkspell3
 
 before_install: |
-  sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.5/opam-2.0.5-x86_64-linux -o /usr/bin/opam
+  curl -sL https://download.gnome.org/sources/gtksourceview/4.2/gtksourceview-4.2.0.tar.xz | tar xvJ
+  pushd gtksourceview-4.2.0 && ./configure && make && sudo make install
+  # pushd gtksourceview-4.2.0 && mkdir build && meson build && (cd build && ninja && sudo ninja install)
+  popd
+  sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.6/opam-2.0.6-x86_64-linux -o /usr/bin/opam
   sudo chmod 755 /usr/bin/opam
 
 install: |
