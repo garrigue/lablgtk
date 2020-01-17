@@ -54,6 +54,7 @@ matrix:
         set -e
         brew update
         brew upgrade wget
+        brew unlink python@2
         brew install curl ccache opam pkg-config gtk+3 gtksourceview3 gtkspell3
 
 before_install: |
