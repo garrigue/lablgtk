@@ -34,9 +34,7 @@
 #include <caml/fail.h>
 #include <caml/custom.h>
 #include <caml/version.h>
-#if OCAML_VERSION < 41000
-CAMLextern char *young_start, *young_end; /* from minor_gc.h */
-#endif
+#include <caml/minor_gc.h>
 
 CAMLexport value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
