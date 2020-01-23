@@ -1,5 +1,10 @@
 LablGTK changes log
 
+In Lablgtk-2.18.10:
+
+2020.01.23 [Jacques]
+  * headers changed again in ocaml 4.10.beta2
+
 In Lablgtk-2.18.9:
 
 2020.01.13 [Jacques]
