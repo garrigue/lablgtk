@@ -33,7 +33,7 @@
 
 CAMLprim value ml_stable_copy (value v)
 {
-    if (Is_block(v) && (char*)(v) < young_end && (char*)(v) > young_start)
+    if (Is_young_block(v))
     {
         CAMLparam1(v);
         mlsize_t i, wosize = Wosize_val(v);

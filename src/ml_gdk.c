@@ -50,7 +50,7 @@
 
 CAMLprim void ml_raise_gdk (const char *errmsg)
 {
-  static value * exn = NULL;
+  static const value * exn = NULL;
   if (exn == NULL)
       exn = caml_named_value ("gdkerror");
   raise_with_string (*exn, (char*)errmsg);
