@@ -525,7 +525,7 @@ ml_gtk_tree_view_enable_model_drag_dest (value tv, value t, value a)
       , Abstract_tag );
   for (i=0; i<n_targets; i++)
   {
-    targets[i].target = String_val(Field(Field(t, i), 0));
+    targets[i].target = Bytes_val(Field(Field(t, i), 0));
     targets[i].flags  = Flags_Target_flags_val(Field(Field(t, i), 1));
     targets[i].info   = Int_val(Field(Field(t, i), 2));
   }
@@ -551,7 +551,7 @@ ml_gtk_tree_view_enable_model_drag_source (value tv, value m, value t, value a)
       , Abstract_tag );
   for (i=0; i<n_targets; i++)
   {
-    targets[i].target = String_val(Field(Field(t, i), 0));
+    targets[i].target = Bytes_val(Field(Field(t, i), 0));
     targets[i].flags  = Flags_Target_flags_val(Field(Field(t, i), 1));
     targets[i].info   = Int_val(Field(Field(t, i), 2));
   }

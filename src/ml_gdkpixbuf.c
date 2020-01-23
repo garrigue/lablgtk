@@ -304,9 +304,9 @@ convert_gdk_pixbuf_options (value options, char ***opt_k, char ***opt_v, gboolea
 	{
 	  char *s;
 	  value pair = Field(cell, 0);
-	  s = String_val(Field(pair, 0));
+	  s = Bytes_val(Field(pair, 0));
 	  *opt_k[i] = copy ? g_strdup (s) : s;
-	  s = String_val(Field(pair, 1));
+	  s = Bytes_val(Field(pair, 1));
 	  *opt_v[i] = copy ? g_strdup (s) : s;
 	  cell = Field(cell, 1);
 	}
@@ -345,7 +345,7 @@ ml_gdkpixbuf_savefunc (const gchar *buf, gsize count, GError **error, gpointer d
   value *cb = data;
   value res, s;
   s = alloc_string (count);
-  memcpy (String_val(s), buf, count);
+  memcpy (Bytes_val(s), buf, count);
   res = callback_exn (*cb, s);
   if (Is_exception_result (res))
     {

@@ -104,8 +104,8 @@ ML_1 (gtk_icon_factory_lookup_default, String_val, Val_GtkIconSet)
 CAMLprim value ml_gtk_stock_add(value item)
 {
   GtkStockItem it;
-  it.stock_id = String_val(Field(item, 0));
-  it.label    = String_val(Field(item, 1));
+  it.stock_id = Bytes_val(Field(item, 0));
+  it.label    = Bytes_val(Field(item, 1));
   it.modifier = Flags_GdkModifier_val(Field(item, 2)) ;
   it.keyval   = Int_val(Field(item, 3));
   it.translation_domain = NULL;

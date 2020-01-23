@@ -57,7 +57,7 @@
 
 CAMLprim void ml_raise_gdk (const char *errmsg)
 {
-  static value * exn = NULL;
+  static const value * exn = NULL;
   if (exn == NULL)
       exn = caml_named_value ("gdkerror");
   raise_with_string (*exn, (char*)errmsg);
@@ -478,7 +478,7 @@ CAMLprim value copy_xdata (gint format, void *xdata, gulong nitems)
     switch (format) {
     case 8:
         data = alloc_string (nitems);
-        memcpy (String_val(data), xdata, sizeof(char) * nitems);
+        memcpy (Bytes_val(data), xdata, sizeof(char) * nitems);
         tag = MLTAG_BYTES;
         break;
     case 16:

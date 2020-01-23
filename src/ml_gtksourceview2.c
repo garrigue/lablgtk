@@ -112,7 +112,7 @@ CAMLprim value ml_gtk_source_view_init(value unit)
 
 static gpointer string_val(value v)
 {
-	return String_val(v);
+	return Bytes_val(v);
 }
 
 GSList *ml_gslist_of_string_list(value list)

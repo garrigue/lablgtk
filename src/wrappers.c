@@ -99,7 +99,7 @@ value ml_cons (value v, value l)
 
 void ml_raise_null_pointer ()
 {
-  static value * exn = NULL;
+  static const value * exn = NULL;
   if (exn == NULL)
       exn = caml_named_value ("null_pointer");
   raise_constant (*exn);

@@ -37,6 +37,10 @@
 #define Is_young_block(v) \
   (Is_block(v) && (value*)(v) < young_end && (value*)(v) > young_start)
 
+#ifndef Bytes_val
+#define Bytes_val String_val
+#endif
+
 CAMLexport value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
 CAMLexport value ml_alloc_custom(struct custom_operations * ops,

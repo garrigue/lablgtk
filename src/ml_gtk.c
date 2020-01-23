@@ -43,7 +43,7 @@
 
 void ml_raise_gtk (const char *errmsg)
 {
-  static value * exn = NULL;
+  static const value * exn = NULL;
   if (exn == NULL)
       exn = caml_named_value ("gtkerror");
   raise_with_string (*exn, (char*)errmsg);
@@ -397,7 +397,7 @@ CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
     CAMLparam2 (w, n);
     CAMLlocal1 (ret);
     GtkWidget *widget = GtkWidget_val (w);
-    gchar *name = String_val (n);
+    gchar *name = Bytes_val (n);
     GParamSpec * pspec;
     pspec = gtk_widget_class_find_style_property
                (GTK_WIDGET_GET_CLASS (widget), name);
@@ -448,7 +448,7 @@ CAMLprim value ml_gtk_drag_dest_set (value w, value f, value t, value a)
 	  alloc (Wosize_asize(n_targets * sizeof(GtkTargetEntry)),
 		 Abstract_tag);
   for (i=0; i<n_targets; i++) {
-    targets[i].target = String_val(Field(Field(t, i), 0));
+    targets[i].target = Bytes_val(Field(Field(t, i), 0));
     targets[i].flags = Flags_Target_flags_val(Field(Field(t, i), 1));
     targets[i].info = Int_val(Field(Field(t, i), 2));
   }
@@ -485,7 +485,7 @@ CAMLprim value ml_gtk_drag_source_set (value w, value m, value t, value a)
 	  alloc (Wosize_asize(n_targets * sizeof(GtkTargetEntry)),
 		 Abstract_tag);
   for (i=0; i<n_targets; i++) {
-    targets[i].target = String_val(Field(Field(t, i), 0));
+    targets[i].target = Bytes_val(Field(Field(t, i), 0));
     targets[i].flags = Flags_Target_flags_val(Field(Field(t, i), 1));
     targets[i].info = Int_val(Field(Field(t, i), 2));
   }
