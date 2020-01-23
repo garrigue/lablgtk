@@ -76,7 +76,7 @@ CAMLprim value ml_gtk_source_view_init(value unit)
 
 static gpointer string_val(value v)
 {
-	return String_val(v);
+	return Bytes_val(v);
 }
 
 GSList *ml_gslist_of_string_list(value list)
@@ -546,7 +546,7 @@ ML_2 (gtk_source_mark_prev, GtkSourceMark_val, String_option_val, Val_option_Gtk
 
 // SourceMarkAttributes
 
-ML_0(gtk_source_mark_attributes_new,GtkSourceMarkAttributes_val)
+ML_0(gtk_source_mark_attributes_new,Val_GtkSourceMarkAttributes)
 ML_4(gtk_source_view_set_mark_attributes, GtkSourceView_val, String_val,
      GtkSourceMarkAttributes_val, Int_val, Unit)
 

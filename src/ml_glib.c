@@ -87,7 +87,7 @@ CAMLprim value copy_string_g_free (char *str)
 
 static void ml_raise_glib (const char *errmsg)
 {
-  static value * exn = NULL;
+  static const value * exn = NULL;
   if (exn == NULL)
       exn = caml_named_value ("gerror");
   raise_with_string (*exn, (char*)errmsg);
@@ -133,7 +133,7 @@ static GSList *exn_map;
 struct exn_data {
   GQuark domain;
   char *caml_exn_name;
-  value *caml_exn;
+  const value *caml_exn;
 };
 
 CAMLprim void ml_register_exn_map (GQuark domain, char *caml_name)
@@ -145,7 +145,7 @@ CAMLprim void ml_register_exn_map (GQuark domain, char *caml_name)
   exn_map = g_slist_prepend (exn_map, exn_data);
 }
 
-static value *lookup_exn_map (GQuark domain)
+static const value *lookup_exn_map (GQuark domain)
 {
   GSList *l = exn_map;
   struct exn_data *exn_data;
@@ -160,8 +160,8 @@ static value *lookup_exn_map (GQuark domain)
   return NULL;
 }
 
-static void ml_raise_gerror_exn(GError *, value *) Noreturn;
-static void ml_raise_gerror_exn(GError *err, value *exn)
+static void ml_raise_gerror_exn(GError *, const value *) Noreturn;
+static void ml_raise_gerror_exn(GError *err, const value *exn)
 {
   CAMLparam0();
   CAMLlocal2(b, msg);
@@ -178,7 +178,7 @@ static void ml_raise_gerror_exn(GError *err, value *exn)
 static void ml_raise_generic_gerror (GError *) Noreturn;
 static void ml_raise_generic_gerror (GError *err)
 {
-  static value *exn;
+  static const value *exn;
   value msg;
   if (exn == NULL) {
     exn = caml_named_value ("gerror");
@@ -192,7 +192,7 @@ static void ml_raise_generic_gerror (GError *err)
 
 CAMLprim void ml_raise_gerror(GError *err)
 {
-  value *caml_exn;
+  const value *caml_exn;
   g_assert (err);
   caml_exn = lookup_exn_map (err->domain);
   if (caml_exn)
@@ -368,7 +368,7 @@ CAMLprim value ml_g_io_channel_read(value io, value str, value offset,
 {
   gsize read;
   switch (g_io_channel_read(GIOChannel_val(io), 
-			    String_val(str) + Int_val(offset),
+			    Bytes_val(str) + Int_val(offset),
 			    Int_val(count),
 			    &read)) {
   case G_IO_ERROR_NONE:
@@ -390,7 +390,7 @@ CAMLprim value ml_g_io_channel_read_chars(value io, value str, value offset,
   GError *err = NULL;
   GIOStatus result = 
     g_io_channel_read_chars(GIOChannel_val(io), 
-		      String_val(str) + Int_val(offset),
+		      Bytes_val(str) + Int_val(offset),
 		      Int_val(count),
 		      &read, 
 		      &err);
@@ -463,7 +463,7 @@ caml_copy_string_len_and_free (char *str, size_t len)
   value v;
   g_assert (str != NULL);
   v = alloc_string (len);
-  memcpy (String_val(v), str, len);
+  memcpy (Bytes_val(v), str, len);
   g_free (str);
   return v;
 }

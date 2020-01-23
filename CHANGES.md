@@ -3,7 +3,9 @@ LablGTK changes log
 ## In Lablgtk-3.1.0
 
 2020.01.23 [Jacques]
-  * headers changed again in ocaml 4.10.beta2
+  * headers changed again in ocaml 4.10.0beta2
+  * fix C compilation warnings
+  * fix SourceMarkAttributes.new_attribute
 
 2020.01.14 [Jacques]
   * remove GtkDialog#has_separator property (report by Thomas Leonard, #68)

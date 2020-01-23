@@ -390,7 +390,7 @@ CAMLprim value copy_xdata (gint format, void *xdata, gulong nitems)
     switch (format) {
     case 8:
         data = alloc_string (nitems);
-        memcpy (String_val(data), xdata, sizeof(char) * nitems);
+        memcpy (Bytes_val(data), xdata, sizeof(char) * nitems);
         tag = MLTAG_BYTES;
         break;
     case 16:
