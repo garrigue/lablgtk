@@ -86,7 +86,7 @@ CAMLexport value Val_GdkEvent (GdkEvent *);
 CAMLexport int OptFlags_GdkModifier_val (value);
 CAMLexport int Flags_GdkModifier_val (value);
 CAMLexport int Flags_Event_mask_val (value);
-CAMLexport lookup_info *ml_table_extension_events;
+CAMLextern lookup_info *ml_table_extension_events;
 #define Extension_events_val(key) ml_lookup_to_c(ml_table_extension_events,key)
 
 #define GdkDragContext_val(val) check_cast(GDK_DRAG_CONTEXT,val)
