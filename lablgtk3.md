@@ -1,14 +1,15 @@
-# LablGTK3 3.0.beta6 : an interface to the GIMP Tool Kit
+# LablGTK3 3.1.0 : an interface to the GIMP Tool Kit
 
 ## Dependencies
 
 - ocaml >= 4.05.0
 - gtk+ >= 3.18
-- dune >= 1.4
+- dune >= 1.8
+- camlp5 (for developer build only)
 
 ## Info/upgrades
 
-- http://lablgtk.forge.ocamlcore.org/
+- https://garrigue.github.io/lablgtk/
 - https://github.com/garrigue/lablgtk
 
 ## Status
@@ -16,14 +17,13 @@
 LablGtk3 is still an experimental port of LablGtk2 to Gtk-3.
 Currently it is more or less a subset of LablGtk2.
 
-An important change in gtk-2 was the use of unicode (utf8) for
-all strings. If you use non-ascii strings, you must imperatively
-convert them to unicode. This can be done with the
-`Glib.Convert.locale_to_utf8` function. If your input is already in
-utf8, it is still a good idea to validate it with
+LablGtk uses unicode (utf8) for all strings. If you use non-ascii
+strings, you must imperatively convert them to unicode. This can be
+done with the `Glib.Convert.locale_to_utf8` function. If your input is
+already in utf8, it is still a good idea to validate it with
 `Glib.Utf8.validate`, as malformed utf8 strings may cause segmentation
 faults.
-Note that `setlocale` is now always called (except if you set
+The `setlocale` function is always called (except if you set
 `GTK_SETLOCALE` to 0 in the environment), but `LC_NUMERIC` is reverted
 to `"C"` to avoid problems with floating point conversion in OCaml.
 
@@ -39,70 +39,52 @@ Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x < 2.4"
 
 ## How to compile:
 
-  Type
+  To compile in developer mode type:
 ```
-        dune build
+$ dune build
 ```
-  to compile with all supported options enabled (libgl,
-  libgnomecanvas, librsvg, native compilation, thread support).
+  this will compile all the public artifacts of all the included packages,
+  and does require having developer tools installed [`camlp5` for instance].
 
-  You can build individual packages using
+  You *must not* use the developer mode to build `lablgtk3` packages,
+  for that you should use
+
 ```
-        dune build $package.install
+$ dune build -p $package
 ```
-  The following packages / libraries are provided:
-```
-        lablgtk3
-        lablgtk3-sourceview3
-        lablgtk3-gtkspell3
-```
+  where package is, as of today, one of `lablgtk3`, `lablgtk3-gtksourceview3`,
+  `lablgtk3-gtkspell3`.
+
+  LablGTK uses a standard Dune build setup, see the Dune documentation for
+  more options.
 
 ## Contents
 
-- `gdk.ml`					low-level interface to the General Drawing Kit
-- `gtk.ml`			        low-level interface to the GIMP Tool Kit
-- `gtkThread.ml`			main loop for threaded version
-- `g[A-Z]*.ml`				object-oriented interface to GTK
-- `gdkObj.ml`				object-oriented interface to GDK
-- `lablgtk3`				toplevel
-- `examples/*.ml`			various examples
+- `src/gdk.ml`              low-level interface to the General Drawing Kit
+- `src/gtk.ml`              low-level interface to the GIMP Tool Kit
+- `src/gtkThread.ml`        main loop for threaded version
+- `src/g[A-Z]*.ml`          object-oriented interface to GTK
+- `src/gdkObj.ml`           object-oriented interface to GDK
+- `examples/*.ml`           various examples
 - `applications/browser`    an ongoing port of ocamlbrowser
 - `applications/camlirc`    an IRC client (by Nobuaki Yoshida)
 
 ### How to run the examples
 
 The examples are compiled by calling `dune build @all`, you can build
-`lablgtk3` applications using a standard dune / ocamlfind workflow.
+`lablgtk3` applications using a standard Dune or `ocamlfind` workflow.
 
-### How to link them
-
-The lablgtk3 script loads an extra module GtkInit, whose only contents is:
-```ocaml
-let locale = GtkMain.Main.init ()
-```
-You must either add this line, or add this module to your link, before
-calling any Gtk function. With ocamlfind, use
-```
-ocamlfind ocamlc -package lablgtk3.auto-init -linkpkg -w s ???.ml -o ???
-```
-Otherwise, use something similar to:
-```
-ocamlc -I +lablgtk3 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
-```
-
-Failing to add this init line will result in the following runtime error
-
-```
-(process:19985): Gtk-CRITICAL **: 20:09:13.764: _gtk_style_provider_private_get_settings: assertion 'GTK_IS_STYLE_PROVIDER_PRIVATE (provider)' failed
-
-Segmentation fault (core dumped)
-```
+Remember to call `GMain.init ()` in your application, or it will fail
+to properly initialize.
 
 ### How to use the threaded toplevel
-```
-% lablgtk3 -thread
-		Objective Caml version 4.07.1
 
+You can start a thread session using utop:
+```
+$ dune utop src
+# #thread;;
+# let locale = GMain.init ();;
+# let thread = GtkThread.start();;
 # let w = GWindow.window ~show:true ();;
 # let b = GButton.button ~packing:w#add ~label:"Hello!" ();;
 ```
@@ -143,16 +125,18 @@ Here are the widget classes contained in each module:
 - **GObj**          gtkobj, widget, style
 - **GData**         data, adjustment, tooltips
 - **GContainer**    container, item_container
-- **GWindow**       window, dialog, color_selection_dialog, file_selection, plug
-- **GPack**         box, button_box, table, fixed, layout, packer, paned, notebook
+- **GWindow**       window, dialog, color_selection_dialog, file_selection,
+                    plug
+- **GPack**         box, button_box, table, fixed, layout, packer, paned,
+                    notebook
 - **GBin**          scrolled_window, event_box, handle_box, frame,
-                aspect_frame, viewport, socket
+                    aspect_frame, viewport, socket
 - **GButton**       button, toggle_button, check_button, radio_button, toolbar
 - **GMenu**         menu_item, tearoff_item, check_menu_item, radio_menu_item,
-                menu_shell, menu, option_menu, menu_bar, factory
+                    menu_shell, menu, option_menu, menu_bar, factory
 - **GMisc**         separator, statusbar, calendar, drawing_area,
-                misc, arrow, image, pixmap, label, tips_query,
-                color_selection, font_selection
+                    misc, arrow, image, pixmap, label, tips_query,
+                    color_selection, font_selection
 - **GTree**         tree_item, tree, view (also tree/list_store, model)
 - **GList**         list_item, liste, clist
 - **GEdit**         editable, entry, spin_button, combo
@@ -182,23 +166,23 @@ Practically, each widget class is composed of:
 
 Here is a diagram of the structure (- for methods, + for sub-objects)
 ```
-	- coerce : widget
-	- as_widget : Gtk.widget obj
-	- destroy : unit -> unit
-	- get_oid : int
-	- ...
-	+ connect : mywidget_signals
-	|   - after
-	|   - signal_name : callback:(... -> ...) -> GtkSignal.id
-	+ misc : misc_ops
-	|   - show, hide, disconnect, ...
-	|   + connect : misc_signals
-	+ drag : drag_ops
-	|   - ...
-	|   + connect : drag_signals
-	+ event : event_ops
-	|   - add, ...
-	|   + connect : event_signals
+        - coerce : widget
+        - as_widget : Gtk.widget obj
+        - destroy : unit -> unit
+        - get_oid : int
+        - ...
+        + connect : mywidget_signals
+        |   - after
+        |   - signal_name : callback:(... -> ...) -> GtkSignal.id
+        + misc : misc_ops
+        |   - show, hide, disconnect, ...
+        |   + connect : misc_signals
+        + drag : drag_ops
+        |   - ...
+        |   + connect : drag_signals
+        + event : event_ops
+        |   - add, ...
+        |   + connect : event_signals
 ```
 
 You create a widget by `<Module>.<widget name> options ... ()`.
@@ -273,20 +257,26 @@ it, you may use compaction through `Gc.compact` where it is safe
 
 ### Libraries support
 
+- GtkSourceView 3 support:
+                This binding was contributed by Benjamin Monate, and
+                adapted by Hugo Herbelin.
+                It requires libgtksourceview-3.x.
+                See examples in examples/sourceview/*3.ml
+                The executable must be linked with lablgtksourceview3.cma.
+- GtkSpell 3 support: 
+
+#### Not available in Gtk3
+
 - LibGlade support: not available in Gtk3 (replaced by GtkBuilder)
 - GL extension: not available in Gtk3
 - SVG support: not available in Gtk3
 - GnomeCanvas support: not available in Gtk3
-- GtkSourceView 3 support:
-		This binding was contributed by Benjamin Monate, and
-		adapted by Hugo Herbelin.
-		It requires libgtksourceview-3.x.
-		See examples in examples/sourceview/*3.ml
-		The executable must be linked with lablgtksourceview3.cma.
+
+### Running lablgtk3 in the toplevel
+
+The X11 version of lablgt3
 
 ### Windows port
-
-See README.win32 for detailed information on installation.
 
 If you want to use threads, you must be aware of windows specific
 restrictions; see for instance:
@@ -309,10 +299,11 @@ are always called from the main loop thread, you can freely use GTK
 in them. Also, non-graphical operations are thread-safe.
 Here is an example using the lablgtk toplevel with threads:
 ```
-% lablgtk3.bat -thread
-		Objective Caml version 4.07.1
-
+% dune utop src
+# #thread;;
+# GMain.init ();;
 # open GtkThread;;
+# let thread = start ();;
 # let w = sync (GWindow.window ~show:true) ();;
 # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
 # b#connect#clicked (fun () -> prerr_endline "Hello");;
@@ -322,10 +313,26 @@ Here is an example using the lablgtk toplevel with threads:
 
 Since Darwin is Unix, this port compiles as usual.
 Note however that Quartz imposes even stronger restrictions than
-Windows on threads: only the main thread of the application can do
-GUI work. Just apply the same techniques as described above, being
-careful to ensure that your first call to `GtkThread.main` occurs in
-the main thread. This is done automatically in the threaded toplvel.
+Windows on threads: only the main thread of the application can do GUI
+work. Just apply the same techniques as described in the Windos port,
+being careful to ensure that your first call to `GtkThread.main`
+occurs in the main thread. This can be done by issueing the following
+commands
+
+```
+% dune utop src
+# #thread;;
+# GMain.init ();;
+# let thread = Thread.create UTop_main.main () and () = GtkThread.main ();;
+# open GtkThread;;
+# let w = sync (GWindow.window ~show:true) ();;
+# let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
+# b#connect#clicked (fun () -> prerr_endline "Hello");;
+```
+
+This launches a toplevel thread, and runs main in the application thread.
+This version utop-specific; `tool/gtkThTop.ml` has a version for the
+ocaml vanilla toplevel.
 
 ## Authors
 - Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>

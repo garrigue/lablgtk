@@ -1,5 +1,44 @@
 LablGTK changes log
 
+## In Lablgtk-3.1.0
+
+2020.01.23 [Jacques]
+  * headers changed again in ocaml 4.10.0beta2
+  * fix C compilation warnings
+  * fix SourceMarkAttributes.new_attribute
+
+2020.01.14 [Jacques]
+  * remove GtkDialog#has_separator property (report by Thomas Leonard, #68)
+  * add GMisc.icon_status#set_tooltip_markup/text (report by T. Leonard, #69)
+  * add #orientation to GPack.box/paned, GRange.range and GMisc.separator
+    (report by Martin de Mello, #73)
+
+## In Lablgtk-3.0beta8
+
+2019.12.03 [Jacques]
+  * update toplevel loop instructions in README.md
+  * keep Gtk{Th,}Init in tools for reference
+
+2019.12.02 [Emilio]
+  * remove Gtk{Th,}Init static initializers, applications should init
+    Gtk manually instead of using a linking side-effect (#100)
+
+2019.11.27 [Jacques]
+  * remove declaration of young_start for ocaml 4.10 (#97)
+  * add CI support for 4.10 [Emilio]
+
+2019.11.26 [Emilio]
+  * Require Dune 1.8, use improved configurator API (#95)
+
+## In Lablgtk-3.0beta7
+
+2019.11.25 [Jacques]
+  * Split source code in terms of packages (#77) [Emilio]
+  * Update README to better document build system (#80) [Emilio]
+  * Switch from camlp4 to camlp5 (required for 4.09)
+  * Add `[@warnerror "-3"]` to call to `Obj.truncate`
+  * Move `COPYING` to `LICENSE`
+
 2019.09.25 [Jacques]
   * Fix several gtk3 examples, and remove some obsolete ones
    (#84) [Martin de Mello]
@@ -8,6 +47,9 @@ LablGTK changes log
 2019.09.23 [Martin de Mello]
   * Add the LinkButton activate-link signal #83
 
+2019.08.12 [Emilio J. Gallego Arias]
+  * Reorganize source code, move orphaned files to unsupported,
+    bump to Dune >= 1.6
 2019.08.12 [Emilio J. Gallego Arias]
   * Remove stale makefiles, lablgtk must be built using Dune now.
 
