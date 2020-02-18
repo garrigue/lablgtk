@@ -1,10 +1,26 @@
-.PHONY: build build-all nopromote opam clean
+.PHONY: help release dev dev-all nopromote opam clean
 
-build:
+help:
+	@echo "Welcome to lablgtk Dune-based build system. Targets are"
+	@echo ""
+	@echo "  - release:   build lablgtk package in release mode"
+	@echo "  - dev:       build in developer mode [requires extra dependencies]"
+	@echo "  - dev-all:   build in developer mode [requires extra dependencies]"
+	@echo "  - nopromote: dev build but without re-running camlp5 generation"
+	@echo "  - opam:      internal, used in CI testing"
+	@echo "  - clean:     clean build tree"
+	@echo ""
+	@echo "WARNING: Packagers should not use this makefile, but call dune"
+	@echo "directly with the right options for their distribution, see README"
+
+release:
+	dune build -p lablgtk3
+
+dev:
 	dune build
 
-# This also builds examples
-build-all:
+# This also builds examples, will be the default once we set (lang dune 2.0)
+dev-all:
 	dune build @all
 
 nopromote:
