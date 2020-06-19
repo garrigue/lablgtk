@@ -1,6 +1,8 @@
 LablGTK changes log
 
-2020.01.24 [Jerry James]
+## In Lablgtk-3.1.1
+
+2020.03.17 [Jerry James]
   * Fix the build with -fno-common, the default for GCC 10
 
 ## In Lablgtk-3.1.0
