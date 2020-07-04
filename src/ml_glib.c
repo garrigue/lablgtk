@@ -25,6 +25,8 @@
 #include <string.h>
 #include <locale.h>
 #ifdef _WIN32
+/* to kill a #warning: include winsock2.h before windows.h */
+#include <winsock2.h>
 #include "win32.h"
 #include <wtypes.h>
 #include <io.h>
@@ -37,6 +39,11 @@
 #include <caml/memory.h>
 #include <caml/callback.h>
 #include <caml/threads.h>
+
+#ifdef _WIN32
+/* for Socket_val */
+#include <caml/unixsupport.h>
+#endif
 
 #include "wrappers.h"
 #include "ml_glib.h"
@@ -330,13 +337,22 @@ Make_Val_final_pointer_ext (GIOChannel, _noref, Ignore, g_io_channel_unref, 20)
 
 #ifndef _WIN32
 ML_1 (g_io_channel_unix_new, Int_val, Val_GIOChannel_noref)
+CAMLprim value ml_g_io_channel_unix_new_socket (value arg1) {
+  return Val_GIOChannel_noref (g_io_channel_unix_new (Int_val (arg1))); 
+}
 
 #else
 CAMLprim value ml_g_io_channel_unix_new(value wh)
 {
   return Val_GIOChannel_noref
-    (g_io_channel_unix_new
+    (g_io_channel_win32_new_fd
      (_open_osfhandle((long)*(HANDLE*)Data_custom_val(wh), O_BINARY)));
+}
+
+CAMLprim value ml_g_io_channel_unix_new_socket(value wh)
+{
+  return Val_GIOChannel_noref
+    (g_io_channel_win32_new_socket(Socket_val(wh)));
 }
 #endif
 

@@ -75,6 +75,7 @@ module Io : sig
   type condition = [ `ERR | `HUP | `IN | `NVAL | `OUT | `PRI]
   type id
   val channel_of_descr : Unix.file_descr -> channel
+  val channel_of_descr_socket : Unix.file_descr -> channel
   val add_watch :
     cond:condition list -> callback:(condition list -> bool) -> ?prio:int -> channel -> id
   val remove : id -> unit
