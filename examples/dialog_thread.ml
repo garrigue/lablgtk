@@ -8,7 +8,7 @@
 
 (* $Id$ *)
 
-(* lablgtk2 -thread -nothinit dialog-thread.ml *)
+(* lablgtk2 -thread -nothinit dialog_thread.ml *)
 
 let _ = GMain.init ()
 let window = GWindow.window ~border_width: 10 ()
@@ -24,7 +24,7 @@ let main () =
   Glib.Timeout.add ~ms:100 ~callback:GtkThread.do_jobs;
   window#connect#destroy ~callback:GMain.quit;
   button#connect#clicked ~callback:(fun () ->
-    let dialog = 
+    let dialog =
       GWindow.message_dialog ~title:"Quit ?"
         ~message_type:`QUESTION ~message:"Quit the application ?"
         ~buttons:GWindow.Buttons.yes_no ()

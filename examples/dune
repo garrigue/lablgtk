@@ -8,7 +8,7 @@
    buttons
    cairo_demo calc calendar cgets
    combobox counter dcalendar
-   dialog-thread drawing
+   dialog_thread drawing
    editor2
    entry2 entrycompletion entry
    eventbox events2 events expander
@@ -33,7 +33,7 @@
    about accel_tree action assistant assistant_tutorial
    buttons cairo_demo
    calc calendar cgets combobox counter
-   dcalendar dialog-thread drawing
+   dcalendar dialog_thread drawing
    editor2 entry2 entrycompletion entry eventbox events2 events expander
    fifteen filechooser fixed_editor fixpoint
    gioredirect giotest hello iconview image kaimono
