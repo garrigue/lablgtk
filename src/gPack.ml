@@ -134,7 +134,7 @@ end
 let layout ?hadjustment ?vadjustment ?layout_width ?layout_height =
   Layout.make_params []
     ?hadjustment:(may_map GData.as_adjustment hadjustment)
-    ?vadjustment:(may_map GData.as_adjustment hadjustment)
+    ?vadjustment:(may_map GData.as_adjustment vadjustment)
     ?width:layout_width ?height:layout_height ~cont:(
   pack_container ~create:(fun p -> new layout (Layout.create p)))
 
