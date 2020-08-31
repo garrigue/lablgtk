@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2020.08.31 [Jacques]
+  * Fix #116 : problem with GPack.layout adjustments (reported by Vasile Toraru)
+
 ## In Lablgtk-3.1.1
 
 2020.03.17 [Jerry James]
