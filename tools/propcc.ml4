@@ -65,7 +65,7 @@ let enums = [
     "SelectionMode"; "SortType"; "WrapMode"; "SpinButtonUpdatePolicy";
     "UpdateType"; "ProgressBarStyle"; "ProgressBarOrientation";
     "CellRendererMode"; "CellRendererAccelMode"; "TreeViewColumnSizing";
-    "SortType"; "TextDirection"; "SizeGroupMode"; (* in signals *)
+    "SortType"; "TextDirection"; "SizeGroupMode"; "StackTransitionType"; (* in signals *)
     "MovementStep"; "ScrollStep"; "ScrollType"; "MenuDirectionType";
     "DeleteType"; "StateType"; (* for canvas *) "AnchorType";
     "DirectionType"; "SensitivityType"; "InputHints"; "InputPurpose";

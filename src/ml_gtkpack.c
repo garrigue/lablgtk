@@ -56,7 +56,9 @@ CAMLprim value ml_gtkpack_init(value unit)
         gtk_vpaned_get_type() +
         gtk_table_get_type() +
         gtk_grid_get_type() +
-        gtk_size_group_get_type();
+        gtk_size_group_get_type() +
+        gtk_stack_get_type() +
+        gtk_stack_switcher_get_type();
     return Val_GType(t);
 }
 
@@ -207,3 +209,11 @@ ML_2 (gtk_grid_set_column_spacing, GtkGrid_val, Int_val, Unit)
 ML_1 (gtk_size_group_new, Size_group_mode_val, Val_GtkSizeGroup)
 ML_2 (gtk_size_group_add_widget, GtkSizeGroup_val, GtkWidget_val, Unit)
 ML_2 (gtk_size_group_remove_widget, GtkSizeGroup_val, GtkWidget_val, Unit)
+
+#define GtkStack_val(val) check_cast(GTK_STACK,val)
+ML_3 (gtk_stack_add_named, GtkStack_val, GtkWidget_val, String_val, Unit)
+ML_4 (gtk_stack_add_titled, GtkStack_val, GtkWidget_val, String_val, String_val, Unit)
+ML_2 (gtk_stack_get_child_by_name, GtkStack_val, String_val, Val_GtkWidget)
+ML_3 (gtk_stack_set_visible_child_full, GtkStack_val, String_val, Stack_transition_type_val, Unit)
+
+#define GtkStackSwitcher_val(val) check_cast(GTK_STACK_SWITCHER,val)

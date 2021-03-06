@@ -257,3 +257,26 @@ end
 let notebook =
   Notebook.make_params [] ~cont:(
   pack_container ~create:(fun p -> new notebook (Notebook.create p)))
+
+class stack obj = object
+  inherit container obj
+  inherit stack_props
+  method add_named w name = Stack.add_named obj (as_widget w) name
+  method add_titled w name title = Stack.add_titled obj (as_widget w) name title
+  method get_child_by_name name = new widget (Stack.get_child_by_name obj name)
+  method set_visible_child_full name transition = Stack.set_visible_child_full obj name transition
+end
+
+let stack =
+  Stack.make_params [] ~cont:(
+  pack_container ~create:(fun p -> new stack (Stack.create p)))
+
+class stack_switcher obj = object
+  inherit box_skel obj
+  inherit stack_switcher_props
+  method connect = new container_signals_impl obj
+end
+
+let stack_switcher =
+  StackSwitcher.make_params [] ~cont:(
+  pack_container ~create:(fun p -> new stack_switcher (StackSwitcher.create p)))
