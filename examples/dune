@@ -25,6 +25,7 @@
    ; runthread
    scrolledwin seppala signal_override ; slide_show
    socket spin
+   stackcontainer stackswitcher
    ; testdnd testgtk
    testthread ; timer toolbar
    tooltip tree tree_model tree_store ; tron
@@ -42,6 +43,7 @@
    pango1 pango2 pixview pousse progressbar radiobuttons rpn
    runthread
    scrolledwin seppala signal_override slide_show socket spin
+   stackcontainer stackswitcher
    testdnd ; testgtk
    testthread timer toolbar tooltip tree tree_model tree_store tron
  )
