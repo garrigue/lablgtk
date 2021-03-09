@@ -394,6 +394,7 @@ class stack : ([> Gtk.stack] as 'a) obj ->
   object
     inherit container
     val obj : 'a obj
+    method as_stack : Gtk.stack obj
     method add_named : widget -> string -> unit
     method add_titled : widget -> string -> string -> unit
     method get_child_by_name : string -> widget

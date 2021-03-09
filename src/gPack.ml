@@ -261,6 +261,7 @@ let notebook =
 class stack obj = object
   inherit container obj
   inherit stack_props
+  method as_stack = (obj :> Gtk.stack obj)
   method add_named w name = Stack.add_named obj (as_widget w) name
   method add_titled w name title = Stack.add_titled obj (as_widget w) name title
   method get_child_by_name name = new widget (Stack.get_child_by_name obj name)
