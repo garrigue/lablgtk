@@ -440,7 +440,9 @@ class stack_switcher : ([> Gtk.stack_switcher] as 'a) obj ->
     method stack : Gtk.stack Gtk.obj
     method set_stack : Gtk.stack Gtk.obj -> unit
     method icon_size : int
+      (** @since GTK 3.20 *)
     method set_icon_size : int -> unit
+      (** @since GTK 3.20 *)
   end
 
 val stack_switcher :

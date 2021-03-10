@@ -155,6 +155,6 @@ class Stack set wrap wrapsig : Container {
 }
 
 class StackSwitcher set wrap wrapsig : Box {
-  "icon-size" gint    : Read / Write
+  "icon-size" gint    : Read / Write (** GTK 3.20 *) 
   "stack" GtkStack    : Read / Write / Construct
 }
