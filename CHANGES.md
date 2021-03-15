@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2021.03.15 [Jacques]
+  * Add bindings fro GtkStack and GtkStackSwitcher (#122) [Hugo @swarmpan]
+
 2020.08.31 [Jacques]
   * Fix #116 : problem with GPack.layout adjustments (reported by Vasile Toraru)
 
