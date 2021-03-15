@@ -137,3 +137,24 @@ class SizeGroup set wrap : GObject {
   method add_widget : "[>`widget] obj -> unit"
   method remove_widget : "[>`widget] obj -> unit"
 }
+
+class Stack set wrap wrapsig : Container {
+  method add_named : "[>`widget] obj -> string -> unit"
+  method add_titled : "[>`widget] obj -> string -> string -> unit"
+  method get_child_by_name : "string -> [>`widget] obj"
+  method set_visible_child_full : "string -> Tags.stack_transition_type -> unit"
+  "hhomogeneous" gboolean                  : Read / Write
+  "homogeneous" gboolean                   : Read / Write
+  "interpolate-size" gboolean              : Read / Write
+  "transition-duration" guint              : Read / Write
+  "transition-running" gboolean            : Read
+  "transition-type" GtkStackTransitionType : Read / Write
+  "vhomogeneous" gboolean                  : Read / Write
+  "visible-child" GtkWidget                : Read / Write
+  "visible-child-name" string              : Read / Write
+}
+
+class StackSwitcher set wrap wrapsig : Box {
+  "icon-size" gint    : Read / Write (** GTK 3.20 *) 
+  "stack" GtkStack    : Read / Write / Construct
+}

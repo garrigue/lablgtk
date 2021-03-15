@@ -218,6 +218,13 @@ type event_sequence_state = "GTK_EVENT_SEQUENCE_"
 type pan_direction = "GTK_PAN_DIRECTION_"
   [ `LEFT | `RIGHT | `UP | `DOWN ]
 
+type stack_transition_type = "GTK_STACK_TRANSITION_TYPE_"
+  [ `NONE | `CROSSFADE | `SLIDE_RIGHT | `SLIDE_LEFT 
+  | `SLIDE_UP | `SLIDE_DOWN | `SLIDE_LEFT_RIGHT | `SLIDE_UP_DOWN
+  | `OVER_UP | `OVER_DOWN | `OVER_LEFT | `OVER_RIGHT
+  | `UNDER_UP | `UNDER_DOWN | `UNDER_LEFT | `UNDER_RIGHT
+  | `OVER_UP_DOWN | `OVER_DOWN_UP | `OVER_LEFT_RIGHT | `OVER_RIGHT_LEFT ]
+
 (* >= 3.20
 type popover_constraint = "GTK_POPOVER_CONSTRAINT_"
   [ `NONE | `WINDOW ] *)

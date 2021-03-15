@@ -386,3 +386,69 @@ val paned :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> paned
+
+(** {3 GtkStack} *)
+
+(** @gtkdoc gtk GtkStack *)
+class stack : ([> Gtk.stack] as 'a) obj ->
+  object
+    inherit container
+    val obj : 'a obj
+    method as_stack : Gtk.stack obj
+    method add_named : widget -> string -> unit
+    method add_titled : widget -> string -> string -> unit
+    method get_child_by_name : string -> widget
+    method set_visible_child_full : string -> Tags.stack_transition_type -> unit
+    method hhomogeneous : bool
+    method set_hhomogeneous : bool -> unit
+    method homogeneous : bool
+    method set_homogeneous : bool -> unit
+    method vhomogeneous : bool
+    method set_vhomogeneous : bool -> unit
+    method interpolate_size : bool
+    method set_interpolate_size : bool -> unit
+    method transition_duration : int
+    method set_transition_duration : int -> unit
+    method transition_type : Tags.stack_transition_type
+    method set_transition_type : Tags.stack_transition_type -> unit
+    method transition_running : bool
+    method visible_child : widget
+    method set_visible_child : widget -> unit
+    method visible_child_name : string
+    method set_visible_child_name : string -> unit
+  end
+
+(** @gtkdoc gtk GtkStack *)
+val stack :
+  ?hhomogeneous:bool ->
+  ?homogeneous:bool ->
+  ?interpolate_size:bool ->
+  ?transition_duration:int ->
+  ?transition_type: Tags.stack_transition_type ->
+  ?vhomogeneous:bool ->
+  ?visible_child: Gtk.widget Gtk.obj ->
+  ?visible_child_name:string ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> stack
+
+class stack_switcher : ([> Gtk.stack_switcher] as 'a) obj ->
+  object
+    inherit box
+    val obj : 'a obj
+    method stack : Gtk.stack Gtk.obj
+    method set_stack : Gtk.stack Gtk.obj -> unit
+    method icon_size : int
+      (** @since GTK 3.20 *)
+    method set_icon_size : int -> unit
+      (** @since GTK 3.20 *)
+  end
+
+val stack_switcher :
+  ?icon_size:int ->
+  ?stack: Gtk.stack Gtk.obj ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> stack_switcher

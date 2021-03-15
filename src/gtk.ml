@@ -201,6 +201,10 @@ type file_chooser_button = [box|`filechooserbutton|`filechooser]
 (* New widgets in 2.12 *)
 type tooltip = [`tooltip] obj
 
+(* Widgets from GTK3 *)
+type stack = [container|`stack]
+type stack_switcher = [box|`stackswitcher]
+
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj
   (* constraint 'a = [> `giu] *)

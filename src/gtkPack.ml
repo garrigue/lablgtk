@@ -76,3 +76,7 @@ module Grid = struct
 end
 
 module Notebook = Notebook
+
+module Stack = Stack
+
+module StackSwitcher = StackSwitcher
