@@ -43,7 +43,9 @@ class font_description :
       ?style:Pango.Tags.style ->
       ?variant:Pango.Tags.variant ->
       ?weight:Pango.Tags.weight ->
-      ?stretch:Pango.Tags.stretch -> ?size:int -> unit -> unit
+      ?stretch:Pango.Tags.stretch ->
+      ?size:int ->
+      ?absolute_size:float -> unit -> unit
     method size : int
     method stretch : Pango.Tags.stretch
     method style : Pango.Tags.style
