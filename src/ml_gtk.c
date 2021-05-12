@@ -399,6 +399,9 @@ CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
     CAMLreturn (ret);
 }
 
+ML_1 (gtk_widget_get_allocated_width, GtkWidget_val, Val_int)
+ML_1 (gtk_widget_get_allocated_height, GtkWidget_val, Val_int)
+
 #ifdef HASGTK212
 ML_1 (gtk_widget_get_tooltip_markup, GtkWidget_val, Val_string)
 ML_2 (gtk_widget_set_tooltip_markup, GtkWidget_val, String_val, Unit)

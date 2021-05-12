@@ -159,7 +159,12 @@ module Widget = struct
       = "ml_gtk_widget_pop_colormap"
   external pop_visual : unit -> unit
       = "ml_gtk_widget_pop_visual" *)
-  
+
+  external get_allocated_width : [>`widget] obj -> int
+    = "ml_gtk_widget_get_allocated_width"
+  external get_allocated_height : [>`widget] obj -> int
+    = "ml_gtk_widget_get_allocated_height"
+
   (** @since GTK 2.12 *)
   module Tooltip = struct
     external get_markup : [>`widget] obj -> string
@@ -336,7 +341,7 @@ end
 module DnD = struct
   external dest_set :
       [>`widget] obj -> flags:dest_defaults list ->
-      targets:target_entry array -> actions:Gdk.Tags.drag_action list -> unit 
+      targets:target_entry array -> actions:Gdk.Tags.drag_action list -> unit
     = "ml_gtk_drag_dest_set"
   external dest_unset : [>`widget] obj -> unit
       = "ml_gtk_drag_dest_unset"
