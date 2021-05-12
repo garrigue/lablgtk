@@ -1,0 +1,42 @@
+prefix "GooCanvas"
+
+header {
+  open GooCanvas_types
+  open GooCanvasEnums
+}
+
+oheader {
+open Gobject
+}
+
+tagprefix "goocanvas"
+
+classes {
+  GdkPixbuf "GdkPixbuf.pixbuf"
+  GdkDrawable "[`drawable] obj"
+  GtkWidget "Gtk.widget obj"
+}
+
+class ItemSimple type "item_simple obj" wrap : GObject {
+  "antialias"                GooCairoAntialias     : Read / Write
+  "clip-fill-rule"           GooCairoFillRule      : Read / Write
+  "clip-path"                gchararray                : Write
+  "fill-color"               gchararray                : Write
+  "fill-color-rgba"          guint                 : Read / Write
+  "fill-pattern"             GooCairoPattern      : Read / Write
+  "fill-pixbuf"              GdkPixbuf            : Write
+  "fill-rule"                GooCairoFillRule      : Read / Write
+  "font"                     gchararray                : Read / Write
+  "font-desc"                PangoFontDescription  : Read / Write
+  "hint-metrics"             GooCairoHintMetrics   : Read / Write
+  "line-cap"                 GooCairoLineCap       : Read / Write
+  "line-dash"                GooCanvasLineDash    : Read / Write
+  "line-join"                GooCairoLineJoin      : Read / Write
+  "line-join-miter-limit"    gdouble               : Read / Write
+  "line-width"               gdouble               : Read / Write
+  "operator"                 GooCairoOperator      : Read / Write
+  "stroke-color"             gchararray                : Write
+  "stroke-color-rgba"        guint                 : Read / Write
+  "stroke-pattern"           GooCairoPattern      : Read / Write
+  "stroke-pixbuf"            GdkPixbuf            : Write
+}
