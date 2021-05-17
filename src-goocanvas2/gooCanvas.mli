@@ -157,6 +157,4 @@ val polyline_line :
   x1:float -> y1:float -> x2:float -> y2:float ->
   ?props:GtkGooCanvas.polyline_p list -> 'a item -> polyline
 
-type pixbuf
-
   

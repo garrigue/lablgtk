@@ -39,9 +39,7 @@ module Tags = struct
                       with module Conv := GooCanvasEnums.Conv)
 end
 
-let font_desc_conv = (Gobject.Data.unsafe_pointer : Pango.font_description data_conv)
 let canvas_points_conv = (Gobject.Data.unsafe_pointer : GtkGooCanvas.canvas_points data_conv)
-let pointer_events_conv = Gobject.Data.flags GooCanvasEnums.Conv.pointer_events_tbl
 
 let propertize = function
 | `ANCHOR a -> "anchor", GooCanvasEnums.Conv.anchor_type.Gobject.inj a
@@ -57,11 +55,11 @@ let propertize = function
 | `FILL_COLOR_RGBA c -> "fill-color-rgba", `INT32 c
 | `FILL_PIXBUF (p : GdkPixbuf.pixbuf) -> "fill-pixbuf", `OBJECT (Some (Gobject.coerce p))
 | `FONT t -> "font", `STRING (Some t)
-| `FONT_DESC d -> "font-desc", font_desc_conv.inj d
+| `FONT_DESC d -> "font-desc", GtkGooCanvasProps.ItemSimple.P.font_desc.conv.inj d
 | `HEIGHT h -> "height", `FLOAT h
 | `LINE_JOIN_MITER_LIMIT f -> "line-join-miter-limit", `FLOAT f
 | `LINE_WIDTH w -> "line-width", `FLOAT w
-| `POINTER_EVENTS e -> "pointer-events", pointer_events_conv.inj e
+| `POINTER_EVENTS e -> "pointer-events", GooCanvasEnums.Conv.pointer_events.inj e
 | `POINTS p -> "points", canvas_points_conv.inj p
 | `RADIUS_X r -> "radius-x", `FLOAT r
 | `RADIUS_Y r -> "radius-y", `FLOAT r
@@ -223,6 +221,3 @@ let polyline_line ~x1 ~y1 ~x2 ~y2 ?(props=[]) parent =
   in
   t#set props ;
   t
-
-type pixbuf
-
