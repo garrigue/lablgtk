@@ -920,7 +920,7 @@ CAMLprim value ml_gtk_init (value argv)
     }
 
     argv = (argc ? alloc (argc, 0) : Atom(0));
-    for (i = 0; i < argc; i++) modify(&Field(argv,i), Field(copy,i));
+    for (i = 0; i < argc; i++) caml_modify(&Field(argv,i), Field(copy,i));
     CAMLreturn (argv);
 }
 /* not in 3
