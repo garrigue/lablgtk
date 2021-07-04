@@ -105,7 +105,7 @@ CAMLprim value Val_GList (GList *list, value (*func)(gpointer))
     Field(new_cell,0) = result;
     Field(new_cell,1) = Val_unit;
     if (last_cell == Val_unit) cell = new_cell;
-    else modify(&Field(last_cell,1), new_cell);
+    else caml_modify(&Field(last_cell,1), new_cell);
     last_cell = new_cell;
     list = list->next;
   }
@@ -427,7 +427,7 @@ CAMLprim value Val_GSList (GSList *list, value (*func)(gpointer))
     Field(new_cell,0) = result;
     Field(new_cell,1) = Val_unit;
     if (last_cell == Val_unit) cell = new_cell;
-    else modify(&Field(last_cell,1), new_cell);
+    else caml_modify(&Field(last_cell,1), new_cell);
     last_cell = new_cell;
     list = list->next;
   }
