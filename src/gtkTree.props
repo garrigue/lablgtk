@@ -54,7 +54,6 @@ class TreeView set wrap wrapsig : Container {
   signal select_all : -> gboolean
   signal select_cursor_parent : -> gboolean
   signal select_cursor_row : start_editing:gboolean -> gboolean
-  signal set_scroll_adjustments : GtkAdjustment_opt GtkAdjustment_opt
   signal start_interactive_search : -> gboolean
   signal test_collapse_row : GtkTreeIter GtkTreePathCopy -> gboolean
   signal test_expand_row :   GtkTreeIter GtkTreePathCopy -> gboolean

@@ -363,9 +363,6 @@ class view_signals : [> tree_view] obj ->
     method select_cursor_parent : callback:(unit -> bool) -> GtkSignal.id
     method select_cursor_row :
       callback:(start_editing:bool -> bool) -> GtkSignal.id
-    method set_scroll_adjustments :
-      callback:(GData.adjustment option -> GData.adjustment option -> unit) ->
-      GtkSignal.id
     method start_interactive_search : callback:(unit -> bool) -> GtkSignal.id
     method test_collapse_row :
       callback:(tree_iter -> tree_path -> bool) -> GtkSignal.id

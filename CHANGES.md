@@ -1,10 +1,13 @@
 LablGTK changes log
 
+2021.07.05 [Jacques]
+  * Update scrollbar handling in GText.view for gtk3 (#124) [Vasile Rotaru]
+
 2021.03.15 [Jacques]
   * Add bindings fro GtkStack and GtkStackSwitcher (#122) [Hugo @swarmpan]
 
 2020.08.31 [Jacques]
-  * Fix #116 : problem with GPack.layout adjustments (reported by Vasile Toraru)
+  * Fix #116 : problem with GPack.layout adjustments (reported by Vasile Rotaru)
 
 ## In Lablgtk-3.1.1
 

@@ -74,7 +74,6 @@ class Viewport set wrap : Bin {
   "hadjustment"          GtkAdjustment        : Read / Write
   "vadjustment"          GtkAdjustment        : Read / Write
   "shadow-type"          GtkShadowType        : Read / Write
-  signal set_scroll_adjustments : GtkAdjustment_opt GtkAdjustment_opt
 }
 
 class Expander set wrap wrapsig : Bin {

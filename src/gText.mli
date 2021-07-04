@@ -491,14 +491,12 @@ object ('a)
   method populate_popup :
     callback:(menu obj -> unit) -> GtkSignal.id
   method set_anchor : callback:(unit -> unit) -> GtkSignal.id
-  method set_scroll_adjustments :
-    callback:(GData.adjustment option -> GData.adjustment option -> unit)
-    -> GtkSignal.id
   method toggle_overwrite : callback:(unit -> unit) -> GtkSignal.id
   method notify_accepts_tab : callback:(bool -> unit) -> GtkSignal.id
   method notify_bottom_margin : callback:(int -> unit) -> GtkSignal.id
   method notify_cursor_visible : callback:(bool -> unit) -> GtkSignal.id
   method notify_editable : callback:(bool -> unit) -> GtkSignal.id
+  method notify_hadjustment : callback:(GData.adjustment -> unit) -> GtkSignal.id
   method notify_im_module : callback:(string -> unit) -> GtkSignal.id
   method notify_indent : callback:(int -> unit) -> GtkSignal.id
   method notify_input_hints :
@@ -516,6 +514,7 @@ object ('a)
   method notify_populate_all : callback:(bool -> unit) -> GtkSignal.id
   method notify_right_margin : callback:(int -> unit) -> GtkSignal.id
   method notify_top_margin : callback:(int -> unit) -> GtkSignal.id
+  method notify_vadjustment : callback:(GData.adjustment -> unit) -> GtkSignal.id
   method notify_wrap_mode :
       callback:(GtkEnums.wrap_mode -> unit) -> GtkSignal.id
 
@@ -551,6 +550,7 @@ object
   method get_line_yrange : iter -> int * int
   method get_window : Tags.text_window_type -> Gdk.window option
   method get_window_type : Gdk.window -> Tags.text_window_type
+  method hadjustment : GData.adjustment
   method im_module : string
   method indent : int
   method input_hints : GtkEnums.input_hints
@@ -591,6 +591,7 @@ object
   method set_input_hints : GtkEnums.input_hints -> unit
   method set_input_purpose : GtkEnums.input_purpose -> unit
   method set_justification : Tags.justification -> unit
+  method set_hadjustment : GData.adjustment -> unit
   method set_left_margin : int -> unit
   method set_monospace : bool -> unit
   method set_overwrite : bool -> unit
@@ -600,9 +601,11 @@ object
   method set_populate_all : bool -> unit
   method set_right_margin : int -> unit
   method set_top_margin : int -> unit
+  method set_vadjustment : GData.adjustment -> unit
   method set_wrap_mode : Tags.wrap_mode -> unit
   method starts_display_line : iter -> bool
   method top_margin : int
+  method vadjustment : GData.adjustment
   method visible_rect : Gdk.Rectangle.t
   method window_to_buffer_coords :
     tag:Tags.text_window_type -> x:int -> y:int -> int * int
