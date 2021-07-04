@@ -368,7 +368,7 @@ CAMLprim value ml_g_io_channel_read(value io, value str, value offset,
 {
   gsize read;
   switch (g_io_channel_read(GIOChannel_val(io), 
-			    Bytes_val(str) + Int_val(offset),
+			    (gchar*)Bytes_val(str) + Int_val(offset),
 			    Int_val(count),
 			    &read)) {
   case G_IO_ERROR_NONE:
@@ -390,7 +390,7 @@ CAMLprim value ml_g_io_channel_read_chars(value io, value str, value offset,
   GError *err = NULL;
   GIOStatus result = 
     g_io_channel_read_chars(GIOChannel_val(io), 
-		      Bytes_val(str) + Int_val(offset),
+		      (gchar*)Bytes_val(str) + Int_val(offset),
 		      Int_val(count),
 		      &read, 
 		      &err);

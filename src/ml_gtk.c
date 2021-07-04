@@ -384,7 +384,7 @@ CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
     CAMLparam2 (w, n);
     CAMLlocal1 (ret);
     GtkWidget *widget = GtkWidget_val (w);
-    gchar *name = Bytes_val (n);
+    gchar *name = (gchar*)Bytes_val (n);
     GParamSpec * pspec;
     pspec = gtk_widget_class_find_style_property
                (GTK_WIDGET_GET_CLASS (widget), name);
@@ -435,7 +435,7 @@ CAMLprim value ml_gtk_drag_dest_set (value w, value f, value t, value a)
 	  alloc (Wosize_asize(n_targets * sizeof(GtkTargetEntry)),
 		 Abstract_tag);
   for (i=0; i<n_targets; i++) {
-    targets[i].target = Bytes_val(Field(Field(t, i), 0));
+    targets[i].target = (gchar*)Bytes_val(Field(Field(t, i), 0));
     targets[i].flags = Flags_Target_flags_val(Field(Field(t, i), 1));
     targets[i].info = Int_val(Field(Field(t, i), 2));
   }
@@ -474,7 +474,7 @@ CAMLprim value ml_gtk_drag_source_set (value w, value m, value t, value a)
 	  alloc (Wosize_asize(n_targets * sizeof(GtkTargetEntry)),
 		 Abstract_tag);
   for (i=0; i<n_targets; i++) {
-    targets[i].target = Bytes_val(Field(Field(t, i), 0));
+    targets[i].target = (gchar*)Bytes_val(Field(Field(t, i), 0));
     targets[i].flags = Flags_Target_flags_val(Field(Field(t, i), 1));
     targets[i].info = Int_val(Field(Field(t, i), 2));
   }

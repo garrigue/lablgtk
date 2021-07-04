@@ -2,6 +2,8 @@ LablGTK changes log
 
 2021.07.05 [Jacques]
   * Update scrollbar handling in GText.view for gtk3 (#124) [Vasile Rotaru]
+  * Add partial support for OCaml 5.00 (#129) [Kate Deplaix]
+  * Fix warnings on Bytes_val
 
 2021.03.15 [Jacques]
   * Add bindings fro GtkStack and GtkStackSwitcher (#122) [Hugo @swarmpan]
