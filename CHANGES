@@ -1,5 +1,9 @@
 LablGTK changes log
 
+2021.07.05 [Jacques]
+  * Add partial support for OCaml 5.00 (#129) [Kate Deplaix]
+  * Fix warnings on Bytes_val
+
 2020.08.31 [Jacques]
   * Fix #116 : problem with GPack.layout adjustments (reported by Vasile Toraru)
 

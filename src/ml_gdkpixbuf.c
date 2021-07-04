@@ -302,12 +302,12 @@ convert_gdk_pixbuf_options (value options, char ***opt_k, char ***opt_v, gboolea
       *opt_v = stat_alloc(sizeof (char *) * (len + 1));
       for (i=0; i<len; i++)
 	{
-	  char *s;
+	  const gchar *s;
 	  value pair = Field(cell, 0);
-	  s = Bytes_val(Field(pair, 0));
-	  *opt_k[i] = copy ? g_strdup (s) : s;
-	  s = Bytes_val(Field(pair, 1));
-	  *opt_v[i] = copy ? g_strdup (s) : s;
+	  s = (gchar*)Bytes_val(Field(pair, 0));
+	  *opt_k[i] = (copy ? g_strdup (s) : (gchar*)s);
+	  s = (gchar*)Bytes_val(Field(pair, 1));
+	  *opt_v[i] = (copy ? g_strdup (s) : (gchar*)s);
 	  cell = Field(cell, 1);
 	}
       *opt_k[len] = NULL;
