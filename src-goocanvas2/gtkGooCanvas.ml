@@ -5,6 +5,7 @@ type canvas_points
 
 type items_properties = [
 (*  | `ALIGNMENT of PangoAlignment *)
+  | `ALPHA of float
   | `ANCHOR of GooCanvasEnums.anchor_type
   | `ARROW_LENGTH of float
   | `ARROW_TIP_LENGTH of float
@@ -31,11 +32,14 @@ type items_properties = [
 (*  | `LINE_JOIND of GooCairoLineJoin *)
   | `LINE_JOIN_MITER_LIMIT of float
   | `LINE_WIDTH of float
+(*  | `PATTERN of *)
 (*  | `OPERATOR of GooCairoOperator *)
+  | `PIXBUF of GdkPixbuf.pixbuf
   | `POINTER_EVENTS of GooCanvasEnums.pointer_events list
   | `POINTS of canvas_points
   | `RADIUS_X of float
   | `RADIUS_Y of float
+  | `SCALE_TO_FIT of bool
   | `START_ARROW of bool
   | `STROKE_COLOR of string
   | `STROKE_COLOR_RGBA of int32
@@ -99,6 +103,17 @@ type widget_p = [ item_p
   | `HEIGHT of float
   | `WIDTH of float
   | `WIDGET of Gtk.widget Gobject.obj
+  | `X of float
+  | `Y of float
+  ]
+
+type image_p = [ item_p
+  | `ALPHA of float
+  | `HEIGHT of float
+ (* | `PATTERN of *)
+  | `PIXBUF of GdkPixbuf.pixbuf
+  | `SCALE_TO_FIT of bool
+  | `WIDTH of float
   | `X of float
   | `Y of float
   ]
@@ -223,6 +238,11 @@ module Rect =
 module Widget =
   struct
     external new_widget : item Gobject.obj-> Gtk.widget Gobject.obj -> x:float -> y:float -> width:float -> height:float -> widget Gobject.obj = "ml_goo_canvas_widget_new_bc" "ml_goo_canvas_widget_new"
+  end
+
+module Image =
+  struct
+    external new_image : item Gobject.obj-> pixbuf:GdkPixbuf.pixbuf option -> x:float -> y:float -> image Gobject.obj = "ml_goo_canvas_image_new"
   end
 
 module Group =

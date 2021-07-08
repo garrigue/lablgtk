@@ -42,6 +42,7 @@ end
 let canvas_points_conv = (Gobject.Data.unsafe_pointer : GtkGooCanvas.canvas_points data_conv)
 
 let propertize = function
+| `ALPHA a -> "alpha", `FLOAT a
 | `ANCHOR a -> "anchor", GooCanvasEnums.Conv.anchor_type.Gobject.inj a
 | `ARROW_LENGTH l -> "arrow-length", `FLOAT l
 | `ARROW_TIP_LENGTH l -> "arrow-tip-length", `FLOAT l
@@ -59,10 +60,12 @@ let propertize = function
 | `HEIGHT h -> "height", `FLOAT h
 | `LINE_JOIN_MITER_LIMIT f -> "line-join-miter-limit", `FLOAT f
 | `LINE_WIDTH w -> "line-width", `FLOAT w
+| `PIXBUF p -> "pixbuf", `OBJECT (Some (Gobject.coerce p))
 | `POINTER_EVENTS e -> "pointer-events", GooCanvasEnums.Conv.pointer_events.inj e
 | `POINTS p -> "points", canvas_points_conv.inj p
 | `RADIUS_X r -> "radius-x", `FLOAT r
 | `RADIUS_Y r -> "radius-y", `FLOAT r
+| `SCALE_TO_FIT b -> "scale-to-fit", `BOOL b
 | `START_ARROW b -> "start-arrow", `BOOL b
 | `STROKE_COLOR s -> "stroke-color", `STRING (Some s)
 | `STROKE_COLOR_RGBA c -> "stroke-color-rgba", `INT32 c
@@ -172,6 +175,16 @@ class widget (obj : GooCanvas_types.widget obj) =
 
 let widget ?(x=0.) ?(y=0.) ?(width=(-1.)) ?(height=(-1.)) ?(props=[]) w parent =
   let t = new widget (GtkGooCanvas.Widget.new_widget parent#as_item w ~x ~y ~width ~height) in
+  t#set props ;
+  t
+
+class image (obj : GooCanvas_types.image obj) =
+  object(self)
+    inherit [image_p] item obj
+  end
+
+let image ?(x=0.) ?(y=0.) ?pixbuf ?(props=[]) parent =
+  let t = new image (GtkGooCanvas.Image.new_image parent#as_item ~x ~y ~pixbuf) in
   t#set props ;
   t
 

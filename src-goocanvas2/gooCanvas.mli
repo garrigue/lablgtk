@@ -131,6 +131,18 @@ val widget :
   ?height:float ->
   ?props:GtkGooCanvas.widget_p list -> Gtk.widget obj -> 'a item -> widget
 
+class image :
+  GooCanvas_types.image Gtk.obj ->
+  object
+    inherit [image_p] item
+    val obj : GooCanvas_types.image Gtk.obj
+  end
+val image :
+  ?x:float ->
+  ?y:float ->
+  ?pixbuf:GdkPixbuf.pixbuf ->
+  ?props:GtkGooCanvas.image_p list -> 'a item -> image
+
 class group :
   GooCanvas_types.group Gtk.obj ->
   object

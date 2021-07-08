@@ -1,7 +1,7 @@
 
 let locale = GtkMain.Main.init ()
 
-let add_stuff canvas =
+let add_stuff ?pixfile canvas =
   let group = canvas#get_root_item in
   let r1 = GooCanvas.rect
     ~props: [`X 10. ; `Y 50. ; `WIDTH 200. ; `HEIGHT 100. ;
@@ -17,8 +17,12 @@ let add_stuff canvas =
     in
     GooCanvas.text ~props group
   in
-  ()
-
+  match pixfile with
+  | None -> ()
+  | Some file ->
+      let pixbuf = GdkPixbuf.from_file file in
+      let _image = GooCanvas.image ~x: 100. ~y: 100. ~pixbuf group in
+      ()
 
 let main () =
   let window = GWindow.window ~title:"GooCanvas example"
@@ -32,7 +36,10 @@ let main () =
     ()
   in
   let canvas = GooCanvas.canvas ~packing:wscroll#add () in
-  add_stuff canvas ;
+  let pixfile =
+    if Array.length Sys.argv > 1 then Some Sys.argv.(1) else None
+  in
+  add_stuff ?pixfile canvas ;
   ignore (window#connect#destroy (fun _ -> GMain.quit ()));
   window#show ();
   GMain.Main.main ()

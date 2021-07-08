@@ -79,6 +79,8 @@ static inline value double_pair(double x, double y)
 #define Val_GooCanvasItem(val)  Val_GtkAny(val)
 static Make_Val_option(GooCanvasItem)
 
+#define GdkPixbuf_optval(v) Option_val(v, GdkPixbuf_val, NULL)
+
 #define GooCanvasText_val(val)  check_cast(GOO_CANVAS_TEXT,val)
 #define Val_GooCanvasText_new(val)  (Val_GObject((GObject*)val))
 
@@ -87,6 +89,9 @@ static Make_Val_option(GooCanvasItem)
 
 #define GooCanvasWidget_val(val)  check_cast(GOO_CANVAS_WIDGET,val)
 #define Val_GooCanvasWidget_new(val)  (Val_GObject((GObject*)val))
+
+#define GooCanvasImage_val(val)  check_cast(GOO_CANVAS_IMAGE,val)
+#define Val_GooCanvasImage_new(val)  (Val_GObject((GObject*)val))
 
 #define GooCanvasGroup_val(val)  check_cast(GOO_CANVAS_GROUP,val)
 #define Val_GooCanvasGroup_new(val)  (Val_GObject((GObject*)val))
@@ -219,6 +224,16 @@ CAMLprim value ml_goo_canvas_widget_new(value p, value wid, value x, value y, va
       NULL));
 }
 ML_bc6(ml_goo_canvas_widget_new)
+
+CAMLprim value ml_goo_canvas_image_new(value p, value pix, value x, value y)
+{
+  return Val_GooCanvasImage_new(
+    goo_canvas_image_new(
+      GooCanvasItem_val(p),
+      GdkPixbuf_optval(pix),
+      Double_val(x), Double_val(y),
+      NULL));
+}
 
 CAMLprim value ml_goo_canvas_group_new(value p)
 {
