@@ -2,16 +2,8 @@
 ; Written by EJGA, (c) 2018-2019 MINES ParisTech
 ; This file is in the public domain
 
-;(rule
-; (targets sourceView3_tags.h sourceView3_tags.c sourceView3Enums.ml)
-; (action (run varcc %{dep:sourceView3_tags.var})))
-
-;(rule
-; (targets gtkSourceView3Props.ml ogtkSourceView3Props.ml)
-; (action (run propcc %{dep:gtkSourceView3.props})))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; lablgtk3-sourceview3                                                 ;
+; lablgtk3-rsvg2                                                       ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (rule
