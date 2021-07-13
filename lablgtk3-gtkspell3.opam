@@ -35,5 +35,6 @@ depexts: [
 ]
 
 build: [
+  [ "dune" "subst" ] {pinned}
   [ "dune" "build" "-p" name "-j" jobs ]
 ]
