@@ -48,15 +48,15 @@ module Tags = struct
 
   type variant =
         [ `NORMAL | `SMALL_CAPS ]
-    
+
   type stretch =
-      [ `ULTRA_CONDENSED | `EXTRA_CONDENSED 
-      | `CONDENSED | `SEMI_CONDENSED 
+      [ `ULTRA_CONDENSED | `EXTRA_CONDENSED
+      | `CONDENSED | `SEMI_CONDENSED
       | `NORMAL | `SEMI_EXPANDED
       | `EXPANDED | `EXTRA_EXPANDED | `ULTRA_EXPANDED ]
 
   type scale =
-      [ `XX_SMALL | `X_SMALL | `SMALL | `MEDIUM 
+      [ `XX_SMALL | `X_SMALL | `SMALL | `MEDIUM
       | `LARGE | `X_LARGE | `XX_LARGE
       | `CUSTOM of float ]
   external scale_to_float : scale -> float = "ml_Pango_scale_val"
@@ -82,18 +82,18 @@ module Tags = struct
     ellipsize_mode = _get_tables ()
 
   let weight_to_int (w : weight) =
-    match w with 
-      | `CUSTOM b -> b 
+    match w with
+      | `CUSTOM b -> b
       | #weight_internal as w -> encode_variant weight w
 end
 
 module Font = struct
   open Tags
-  external from_string : string -> font_description = 
+  external from_string : string -> font_description =
     "ml_pango_font_description_from_string"
-  external to_string : font_description -> string = 
+  external to_string : font_description -> string =
     "ml_pango_font_description_to_string"
-  external copy : font_description -> font_description = 
+  external copy : font_description -> font_description =
     "ml_pango_font_description_copy"
   external set_family : font_description -> string -> unit =
     "ml_pango_font_description_set_family"
@@ -120,14 +120,20 @@ module Font = struct
     "ml_pango_font_description_set_size"
   external get_size : font_description -> int =
     "ml_pango_font_description_get_size"
-  let modify fd ?family ?style ?variant ?weight ?stretch ?size () =
+  external set_absolute_size : font_description -> float -> unit =
+    "ml_pango_font_description_set_absolute_size"
+  external get_size_is_absolute : font_description -> bool =
+    "ml_pango_font_description_get_size_is_absolute"
+
+  let modify fd ?family ?style ?variant ?weight ?stretch ?size ?absolute_size () =
     let may_set set_x x = may x ~f:(set_x fd) in
     may_set set_family family;
     may_set set_style style;
     may_set set_stretch stretch;
     may_set set_variant variant;
     may_set set_weight weight;
-    may_set set_size size
+    may_set set_size size;
+    may_set set_absolute_size absolute_size
 
   external get_metrics : font -> language -> font_metrics =
     "ml_pango_font_get_metrics"

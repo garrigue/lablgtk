@@ -88,6 +88,9 @@ ML_2(pango_font_description_set_size, PangoFontDescription_val,
      Int_val, Unit)
 ML_1(pango_font_description_get_size, PangoFontDescription_val,
      Val_int)
+ML_2(pango_font_description_set_absolute_size, PangoFontDescription_val,
+     Double_val, Unit)
+ML_1(pango_font_description_get_size_is_absolute,PangoFontDescription_val, Val_bool)
 
 
 /* PangoFontMetrics */
@@ -126,7 +129,7 @@ CAMLprim value ml_PANGO_SCALE ()
 
 /* This one uses the generated MLTAG but not the conversion functions because
    we have defined float values */
-CAMLprim value ml_Pango_scale_val (value val) 
+CAMLprim value ml_Pango_scale_val (value val)
 {
   double r;
   if (Is_block(val)) return Field(val,1); /* `CUSTOM */

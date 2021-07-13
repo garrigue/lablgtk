@@ -210,6 +210,8 @@ and misc_ops : Gtk.widget obj ->
     method add_selection_target :
       target:string -> ?info:int -> Gdk.atom -> unit
     method allocation : rectangle
+    method allocated_width : int
+    method allocated_height : int
     method clear_selection_targets : Gdk.atom -> unit
     method connect : misc_signals
     method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool
@@ -391,7 +393,7 @@ and drag_context :
     val context : Gdk.drag_context
     method context : Gdk.drag_context
     method finish : success:bool -> del:bool -> time:int32 -> unit
-    method source_widget : widget 
+    method source_widget : widget
     method set_icon_widget : widget -> hot_x:int -> hot_y:int -> unit
     method status : ?time:int32 -> Gdk.Tags.drag_action option -> unit
     method suggested_action : Gdk.Tags.drag_action

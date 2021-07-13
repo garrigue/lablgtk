@@ -1,0 +1,29 @@
+; Dune build file for lablgtk3
+; Written by EJGA, (c) 2018-2019 MINES ParisTech
+; This file is in the public domain
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk3-rsvg2                                                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(rule
+ (targets
+   cflag-librsvg-2.0.sexp
+   clink-librsvg-2.0.sexp)
+ (action (run dune_config -pkg librsvg-2.0 -version 2.40)))
+
+(rule
+ (targets cflag-extraflags.sexp)
+ (action (with-outputs-to cflag-extraflags.sexp (echo "(%{env:LABLGTK_EXTRA_FLAGS=})"))))
+
+(library
+ (name lablgtk3_rsvg2)
+ (public_name lablgtk3-rsvg2)
+ (wrapped false)
+ (flags :standard -w -6-7-27-32-33-34-36)
+; (modules_without_implementation librsvg2_types)
+ (c_names ml_rsvg2)
+ (c_flags         (:include cflag-librsvg-2.0.sexp) (:include cflag-extraflags.sexp) -Wno-deprecated-declarations)
+ (c_library_flags (:include clink-librsvg-2.0.sexp))
+ (libraries lablgtk3))
+

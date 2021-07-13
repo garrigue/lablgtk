@@ -64,6 +64,8 @@ class window_skel obj = object (self)
   method present () = Window.present obj
   method iconify () = Window.iconify obj
   method deiconify () = Window.deiconify obj
+  method get_size () = Window.get_size obj
+
 end
 
 class window obj = object
@@ -99,7 +101,7 @@ let toplevel (w : #widget) =
 
 class ['a] dialog_signals (obj : [>Gtk.dialog] obj) ~decode = object (self)
   inherit container_signals_impl obj
-  method response ~(callback : 'a -> unit) = 
+  method response ~(callback : 'a -> unit) =
     self#connect Dialog.S.response
       ~callback:(fun i -> callback (decode i))
   method close = self#connect Dialog.S.close
@@ -133,9 +135,9 @@ class virtual ['a] dialog_base obj = object (self)
   method response v = Dialog.response obj (self#encode v)
   method set_response_sensitive v s =
     Dialog.set_response_sensitive obj (self#encode v) s
-  method set_default_response v = 
+  method set_default_response v =
     Dialog.set_default_response obj (self#encode v)
-  method run () = 
+  method run () =
     let resp = Dialog.run obj in
     if resp = rnone
     then failwith "dialog destroyed"
@@ -147,13 +149,13 @@ class ['a] dialog_skel obj = object
   val mutable tbl = [rdelete, `DELETE_EVENT]
   val mutable id = 0
   method private encode (v : 'a) = list_rassoc v tbl
-  method private decode r = 
-    try 
-      List.assoc r tbl 
-    with Not_found -> 
-      Format.eprintf 
+  method private decode r =
+    try
+      List.assoc r tbl
+    with Not_found ->
+      Format.eprintf
         "Warning: unknown response id:%d in dialog. \
-                  Please report to lablgtk dev team.@." 
+                  Please report to lablgtk dev team.@."
         r;
       `DELETE_EVENT
 end
@@ -190,7 +192,7 @@ class dialog_any obj = object (self)
   method private encode = function
       `OTHER n -> n
     | #GtkEnums.response as v -> Dialog.std_response v
-  method private decode r =      
+  method private decode r =
     try (Dialog.decode_response r : GtkEnums.response :> [>GtkEnums.response])
     with Invalid_argument _ -> `OTHER r
   method connect : any_response dialog_signals =
@@ -313,7 +315,7 @@ end
 class ['a] file_chooser_dialog obj = object (self)
   inherit ['a] dialog_ext obj
   inherit GFile.chooser_impl
-  method connect : 'a file_chooser_dialog_signals = 
+  method connect : 'a file_chooser_dialog_signals =
     new file_chooser_dialog_signals obj self#decode
   method add_select_button text v =
     tbl <- (raccept, v) :: tbl ;
@@ -323,7 +325,7 @@ class ['a] file_chooser_dialog obj = object (self)
 end
 
 let file_chooser_dialog ~action ?filename =
-  make_dialog 
+  make_dialog
      [ Gobject.param GtkFile.FileChooser.P.action action ]
     ~create:(fun pl ->
       let w = GtkFile.FileChooser.dialog_create pl in

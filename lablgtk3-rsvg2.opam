@@ -1,8 +1,8 @@
 opam-version: "2.0"
 
-synopsis: "OCaml interface to GTK+3"
+synopsis: "OCaml interface to Gnome rsvg2 library"
 description: """
-OCaml interface to GTK+3
+OCaml interface to Gnome rsvg2 library.
 
 See https://garrigue.github.io/lablgtk/ for more information.
 """
@@ -12,17 +12,17 @@ authors: ["Jacques Garrigue et al., Nagoya University"]
 homepage: "https://github.com/garrigue/lablgtk"
 bug-reports: "https://github.com/garrigue/lablgtk/issues"
 dev-repo: "git+https://github.com/garrigue/lablgtk.git"
+doc: "https://garrigue.github.io/lablgtk/lablgtk3-sourceview3"
 license: "LGPL with linking exception"
-doc: "https://garrigue.github.io/lablgtk/lablgtk3"
 
 depends: [
-  "ocaml"     {         >= "4.05.0" }
-  "dune"      {         >= "1.8.0"  }
-  "cairo2"    {         >= "0.6"    }
-  "conf-gtk3" { build & >= "18"     }
+  "ocaml"                {         >= "4.12.0" }
+  "dune"                 {         >= "1.8.0"  }
+  "lablgtk3"             {          = version  }
+  "conf-librsvg2"        { build & >= "0"      }
 ]
 
 build: [
-  [ "dune" "subst"] {pinned}
+  [ "dune" "subst" ] {pinned}
   [ "dune" "build" "-p" name "-j" jobs ]
 ]

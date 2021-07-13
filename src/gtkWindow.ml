@@ -70,6 +70,8 @@ module Window = struct
       = "ml_gtk_window_set_focus"
   external set_default : [>`window] obj -> [>`widget] obj -> unit
       = "ml_gtk_window_set_default"
+  external get_size : [>`window] obj -> int * int
+      = "ml_gtk_window_get_size"
   (* see gtk.props for others *)
 end
 
@@ -79,7 +81,7 @@ module Dialog = struct
       = "ml_gtk_dialog_get_action_area"
   external vbox : [>`dialog] obj -> box obj
       = "ml_gtk_dialog_get_content_area"
-  external add_button : [>`dialog] obj -> string -> int -> unit 
+  external add_button : [>`dialog] obj -> string -> int -> unit
       = "ml_gtk_dialog_add_button"
   external response : [>`dialog] obj -> int -> unit
       = "ml_gtk_dialog_response"

@@ -20,7 +20,8 @@
    link_button ; lissajous
    nihongo notebook
    pango1 pango2
-   ; pixview pousse
+   pixview
+   ; pousse
    progressbar radiobuttons rpn
    ; runthread
    scrolledwin seppala signal_override ; slide_show
@@ -48,7 +49,7 @@
    testthread timer toolbar tooltip tree tree_model tree_store tron
  )
  (flags :standard -w -3-6-7-10-24-26-27-33-35 -no-strict-sequence)
- (libraries lablgtk3))
+ (libraries lablgtk3 lablgtk3-rsvg2))
 
 (executables
  (names spell)

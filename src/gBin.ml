@@ -51,6 +51,7 @@ let scrolled_window ?hadjustment ?vadjustment =
 
 class event_box obj = object
   inherit bin obj
+  inherit OgtkBinProps.event_box_props
   method connect = new container_signals_impl obj
   method event = new GObj.event_ops (obj :> Gtk.event_box obj)
 end
@@ -128,15 +129,15 @@ class alignment obj = object
 end
 
 let alignment ?padding =
-  let pl = match padding with 
-  | None -> [] 
+  let pl = match padding with
+  | None -> []
   | Some (t, b, l, r) -> [ param Alignment.P.top_padding t ;
 			   param Alignment.P.bottom_padding b ;
 			   param Alignment.P.left_padding l ;
 			   param Alignment.P.right_padding r ] in
   Alignment.make_params pl ~cont:(
   pack_container ~create:(fun pl -> new alignment (Alignment.create pl)))
-  
+
 let alignment_cast w = new alignment (Alignment.cast w#as_widget)
 
 class expander_signals obj = object
