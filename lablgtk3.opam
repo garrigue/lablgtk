@@ -21,6 +21,7 @@ depends: [
   "cairo2"    {         >= "0.6"    }
   "conf-gtk3" { build & >= "18"     }
   "ocamlfind" { dev                 }
+  "camlp5"    { dev                 }
 ]
 
 build: [
