@@ -1,0 +1,12 @@
+package "gooCanvas"
+
+type anchor_type = "GOO_CANVAS_ANCHOR_"
+[ `CENTER | `N | `NW | `NE | `S | `SW | `SE | `W | `E ]
+
+type item_visibility = "GOO_CANVAS_ITEM_"
+[ `HIDDEN | `INVISIBLE | `VISIBLE | `VISIBLE_ABOVE_THRESHOLD ]
+
+type flags pointer_events = "GOO_CANVAS_EVENTS_"
+[ `VISIBLE_MASK | `PAINTED_MASK | `FILL_MASK | `STROKE_MASK
+| `NONE | `VISIBLE_PAINTED | `VISIBLE_FILL | `VISIBLE_STROKE
+| `VISIBLE | `PAINTED | `FILL | `STROKE | `ALL ]

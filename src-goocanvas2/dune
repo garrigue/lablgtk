@@ -1,0 +1,33 @@
+(rule
+ (targets goocanvas_tags.h goocanvas_tags.c gooCanvasEnums.ml)
+ (action (run varcc %{dep:goocanvas_tags.var})))
+
+(rule
+ (targets gtkGooCanvasProps.ml ogtkGooCanvasProps.ml)
+ (action (run propcc %{dep:gtkGooCanvas.props})))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk3-goocanvas2                                                  ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(rule
+ (targets
+   cflag-goocanvas-2.0.sexp
+   clink-goocanvas-2.0.sexp)
+ (action (run dune_config -pkg goocanvas-2.0 -version 2.0.4)))
+
+(rule
+ (targets cflag-extraflags.sexp)
+ (action (with-outputs-to cflag-extraflags.sexp (echo "(%{env:LABLGTK_EXTRA_FLAGS=})"))))
+
+(library
+ (name lablgtk3_goocanvas2)
+ (public_name lablgtk3-goocanvas2)
+ (wrapped false)
+ (flags :standard -w -6-7-27-32-33-34-36)
+ (modules_without_implementation gooCanvas_types)
+ (c_names ml_gtkgoocanvas)
+ (c_flags         (:include cflag-goocanvas-2.0.sexp) (:include cflag-extraflags.sexp) -Wno-deprecated-declarations)
+ (c_library_flags (:include clink-goocanvas-2.0.sexp))
+ (libraries lablgtk3))
+
