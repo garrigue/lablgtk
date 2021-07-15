@@ -12,8 +12,10 @@
 
 (rule
  (targets project1.ml)
+ (deps project1.ui)
  (action (with-stdout-to %{targets} (run lablgladecc3 project1.ui))))
 
 (rule
  (targets project2.ml)
+ (deps project2.ui)
  (action (with-stdout-to %{targets} (run lablgladecc3 project2.ui))))
