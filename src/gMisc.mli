@@ -48,6 +48,7 @@ class statusbar_context :
     method pop : unit -> unit
     method push : string -> statusbar_message
     method remove : statusbar_message -> unit
+    method remove_all : unit -> unit
   end
 
 (** Report messages of minor importance to the user
