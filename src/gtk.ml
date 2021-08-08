@@ -43,6 +43,8 @@ type accel_group
 type clipboard
 
 type style = [`style] obj
+type css_provider = [`css_provider] obj
+type style_context = [`style_context] obj
 type 'a group = 'a obj option
 
 type statusbar_message

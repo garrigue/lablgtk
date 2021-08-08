@@ -157,6 +157,24 @@ class style : Gtk.style ->
     method text : Gtk.Tags.state_type -> Gdk.color
   end
 
+(** @gtkdoc gtk GtkCssProvider *)
+
+class css_provider: Gtk.css_provider ->
+  object
+    val prov : Gtk.css_provider
+    method as_css_provider : Gtk.css_provider
+    method load_from_data: string -> unit
+  end
+
+val css_provider: unit -> css_provider
+
+(** @gtkdoc gtk GtkStyleContext *)
+class style_context: Gtk.style_context ->
+  object
+    val ctxt : Gtk.style_context
+    method add_provider: css_provider -> int -> unit
+  end
+
 (** @gtkdoc gtk gtk-Selections *)
 class selection_data :
   Gtk.selection_data ->
@@ -231,6 +249,7 @@ and misc_ops : Gtk.widget obj ->
     method modify_font : GPango.font_description -> unit
     method modify_font_by_name : string -> unit
     (* End deprecated since 3.0 *)
+    method style_context: style_context
     method name : string
     method parent : widget option
     method pango_context : GPango.context

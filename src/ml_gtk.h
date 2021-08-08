@@ -26,6 +26,8 @@
 
 #define Val_GtkAccelGroup(val) (Val_GObject(&val->parent))
 #define Val_GtkStyle(val) (Val_GObject(&val->parent_instance))
+#define Val_GtkStyleContext(val) (Val_GObject(&val->parent_object))
+#define Val_GtkCssProvider(val) (Val_GObject(&val->parent_instance))
 
 #define GtkAccelGroup_val(val) check_cast(GTK_ACCEL_GROUP,val)
 #define GtkStyle_val(val) check_cast(GTK_STYLE,val)
@@ -48,5 +50,9 @@ CAMLexport value Val_GtkWidget_func(gpointer w);
 #define GtkClipboard_val(val) ((GtkClipboard*)Pointer_val(val))
 #define GtkWindow_val(val) check_cast(GTK_WINDOW,val)
 #define GtkTooltip_val(val) check_cast(GTK_TOOLTIP,val)
+
+#define GtkStyleContext_val(val) check_cast(GTK_STYLE_CONTEXT,val)
+#define GtkCssProvider_val(val) check_cast(GTK_CSS_PROVIDER,val)
+#define GtkStyleProvider_val(val) check_cast(GTK_STYLE_PROVIDER,val)
 
 CAMLprim int Flags_Target_flags_val (value list);

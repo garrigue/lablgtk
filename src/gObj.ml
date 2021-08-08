@@ -138,6 +138,20 @@ class style st = object
 (*  method set_font = Style.set_font style*)
  end
 
+class css_provider prov = object
+  val prov = prov
+  method as_css_provider = prov
+  method load_from_data = CssProvider.load_from_data prov
+end
+
+let css_provider () = new css_provider (CssProvider.create ())
+
+class style_context ctxt = object
+  val ctxt = ctxt
+  (** Does not cascade!! StyleContext.add_provider_for_screen does cascade. *)
+  method add_provider (provider: css_provider) = StyleContext.add_provider ctxt (provider#as_css_provider)
+end
+
 class selection_input (sel : Gtk.selection_data) = object
   val sel = sel
   method selection = Selection.selection sel
@@ -313,6 +327,7 @@ and misc_ops obj = object (self)
   method visual_depth = Gdk.Visual.depth (Widget.get_visual obj)
   method pointer = Widget.get_pointer obj
   method style = new style (get P.style obj)
+  method style_context = new style_context (Widget.get_style_context obj)
   method visible = get P.visible obj
   method parent =
     may_map (fun w -> new widget (unsafe_cast w)) (get P.parent obj)
