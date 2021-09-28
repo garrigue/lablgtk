@@ -2,23 +2,18 @@
 ; Common setup and tools                                               ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; We use a bash rule to ensure we call the byte version and thus we
-; avoid the auto-printer selection in Camlp4AutoPrinter.
-(rule
- (targets varcc.ml)
- (deps (:source varcc.ml4))
- (mode promote)
- (action (bash "camlp5o pr_o.cmo -impl %{source} -o %{targets}")))
+(ocamllex
+ varcc_lexer
+ propcc_lexer)
 
-(rule
- (targets propcc.ml)
- (deps (:source propcc.ml4))
- (mode promote)
- (action (bash "camlp5o pr_o.cmo -impl %{source} -o %{targets}")))
+(executable
+ (name varcc)
+ (modules varcc varcc_lexer)) 
 
-(executables
- (names varcc propcc)
- (modules varcc propcc))
+(executable
+ (name propcc)
+ (modules propcc propcc_lexer))
+ 
 
 (executable
  (name dune_config)
