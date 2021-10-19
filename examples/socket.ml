@@ -9,15 +9,15 @@
 (* $Id$ *)
 
 let main () =
-  GMain.init ();
+  let _locale = GMain.init () in
   let w = GWindow.window ~title:"Socket example" () in
-  w#connect#destroy ~callback:GMain.quit;
+  let _sid = w#connect#destroy ~callback:GMain.quit in
   let vbox = GPack.vbox ~packing:w#add () in
   let label = GMisc.label ~packing:vbox#pack () in
   w#show ();
   let socket = GWindow.socket ~packing:vbox#add ~height:40 () in
-  label#set_text ("XID to plug into this socket: 0x" ^ 
-                  Int32.format "%x" socket#xwindow);
+  label#set_text ("XID to plug into this socket: 0x" ^
+                  Printf.sprintf "%lX" socket#xwindow);
   GMain.main ()
 
 let _ = main ()

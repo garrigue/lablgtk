@@ -9,9 +9,6 @@
 (* $Id$ *)
 
 open StdLabels
-open Gaux
-open Gtk
-open GObj
 
 class position ~init_x ~init_y ~min_x ~min_y ~max_x ~max_y = object
   val mutable x = init_x

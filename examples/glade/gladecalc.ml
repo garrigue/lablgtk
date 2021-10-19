@@ -46,19 +46,20 @@ let equals () =
   state := Result
 
 let _ =
-  w1#toplevel#connect#destroy ~callback:GMain.quit;
+  let _ : GtkSignal.id = w1#toplevel#connect#destroy ~callback:GMain.quit in
   for i = 0 to 9 do
-    numbers.(i)#connect#clicked ~callback:(fun () -> insert_digit i)
+    let _ : GtkSignal.id = numbers.(i)#connect#clicked ~callback:(fun () -> insert_digit i) in
+    ()
   done;
-  w1#button_dot#connect#clicked ~callback:insert_dot;
+  let _ : GtkSignal.id = w1#button_dot#connect#clicked ~callback:insert_dot in
   List.iter ~f:
     begin fun (b, f) ->
       ignore (b#connect#clicked ~callback:(fun () -> set_pending f))
     end
     [ w1#button_add, (+.); w1#button_sub, (-.); w1#button_mul, ( *. );
       w1#button_div, (fun x y -> if y = 0. then 0. else x/.y) ];
-  w1#button_eq#connect#clicked ~callback:equals;
-  w1#window1#event#connect#key_press ~callback:
+  let _ : GtkSignal.id = w1#button_eq#connect#clicked ~callback:equals in
+  let _ : GtkSignal.id = w1#window1#event#connect#key_press ~callback:
     begin fun ev ->
       let key = GdkEvent.Key.string ev in
       if String.length key <> 1 then false else begin
@@ -75,5 +76,5 @@ let _ =
         end;
         true
       end
-    end;
+    end in
   GMain.Main.main ()

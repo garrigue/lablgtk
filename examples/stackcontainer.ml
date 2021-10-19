@@ -24,7 +24,7 @@ let main () =
   let layout = GPack.vbox ~spacing:10 ~packing:(fun w -> 
     stack#add_named w "button2") () in
   let button2 = GButton.button ~label:"Button 2" ~packing:layout#add () in
-  let info_label = GMisc.label ~text:"This is the second pane" ~packing:layout#add () in
+  let _info_label = GMisc.label ~text:"This is the second pane" ~packing:layout#add () in
   
   ignore (button#connect#clicked ~callback:(fun () -> 
     stack#set_visible_child_full "button2" `SLIDE_LEFT;

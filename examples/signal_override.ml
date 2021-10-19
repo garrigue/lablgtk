@@ -41,7 +41,7 @@ let main =
 
   let f = create_derived_frame ~label:"Talking frame" ~packing:w#add () in
 
-  let l = GMisc.label ~markup:"This is the <b>GtkFrame</b>'s content" ~packing:f#add () in
+  let _l = GMisc.label ~markup:"This is the <b>GtkFrame</b>'s content" ~packing:f#add () in
 
   w#show () ;
   GMain.main ()

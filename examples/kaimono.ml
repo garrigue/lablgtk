@@ -63,7 +63,7 @@ let _ =
       let b = GButton.button ~label ~packing:add_to_table () in
       b#misc#set_size_request ~width ()
     end;
-  for i = 1 to 9 do add_entry () done
+  for _i = 1 to 9 do add_entry () done
 
 let split ~sep s =
   let len = String.length s in

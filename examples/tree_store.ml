@@ -148,8 +148,6 @@ let item_toggled ~(model : GTree.tree_store) ~column path =
   model#set ~row ~column (not b);
   ()
 
-open GtkTree
-
 let add_columns ~(view : GTree.view) ~model =
   let renderer = GTree.cell_renderer_text [`XALIGN 0.] in
   let vc =

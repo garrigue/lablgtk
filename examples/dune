@@ -8,7 +8,7 @@
    buttons
    cairo_demo calc calendar cgets
    combobox counter css dcalendar
-   dialog-thread drawing
+   dialog_thread drawing
    editor2
    entry2 entrycompletion entry
    eventbox events2 events expander
@@ -34,24 +34,30 @@
    about accel_tree action assistant assistant_tutorial
    buttons cairo_demo
    calc calendar cgets combobox counter css
-   dcalendar dialog-thread drawing
+   dcalendar dialog_thread drawing
    editor2 entry2 entrycompletion entry eventbox events2 events expander
-   fifteen filechooser fixed_editor fixpoint
-   gioredirect giotest hello iconview image kaimono
-   label link_button lissajous
+   fifteen filechooser ; fixed_editor
+   fixpoint
+   gioredirect giotest hello iconview ; image
+   kaimono
+   ; label
+   link_button ; lissajous
    nihongo notebook
-   pango1 pango2 pixview pousse progressbar radiobuttons rpn
-   runthread
-   scrolledwin seppala signal_override slide_show socket spin
+   pango1 pango2 ; pixview pousse
+   progressbar radiobuttons rpn
+   ; runthread
+   scrolledwin seppala signal_override ; slide_show
+   socket spin
    stackcontainer stackswitcher
-   testdnd ; testgtk
-   testthread timer toolbar tooltip tree tree_model tree_store tron
+   ; testdnd testgtk
+   testthread ; timer toolbar
+   tooltip tree tree_model tree_store ; tron
  )
- (flags :standard -w -3-6-7-10-24-26-27-33-35 -no-strict-sequence)
+ (flags :standard -w -6-10-27 -no-strict-sequence)
  (libraries lablgtk3))
 
 (executables
  (names spell)
  (modules spell)
- (flags :standard -w -3-6-7-10-24-26-27-33-35 -no-strict-sequence)
+ (flags :standard -w -6-10-27 -no-strict-sequence)
  (libraries lablgtk3-gtkspell3))

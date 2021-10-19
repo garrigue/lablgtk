@@ -8,7 +8,7 @@
 
 (* $Id$ *)
 
-(* lablgtk2 -thread -nothinit dialog-thread.ml *)
+(* lablgtk2 -thread -nothinit dialog_thread.ml *)
 
 let _ = GMain.init ()
 let window = GWindow.window ~border_width: 10 ()

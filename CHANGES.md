@@ -393,7 +393,7 @@ In Lablgtk-2.14.2:
     function to process messages inside a different main loop.
   * add -nothinit option to lablgtk2, since Quartz cannot run the main
     loop in a different thread (one should just call GtkThread.main).
-    See dialog-thread.ml for an example.
+    See dialog_thread.ml for an example.
 
 2010.06.08 [Jacques]
   * correct interfaces due to the fixing of an unsoundness bug in ocaml 3.12
