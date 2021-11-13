@@ -37,3 +37,5 @@ CAMLexport GSList *GSList_val (value list, value_out);
 
 CAMLexport void ml_register_exn_map (GQuark domain, char *caml_name);
 CAMLexport void ml_raise_gerror(GError *) Noreturn;
+
+extern int polling;

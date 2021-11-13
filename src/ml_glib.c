@@ -300,11 +300,15 @@ ML_1 (g_source_remove, Int_val, Unit)
 
 static GPollFunc poll_func = NULL;
 
+int polling = 0;
+
 static gint ml_poll (GPollFD *ufds, guint nfsd, gint timeout)
 {
     gint res;
     caml_enter_blocking_section();
+    polling = 1;
     res = poll_func(ufds, nfsd, timeout);
+    polling = 0;
     caml_leave_blocking_section();
     return res;
 }

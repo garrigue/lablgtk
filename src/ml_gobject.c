@@ -29,6 +29,7 @@
 #include <caml/memory.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
+#include <caml/threads.h>
 
 #include "wrappers.h"
 #include "ml_glib.h"
@@ -178,7 +179,7 @@ static void notify_destroy(gpointer unit, GClosure *c)
     remove_global_root((value*)&c->data);
 }
 
-static void marshal (GClosure *closure, GValue *ret,
+static void marshal_core (GClosure *closure, GValue *ret,
                      guint nargs, const GValue *args,
                      gpointer hint, gpointer marshall_data)
 {
@@ -192,6 +193,20 @@ static void marshal (GClosure *closure, GValue *ret,
     callback_exn ((value)closure->data, vargs);
 
     CAMLreturn0;
+}
+
+static void marshal (GClosure *closure, GValue *ret,
+                     guint nargs, const GValue *args,
+                     gpointer hint, gpointer marshall_data)
+{
+    if (polling) { // https://github.com/garrigue/lablgtk/issues/141
+      caml_leave_blocking_section();
+      polling = 0;
+      marshal_core(closure, ret, nargs, args, hint, marshall_data);
+      polling = 1;
+      caml_enter_blocking_section();
+    } else
+      marshal_core(closure, ret, nargs, args, hint, marshall_data);
 }
 
 CAMLprim value ml_g_closure_new (value clos)
