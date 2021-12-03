@@ -1,5 +1,9 @@
 LablGTK changes log
 
+2021.12.03 [Jacques]
+  * Fix #141: lablgtk2 runs OCaml code inside blocking section
+    (#142) [Bart Jacobs]
+
 2021.07.05 [Jacques]
   * Add partial support for OCaml 5.00 (#129) [Kate Deplaix]
   * Fix warnings on Bytes_val
