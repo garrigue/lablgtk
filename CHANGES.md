@@ -1,5 +1,9 @@
 LablGTK changes log
 
+2021.12.03 [Jacques]
+  * Cherry-pick #142 [Bart Jacobs]
+    (Fix #141: lablgtk2 runs OCaml code inside blocking section)
+
 2021.07.05 [Jacques]
   * Update scrollbar handling in GText.view for gtk3 (#124) [Vasile Rotaru]
   * Add partial support for OCaml 5.00 (#129) [Kate Deplaix]
