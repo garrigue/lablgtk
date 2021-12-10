@@ -60,8 +60,19 @@ char ** strv_of_string_list (value list);
 CAMLprim value *ml_global_root_new (value v);
 CAMLexport void ml_global_root_destroy (void *data);
 
+/* Pointer conversions */
+#define Pointer_val(val) ((void*)Field(val,1))
+#define Store_pointer(val,p) (Field(val,1)=Val_bp(p))
+#define MLPointer_val(val) \
+        ((int)Field(val,1) == 2 ? &Field(val,2) : (void*)Field(val,1))
+
+#define Val_addr(ptr) (1+(value)ptr)
+#define Addr_val(val) ((void*)(val-1))
+
 /* enums <-> polymorphic variants */
 typedef struct { value key; int data; } lookup_info;
+#define Val_lookup_info(v) Val_pointer((void*)v)
+#define Lookup_info_val(v) ((const lookup_info*)Pointer_val(v))
 CAMLexport value ml_lookup_from_c (const lookup_info table[], int data);
 CAMLexport int ml_lookup_to_c (const lookup_info table[], value key);
 CAMLexport value ml_lookup_flags_getter (const lookup_info table[], int data);
@@ -314,14 +325,6 @@ CAMLprim value Val_##type (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
   ret = ml_alloc_custom (&ml_custom_##type, sizeof(value), adv, 1000); \
   caml_initialize (&Field(ret,1), (value) p); init(p); return ret; }
-
-#define Pointer_val(val) ((void*)Field(val,1))
-#define Store_pointer(val,p) (Field(val,1)=Val_bp(p))
-#define MLPointer_val(val) \
-        ((int)Field(val,1) == 2 ? &Field(val,2) : (void*)Field(val,1))
-
-#define Val_addr(ptr) (1+(value)ptr)
-#define Addr_val(val) ((void*)(val-1))
 
 #define Wosize_asize(x) ((x-1)/sizeof(value)+1)
 #define Wosizeof(x) Wosize_asize(sizeof(x))
