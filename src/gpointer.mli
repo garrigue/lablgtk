@@ -28,11 +28,6 @@
 type 'a optaddr
 val optaddr : 'a option -> 'a optaddr
 
-(** Naked pointers *)
-type optstring
-val raw_null : optstring
-val optstring : string option -> optstring
-
 (** Boxed pointers *)
 type boxed
 val boxed_null : boxed
