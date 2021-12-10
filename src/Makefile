@@ -44,7 +44,7 @@ GTKCFLAGS += -Iabsvalue -DABSVALUE
 endif
 
 ifdef DEBUG
-COMPILER += -warn-error A-52
+COMPILER += -warn-error A-52-6
 CFLAGS = -g $(GTKCFLAGS)
 CUSTOM = -custom
 #MLLINK += -cclib -lcamlrund
