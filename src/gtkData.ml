@@ -150,3 +150,26 @@ module Adjustment = struct
       = "ml_gtk_adjustment_clamp_page"
 end
 
+module CssProvider = struct
+  external create : unit -> css_provider
+      = "ml_gtk_css_provider_new"
+  external load_from_data : css_provider -> string -> unit
+      = "ml_gtk_css_provider_load_from_data"
+end
+
+module StyleContext = struct
+  module ProviderPriority = struct
+    type t = int
+    let fallback : t = 1
+    let theme : t = 200
+    let settings : t = 400
+    let application : t = 600
+    let user : t = 800
+  end
+
+  (** Does not cascade!! *)
+  external add_provider : style_context -> css_provider -> ProviderPriority.t -> unit
+      = "ml_gtk_style_context_add_provider"
+  external add_provider_for_screen : Gdk.screen -> css_provider -> ProviderPriority.t -> unit
+      = "ml_gtk_style_context_add_provider_for_screen"
+end

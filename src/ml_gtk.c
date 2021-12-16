@@ -214,6 +214,17 @@ Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  dark_gc, Val
 Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  light_gc, Val_GdkGC)
 */
 
+ML_0 (gtk_css_provider_new, Val_GtkCssProvider)
+CAMLprim value ml_gtk_css_provider_load_from_data(value provider, value data) {
+  GError *err = NULL;
+  gtk_css_provider_load_from_data(GtkCssProvider_val(provider), 
+				  SizedString_val(data), &err);
+  if (err) ml_raise_gerror(err);
+  return Val_unit;
+}
+ML_3 (gtk_style_context_add_provider, GtkStyleContext_val, GtkStyleProvider_val, Int_val, Unit)
+ML_3 (gtk_style_context_add_provider_for_screen, GdkScreen_val, GtkStyleProvider_val, Int_val, Unit)
+
 /* gtkdata.h */
 
 /* gtkadjustment.h */
@@ -328,6 +339,7 @@ ML_3 (gtk_widget_modify_base, GtkWidget_val, State_type_val, GdkColor_val,Unit)
 ML_2 (gtk_widget_modify_font, GtkWidget_val, PangoFontDescription_val, Unit)
 /* end deprecated since 3.0 */
 
+ML_1 (gtk_widget_get_style_context, GtkWidget_val, Val_GtkStyleContext)
 ML_1 (gtk_widget_get_pango_context, GtkWidget_val, Val_PangoContext)
 ML_1 (gtk_widget_create_pango_context, GtkWidget_val, Val_PangoContext_new)
 ML_6 (gtk_widget_add_accelerator, GtkWidget_val, Signal_name_val,

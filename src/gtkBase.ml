@@ -106,6 +106,8 @@ module Widget = struct
   external modify_font : [>`widget] obj -> Pango.font_description -> unit
       = "ml_gtk_widget_modify_font"
   (* End deprecated since 3.0 *)
+  external get_style_context : [>`widget] obj -> style_context
+      = "ml_gtk_widget_get_style_context"
   external get_pango_context : [>`widget] obj -> Pango.context
       = "ml_gtk_widget_get_pango_context"
   external create_pango_context : [>`widget] obj -> Pango.context

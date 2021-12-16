@@ -7,7 +7,7 @@
    assistant_tutorial
    buttons
    cairo_demo calc calendar cgets
-   combobox counter dcalendar
+   combobox counter css dcalendar
    dialog-thread drawing
    editor2
    entry2 entrycompletion entry
@@ -33,7 +33,7 @@
  (modules
    about accel_tree action assistant assistant_tutorial
    buttons cairo_demo
-   calc calendar cgets combobox counter
+   calc calendar cgets combobox counter css
    dcalendar dialog-thread drawing
    editor2 entry2 entrycompletion entry eventbox events2 events expander
    fifteen filechooser fixed_editor fixpoint
