@@ -535,7 +535,9 @@ type cell_properties_text =
   | `TEXT of string
   | `UNDERLINE of Pango.Tags.underline
   | `VARIANT of Pango.Tags.variant
-  | `WEIGHT of Pango.Tags.weight ]
+  | `WEIGHT of Pango.Tags.weight
+  | `WRAP_MODE of Pango.Tags.wrap_mode
+  | `WRAP_WIDTH of int ]
 type cell_properties_toggle =
   [ cell_properties
   | `ACTIVATABLE of bool

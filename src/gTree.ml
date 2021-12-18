@@ -474,7 +474,9 @@ type cell_properties_text_only =
   | `STYLE of Pango.Tags.style
   | `TEXT of string
   | `UNDERLINE of Pango.Tags.underline
-  | `VARIANT of Pango.Tags.variant ]
+  | `VARIANT of Pango.Tags.variant
+  | `WRAP_MODE of Pango.Tags.wrap_mode
+  | `WRAP_WIDTH of int ]
 type cell_properties_text =
   [ cell_properties
   | cell_properties_text_only

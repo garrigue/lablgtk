@@ -123,6 +123,8 @@ class CellRendererText vset : CellRenderer {
   "variant-set"          gboolean             : Read / Write / NoVSet
   "weight"               gint                 : Read / Write
   "weight-set"           gboolean             : Read / Write / NoVSet
+  "wrap-mode"            PangoWrapMode        : Read / Write
+  "wrap-width"           gint                 : Read / Write
   method set_fixed_height_from_font : "int -> unit"
   signal edited : GtkTreePathString string
 }

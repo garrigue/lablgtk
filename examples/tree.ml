@@ -35,8 +35,12 @@ let main () =
   let window = GWindow.window () in
   window#connect#destroy ~callback:GMain.quit;
   let view = GTree.view ~model ~packing:window#add () in
+  (* Allow wrapping for title field *)
   let col = GTree.view_column ~title:"Title" ()
-      ~renderer:(GTree.cell_renderer_text[], ["text",title]) in
+              ~renderer:(GTree.cell_renderer_text[`WRAP_WIDTH 150;
+                                                  `WRAP_MODE `WORD_CHAR],
+                         ["text",title]) in
+  col#set_resizable true;
   view#append_column col;
   let col = GTree.view_column ~title:"Author" ()
       ~renderer:(GTree.cell_renderer_text[], ["text",author]) in

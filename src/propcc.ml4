@@ -77,7 +77,7 @@ let enums = [
     (* for canvas *)
     "CapStyle"; "JoinStyle"; "LineStyle"];
   "Pango", "PangoEnums",
-  [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode" ];
+  [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode"; "WrapMode" ];
   (* GtkSourceView *)
   "Gtk","SourceView2Enums",
   ["SourceSmartHomeEndType"; "SourceDrawSpacesFlags"]
