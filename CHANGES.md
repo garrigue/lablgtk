@@ -1,5 +1,10 @@
 LablGTK changes log
 
+2021.12.18 [Jacques]
+  * Add WRAP_WIDTH, WRAP_MODE tags to cell_properties_text (#146)
+   [Nathan Guermond]
+  * Add bindings for applying CSS from a string (#134) [Bart Jacobs]
+
 2021.12.03 [Jacques]
   * Cherry-pick #142 [Bart Jacobs]
     (Fix #141: lablgtk2 runs OCaml code inside blocking section)

@@ -159,7 +159,7 @@ let string (strm__ : _ Stream.t) =
 
 let may_colon p def (strm__ : _ Stream.t) =
   match Stream.peek strm__ with
-    Some (Kwd ":") -> Stream.junk strm__; p strm__
+    Some (Kwd ":") -> Stream.junk strm__; let s = strm__ in p s
   | _ -> def
 
 let may_string def (strm__ : _ Stream.t) =
@@ -243,7 +243,7 @@ let marshaller (strm__ : _ Stream.t) =
         try star label_type strm__ with
           Stream.Failure -> raise (Stream.Error "")
       in
-      return_type (List.split types) strm__
+      let s = strm__ in return_type (List.split types) s
   | _ -> Types ([], [], "")
 
 let simple_attr (strm__ : _ Stream.t) =

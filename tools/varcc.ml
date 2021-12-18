@@ -57,7 +57,7 @@ let rec ident_list (strm__ : _ Stream.t) =
           let _ =
             try may_bar strm__ with Stream.Failure -> raise (Stream.Error "")
           in
-          (x, trans) :: ident_list strm__
+          let s = strm__ in (x, trans) :: ident_list s
       | _ -> raise (Stream.Error "")
       end
   | _ -> []
