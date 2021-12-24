@@ -1,5 +1,7 @@
 LablGTK changes log
 
+## In Lablgtk-3.1.2
+
 2021.12.24[Jacques]
   * Remove naked pointers and Obj.truncate for compatibility with 5.00 (#144)
 
