@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2021.12.24[Jacques]
+  * Remove naked pointers and Obj.truncate for compatibility with 5.00 (#144)
+
 2021.12.18 [Jacques]
   * Add WRAP_WIDTH, WRAP_MODE tags to cell_properties_text (#146)
    [Nathan Guermond]

@@ -167,7 +167,17 @@ ML_2 (gtk_clist_get_selectable, GtkCList_val, Int_val, Val_bool)
 ML_5 (gtk_clist_set_shift, GtkCList_val, Int_val, Int_val, Int_val, Int_val,
       Unit)
 /* ML_2 (gtk_clist_append, GtkCList_val, (char **), Val_int) */
-ML_3 (gtk_clist_insert, GtkCList_val, Int_val, (char **), Val_int)
+/* ML_3 (gtk_clist_insert, GtkCList_val, Int_val, (char **), Val_int) */
+CAMLprim value ml_gtk_clist_insert (value w, value n, value arr)
+{
+     CAMLparam3 (w,n,arr);
+     int i, len = Wosize_val(arr);
+     char** arr0 = (char**) caml_alloc (len, Abstract_tag);
+
+     for (i = 0; i < len; i++) arr0[i] = (char*)String_option_val(Field(arr,i));
+     i = gtk_clist_insert (GtkCList_val(w), Int_val(n), arr0);
+     CAMLreturn (Val_int(i));
+}
 ML_2 (gtk_clist_remove, GtkCList_val, Int_val, Unit)
 CAMLprim value ml_gtk_clist_set_row_data (value w, value row, value data)
 {
