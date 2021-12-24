@@ -180,7 +180,7 @@ module CList = struct
   external set_shift :
       [>`clist] obj -> int -> int -> vertical:int -> horizontal:int -> unit
       = "ml_gtk_clist_set_shift"
-  external insert : [>`clist] obj -> row:int -> Gpointer.optstring array -> int
+  external insert : [>`clist] obj -> row:int -> string option array -> int
       = "ml_gtk_clist_insert"
   let insert w ~row texts =
     let len = get_columns w in
@@ -188,7 +188,7 @@ module CList = struct
     let arr = Array.make (get_columns w) None in
     List.fold_left texts ~init:0
       ~f:(fun pos text -> arr.(pos) <- text; pos+1);
-    let r = insert w ~row (Array.map ~f:Gpointer.optstring arr) in
+    let r = insert w ~row arr in
     if r = -1 then invalid_arg "GtkCList::insert";
     r
   external remove : [>`clist] obj -> row:int -> unit

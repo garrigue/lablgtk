@@ -32,16 +32,6 @@ let optaddr : 'a option -> 'a optaddr =
       None -> Obj.magic 0
     | Some x -> Obj.magic x
 
-(* naked pointers *)
-type optstring
-
-let raw_null = snd (Obj.magic Nativeint.zero)
-
-let optstring : string option -> optstring =
-  function
-      None -> raw_null
-    | Some x -> Obj.magic x
-
 (* boxed pointers *)
 type boxed
 let boxed_null : boxed = Obj.magic Nativeint.zero

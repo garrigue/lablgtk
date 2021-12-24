@@ -177,8 +177,8 @@ CAMLexport value ml_lookup_flags_getter (const lookup_info table[], int data)
   CAMLreturn(l);
 }
 
-ML_2 (ml_lookup_from_c, (lookup_info*), Int_val, 0+)
-ML_2 (ml_lookup_to_c, (lookup_info*), 0+, Val_int)
+ML_2 (ml_lookup_from_c, Lookup_info_val, Int_val, 0+)
+ML_2 (ml_lookup_to_c, Lookup_info_val, 0+, Val_int)
 
 gchar **
 strv_of_string_list (value list)

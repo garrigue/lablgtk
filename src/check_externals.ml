@@ -116,8 +116,7 @@ let rec token (strm__ : _ Stream.t) =
           Stream.Failure -> raise (Stream.Error "")
       in
       String s
-  | Some (' ' | '\n' | '\r' | '\t') ->
-      Stream.junk strm__; let s = strm__ in token s
+  | Some (' ' | '\n' | '\r' | '\t') -> Stream.junk strm__; token strm__
   | Some c -> Stream.junk strm__; Sym c
   | _ -> raise End_of_file
 and may_comment (strm__ : _ Stream.t) =
@@ -166,15 +165,15 @@ let rec skip_type (strm__ : _ Stream.t) =
         try skip (Sym ')') strm__ with
           Stream.Failure -> raise (Stream.Error "")
       in
-      let s = strm__ in skip_type s
+      skip_type strm__
   | Some (Sym '[') ->
       Stream.junk strm__;
       let _ =
         try skip (Sym ']') strm__ with
           Stream.Failure -> raise (Stream.Error "")
       in
-      let s = strm__ in skip_type s
-  | Some _ -> Stream.junk strm__; let s = strm__ in skip_type s
+      skip_type strm__
+  | Some _ -> Stream.junk strm__; skip_type strm__
   | _ -> raise Stream.Failure
 
 let check_external (strm__ : _ Stream.t) =
