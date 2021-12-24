@@ -33,8 +33,8 @@ module Main = struct
   (* external set_locale : unit -> string = "ml_gtk_set_locale" *)
   external disable_setlocale : unit -> unit = "ml_gtk_disable_setlocale"
   (* external main : unit -> unit = "ml_gtk_main" *)
-  external _caml_sys_modify_argv : string array -> unit = 
-    "caml_sys_modify_argv" 
+  external _caml_sys_modify_argv : string array -> unit =
+    "caml_sys_modify_argv"
   let init ?(setlocale=true) () =
     let setlocale =
       try Sys.getenv "GTK_SETLOCALE" <> "0" with Not_found -> setlocale in
