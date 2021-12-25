@@ -12,11 +12,11 @@ authors: ["Jacques Garrigue et al., Nagoya University"]
 homepage: "https://github.com/garrigue/lablgtk"
 bug-reports: "https://github.com/garrigue/lablgtk/issues"
 dev-repo: "git+https://github.com/garrigue/lablgtk.git"
-doc: "https://garrigue.github.io/lablgtk/lablgtk3-sourceview3"
+doc: "https://garrigue.github.io/lablgtk/lablgtk3-goocanvas2"
 license: "LGPL with linking exception"
 
 depends: [
-  "ocaml"                {         >= "4.05.0" }
+  "ocaml"                {         >= "4.09.0" }
   "dune"                 {         >= "1.8.0"  }
   "lablgtk3"             {          = version  }
   "conf-goocanvas2"      { build & >= "0"      }
