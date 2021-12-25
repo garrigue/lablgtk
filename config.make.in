@@ -51,6 +51,9 @@ ODOC_DEF=@ODOC_DEF@
 # if using ocaml >= 3.11, add a -D HAS_PRINTEXC_BACKTRACE (for camlp4)
 HAS_PRINTEXC_BACKTRACE=@HAS_PRINTEXC_BACKTRACE@
 
+# if using ocaml >= 4.09, add a -D HAS_MODIFY_ARGV (for ocamlc)
+HAS_MODIFY_ARGV=@HAS_MODIFY_ARGV@
+
 # where to install the binaries
 prefix=@prefix@
 exec_prefix=@exec_prefix@
@@ -68,7 +71,7 @@ FLINSTALLDIR=$(DESTDIR)$(FINDLIBDIR)/lablgtk2
 FILT = -Wl,--export-dynamic
 clean_libs = $(subst -pthread,-ldopt -pthread -ccopt -pthread,$(subst --rpath,-rpath,$(filter-out $(FILT),$(1))))
 
-GTKCFLAGS=@OCAML_CC_EXTRA_FLAGS@ @GTKALL_CFLAGS@
+GTKCFLAGS=@OCAML_CC_EXTRA_FLAGS@ @GTKALL_CFLAGS@ @HAS_MODIFY_ARGV@
 GTK_LIBS = @GTK_LIBS@
 GTKLIBS:=$(call clean_libs,$(GTK_LIBS))
 GTKGL_LIBS = @GTKGL_LIBS@

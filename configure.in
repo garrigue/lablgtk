@@ -180,6 +180,12 @@ if expr "$OCAMLVERSION" '>=' '3.11' > /dev/null ; then
 fi
 AC_SUBST(HAS_PRINTEXC_BACKTRACE)
 
+if expr "$OCAMLVERSION" '>=' '4.09' > /dev/null ; then
+   HAS_MODIFY_ARGV="-DHAS_MODIFY_ARGV"
+fi
+AC_SUBST(HAS_MODIFY_ARGV)
+   
+
 # Check for which kind of threads is used
 AC_MSG_CHECKING(for ocaml threads)
 AC_ARG_WITH(threads,
