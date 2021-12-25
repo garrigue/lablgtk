@@ -1,8 +1,8 @@
 
-             LablGTK2 2.18.10 : an interface to the GIMP Tool Kit
+             LablGTK2 2.18.12 : an interface to the GIMP Tool Kit
 
 Needed:
-        ocaml-4.05 or more
+        ocaml-4.06 or more
         gtk+-2.x (gtk+-2.16.x for full functionality)
         findlib 1.2.1 or more (for default install)
         GNU make (there is no standard for conditionals)
@@ -410,4 +410,4 @@ Authors:
         Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
 
 Bug reports:
-        http://forge.ocamlcore.org/tracker/?group_id=220
+        https://github.com/garrigue/lablgtk/issues

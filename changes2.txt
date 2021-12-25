@@ -1,5 +1,30 @@
 LablGTK changes log
 
+In Lablgtk-2.18.12:
+
+2021.12.24[Jacques]
+  * Remove naked pointers and Obj.truncate for compatibility with 5.00 (#145)
+
+2021.12.18 [Jacques]
+  * Add WRAP_WIDTH, WRAP_MODE tags to cell_properties_text (#146)
+   [Nathan Guermond]
+
+2021.12.03 [Jacques]
+  * Fix #141: lablgtk2 runs OCaml code inside blocking section
+    (#142) [Bart Jacobs]
+
+2021.07.05 [Jacques]
+  * Add partial support for OCaml 5.00 (#129) [Kate Deplaix]
+  * Fix warnings on Bytes_val
+
+2020.08.31 [Jacques]
+  * Fix #116 : problem with GPack.layout adjustments (reported by Vasile Toraru)
+
+In Lablgtk-2.18.11:
+
+2020.06.19 [Jerry James]
+  * Fix the build with -fno-common, the default for GCC 10
+
 In Lablgtk-2.18.10:
 
 2020.01.23 [Jacques]

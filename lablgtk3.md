@@ -1,4 +1,4 @@
-# LablGTK3 3.1.0 : an interface to the GIMP Tool Kit
+# LablGTK3 3.1.2 : an interface to the GIMP Tool Kit
 
 ## Dependencies
 

@@ -1,5 +1,35 @@
 LablGTK changes log
 
+## In Lablgtk-3.1.2
+
+2021.12.24[Jacques]
+  * Remove naked pointers and Obj.truncate for compatibility with 5.00 (#144)
+
+2021.12.18 [Jacques]
+  * Add WRAP_WIDTH, WRAP_MODE tags to cell_properties_text (#146)
+   [Nathan Guermond]
+  * Add bindings for applying CSS from a string (#134) [Bart Jacobs]
+
+2021.12.03 [Jacques]
+  * Cherry-pick #142 [Bart Jacobs]
+    (Fix #141: lablgtk2 runs OCaml code inside blocking section)
+
+2021.07.05 [Jacques]
+  * Update scrollbar handling in GText.view for gtk3 (#124) [Vasile Rotaru]
+  * Add partial support for OCaml 5.00 (#129) [Kate Deplaix]
+  * Fix warnings on Bytes_val
+
+2021.03.15 [Jacques]
+  * Add bindings fro GtkStack and GtkStackSwitcher (#122) [Hugo @swarmpan]
+
+2020.08.31 [Jacques]
+  * Fix #116 : problem with GPack.layout adjustments (reported by Vasile Rotaru)
+
+## In Lablgtk-3.1.1
+
+2020.03.17 [Jerry James]
+  * Fix the build with -fno-common, the default for GCC 10
+
 ## In Lablgtk-3.1.0
 
 2020.01.23 [Jacques]
