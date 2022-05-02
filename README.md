@@ -314,7 +314,7 @@ Here is an example using the lablgtk toplevel with threads:
 Since Darwin is Unix, this port compiles as usual.
 Note however that Quartz imposes even stronger restrictions than
 Windows on threads: only the main thread of the application can do GUI
-work. Just apply the same techniques as described in the Windos port,
+work. Just apply the same techniques as described in the Windows port,
 being careful to ensure that your first call to `GtkThread.main`
 occurs in the main thread. This can be done by issueing the following
 commands
