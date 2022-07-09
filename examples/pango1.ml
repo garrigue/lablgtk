@@ -24,7 +24,7 @@ open Cairo
 let two_pi = 2. *. acos(-1.)
 
 (* Based on the example given at
-   https://developer.gnome.org/pango/stable/pango-Cairo-Rendering.html *)
+   https://developer-old.gnome.org/pango/stable/pango-Cairo-Rendering.html *)
 let draw_text radius (cr: context) =
   let n_words = 10 in
   let font = "Sans Bold 26" in

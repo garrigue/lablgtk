@@ -30,7 +30,7 @@
 /* OCaml Cairo bindings */
 #include "cairo_ocaml.h"
 
-/* https://developer.gnome.org/pango/stable/pango-Cairo-Rendering.html */
+/* https://developer-old.gnome.org/pango/stable/pango-Cairo-Rendering.html */
 
 #define ALLOC(name) alloc_custom(&caml_##name##_ops, sizeof(void*), 1, 50)
 
