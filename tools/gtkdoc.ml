@@ -20,7 +20,7 @@
 (*                                                                        *)
 (**************************************************************************)
 
-let default_base_uri = "http://developer.gnome.org/gtk3/stable"
+let default_base_uri = "http://developer-old.gnome.org/gtk3/stable"
 let base_uri = ref default_base_uri
 let _ =
   Odoc_args.add_option
