@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - lablgtk3
+  pull_request:
+    branches:
+    - lablgtk3
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# CI Notes:
+# - depext for goocanvas2 is broken on windows and osx
+# - depext for gtkspell is broken on windows
+
+# Base setup, run all opam and dev-all jobs in all the compilers, dev
+# in all architectures for the latest compiler
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        ocaml-compiler: [4.09.x, 4.10.x, 4.11.x, 4.12.x, 4.13.x, 4.14.x]
+        test-packages: [lablgtk3 lablgtk3-sourceview3 lablgtk3-gtkspell3 lablgtk3-goocanvas2]
+        test-target: [opam, dev-all]
+        include:
+        - os: ubuntu-latest
+          ocaml-compiler: 4.14.x
+          test-packages: lablgtk3 lablgtk3-sourceview3 lablgtk3-gtkspell3 lablgtk3-goocanvas2
+          test-target: dev
+        - os: macos-latest
+          ocaml-compiler: 4.14.x
+          test-packages: lablgtk3 lablgtk3-sourceview3 lablgtk3-gtkspell3
+          test-target: dev-ci-osx
+        - os: windows-latest
+          ocaml-compiler: 4.14.x
+          test-packages: lablgtk3 lablgtk3-sourceview3
+          test-target: dev-ci-windows
+    env:
+      OPAMJOBS: "2"
+      OPAMROOTISOK: "true"
+      OPAMYES: "true"
+      NJOBS: "2"
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up OCaml ${{ matrix.ocaml-compiler }}
+        uses: avsm/setup-ocaml@v2
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+          dune-cache: true
+          opam-depext: true
+      - name: Install deps
+        run: opam install ${{ matrix.test-packages }} --deps-only --with-test
+      - name: Display OPAM Setup
+        run: opam exec -- opam list
+      - name: Test LabLGTK
+        run: opam exec -- make ${{ matrix.test-target }}

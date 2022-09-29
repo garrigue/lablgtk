@@ -1,4 +1,4 @@
-.PHONY: help release dev dev-all nopromote opam clean
+.PHONY: help release dev dev-all nopromote opam clean dev-ci-windows dev-ci-osx
 
 help:
 	@echo "Welcome to lablgtk Dune-based build system. Targets are"
@@ -19,6 +19,14 @@ release:
 dev:
 	dune build
 
+dev-ci-osx:
+	echo "(dirs :standard \ src-goocanvas2)" >> dune
+	dune build
+
+dev-ci-windows:
+	echo "(dirs :standard \ src-goocanvas2 src-gtkspell3)" >> dune
+	dune build
+
 # This also builds examples, will be the default once we set (lang dune 2.0)
 dev-all:
 	dune build @all
@@ -34,6 +42,8 @@ opam:
 	opam install lablgtk3-sourceview3
 	opam pin add lablgtk3-gtkspell3 . --kind=path -y
 	opam install lablgtk3-gtkspell3
+	opam pin add lablgtk3-goocanvas2 . --kind=path -y
+	opam install lablgtk3-goocanvas2
 
 clean:
 	dune clean
