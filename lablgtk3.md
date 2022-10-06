@@ -1,8 +1,8 @@
-# LablGTK3 3.1.2 : an interface to the GIMP Tool Kit
+# LablGTK3 3.1.3 : an interface to the GIMP Tool Kit
 
 ## Dependencies
 
-- ocaml >= 4.05.0
+- ocaml >= 4.05.0  (including 5.0)
 - gtk+ >= 3.18
 - dune >= 1.8
 - camlp5 (for developer build only)
@@ -314,7 +314,7 @@ Here is an example using the lablgtk toplevel with threads:
 Since Darwin is Unix, this port compiles as usual.
 Note however that Quartz imposes even stronger restrictions than
 Windows on threads: only the main thread of the application can do GUI
-work. Just apply the same techniques as described in the Windos port,
+work. Just apply the same techniques as described in the Windows port,
 being careful to ensure that your first call to `GtkThread.main`
 occurs in the main thread. This can be done by issueing the following
 commands

@@ -2,7 +2,12 @@ LablGTK changes log
 
 In Lablgtk-2.18.12:
 
-2021.12.24[Jacques]
+2022.10.06 [Jacques]
+  * Adapt to deprecations in 5.0 and the splitting of camlp-streams
+
+In Lablgtk-2.18.12:
+
+2021.12.24 [Jacques]
   * Remove naked pointers and Obj.truncate for compatibility with 5.00 (#145)
 
 2021.12.18 [Jacques]
