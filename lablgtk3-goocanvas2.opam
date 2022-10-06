@@ -20,6 +20,7 @@ depends: [
   "dune"                 {         >= "1.8.0"  }
   "lablgtk3"             {          = version  }
   "conf-goocanvas2"      { build & >= "0"      }
+  "camlp-streams"        { build               }
 ]
 
 build: [
