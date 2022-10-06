@@ -20,6 +20,7 @@ depends: [
   "dune"      {         >= "1.8.0"  }
   "cairo2"    {         >= "0.6"    }
   "conf-gtk3" { build & >= "18"     }
+  "camlp-streams" { build           }
   "ocamlfind" { dev                 }
   "camlp5"    { dev                 }
 ]

@@ -18,7 +18,8 @@
 
 (executables
  (names varcc propcc)
- (modules varcc propcc))
+ (modules varcc propcc)
+ (libraries camlp-streams))
 
 (executable
  (name dune_config)

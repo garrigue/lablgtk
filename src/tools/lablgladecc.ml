@@ -385,7 +385,7 @@ let process ?(file="<stdin>") chan =
   let lexbuf, data =
     if !embed then begin
       let b = Buffer.create 1024 in
-      let buf = String.create 1024 in
+      let buf = Bytes.create 1024 in
       while
         let len = input chan buf 0 1024 in
         Buffer.add_subbytes b buf 0 len;

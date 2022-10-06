@@ -114,7 +114,7 @@ module Message = struct
 
   external _log : string -> int -> string -> unit = "ml_g_log"
   let log ?(domain="") level fmt =
-    Printf.kprintf (_log domain (log_level level)) fmt
+    Printf.kprintf (_log domain (log_level level)) fmt [@alert "-deprecated"]
 end
 
 (*    
