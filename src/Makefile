@@ -1,8 +1,8 @@
 # Makefile for lablgtk.
 
-COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s-3+52 -c
-LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
+COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s-3-6+52 -c
+LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s-3-6+52
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s-3-6+52 -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 LIBRARIAN = $(CAMLMKLIB) -verbose -ocamlc "$(CAMLC)" -ocamlopt "$(CAMLOPT)"
 TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
@@ -30,6 +30,7 @@ uninstall: findlib-uninstall
 MLLIBS = lablgtk.cma
 CLIBS = liblablgtk2$(XA)
 #MLLINK = unix.cma str.cma
+MLFLAGS = -I +unix
 
 # For -DG_LOG_DOMAIN=\"LablGTK\"
 ifneq ($(TOOLCHAIN),msvc)
@@ -533,12 +534,12 @@ xml_lexer.ml: xml_lexer.mll
 	$(CAMLLEX) xml_lexer.mll
 xml_lexer.cmo xml_lexer.cmx : xml_lexer.cmi
 
-varcc$(XE): varcc.cmo
-	$(LINKER) -o $@ $<
+varcc$(XE): varcc.ml
+	$(LINKER) $(STREAMSLINK) -o $@ $<
 	rm -f *_tags.h *_tags.c
 
-propcc$(XE): propcc.cmo
-	$(LINKER) -o $@ $<
+propcc$(XE): propcc.ml
+	$(LINKER) $(STREAMSLINK) -o $@ $<
 
 check_externals$(XE): check_externals.cmo
 	$(LINKER) -o $@ $<

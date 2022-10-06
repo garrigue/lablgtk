@@ -59,7 +59,7 @@ fi
 if test $thread = yes; then
     case "$threads_lib" in
     no)     echo "Threads are not supported on this platform"; exit 2 ;;
-    system) libpath="$libpath -I +threads"
+    system) libpath="$libpath -I +threads -I +unix"
             libraries="unix.cma threads.cma $libraries @THOBJS@" ;;
     *)      libpath="$libpath -I +vmthreads"
             usedll="no" ;; # use different stdlib.cma
@@ -82,4 +82,4 @@ if test $init = yes; then
 fi
 
 if test $verbose = yes; then echo $toplevel -w s $libpath $libraries $*; fi
-exec $toplevel -w s $libpath $libraries $*
+exec $toplevel -w s-6 $libpath $libraries $*

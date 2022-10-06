@@ -54,6 +54,10 @@ HAS_PRINTEXC_BACKTRACE=@HAS_PRINTEXC_BACKTRACE@
 # if using ocaml >= 4.09, add a -D HAS_MODIFY_ARGV (for ocamlc)
 HAS_MODIFY_ARGV=@HAS_MODIFY_ARGV@
 
+# camlp-streams
+STREAMSINC=@STREAMSINC@
+STREAMSLINK=@STREAMSLINK@
+
 # where to install the binaries
 prefix=@prefix@
 exec_prefix=@exec_prefix@

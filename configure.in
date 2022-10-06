@@ -170,6 +170,18 @@ OCAMLLDCONF="`ocamlfind printconf ldconf | tr -d '\\r'`"
 echo "$OCAMLFIND ldconf path is $OCAMLLDCONF"
 fi
 
+if test "$OCAMLFIND" != no && $OCAMLFIND query camlp-streams > /dev/null 2>1
+then
+  STREAMSDIR=`$OCAMLFIND query camlp-streams`
+  STREAMSINC="-I $STREAMSDIR"
+  STREAMSLINK="-I $STREAMSDIR camlp_streams.cma"
+else
+  STREAMSINC=
+  STREAMSLINK=
+fi
+AC_SUBST(STREAMSINC)
+AC_SUBST(STREAMSLINK)
+
 if expr "$OCAMLVERSION" '>=' '4' > /dev/null ; then
    ODOC_DEF="-D OCAML_400"
 fi
@@ -432,5 +444,5 @@ echo $ECHO_N "	debug   $ECHO_C"
 if test -n "$DEBUG" ; then echo "	yes" ; else echo "	no" ; fi
 echo  "	C compiler	$CC"
 echo  "	Camlp4		$CAMLP4O"
-
+echo  "	camlp-streams   $STREAMSLINK"
 

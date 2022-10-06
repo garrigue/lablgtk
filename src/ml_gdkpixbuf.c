@@ -32,6 +32,7 @@
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/intext.h>
+#include <caml/printexc.h>
 
 #include "wrappers.h"
 #include "ml_glib.h"
@@ -66,8 +67,8 @@ static void ml_GdkPixbuf_serialize (value v, unsigned long *wsize_32, unsigned l
   guint len;
   pixels = gdk_pixdata_from_pixbuf (&pixdata, pb, pixbuf_marshal_use_rle);
   stream = gdk_pixdata_serialize (&pixdata, &len);
-  serialize_int_4 (len);
-  serialize_block_1 (stream, len);
+  caml_serialize_int_4 (len);
+  caml_serialize_block_1 (stream, len);
   g_free (stream);
   g_free (pixels);
   *wsize_32 = 4;
@@ -82,9 +83,9 @@ static unsigned long ml_GdkPixbuf_deserialize (void *dst)
   guint8 *stream;
   guint len;
 
-  len = deserialize_uint_4();
+  len = caml_deserialize_uint_4();
   stream = stat_alloc (len);
-  deserialize_block_1 (stream, len);
+  caml_deserialize_block_1 (stream, len);
   gdk_pixdata_deserialize (&pixdata, len, stream, &error);
   if (error) goto out;
   pb = gdk_pixbuf_from_pixdata (&pixdata, TRUE, &error);
@@ -100,7 +101,7 @@ static unsigned long ml_GdkPixbuf_deserialize (void *dst)
       GEnumValue *val   = g_enum_get_value (class, error->code);
       msg = val ? (char*)val->value_name : "";
       g_error_free (error);
-      deserialize_error (msg);
+      caml_deserialize_error (msg);
     }
   return sizeof pb;
 }
@@ -350,7 +351,7 @@ ml_gdkpixbuf_savefunc (const gchar *buf, gsize count, GError **error, gpointer d
   if (Is_exception_result (res))
     {
       g_set_error (error, GDK_PIXBUF_ERROR, GDK_PIXBUF_ERROR_FAILED,
-		   "%s", format_caml_exception(Extract_exception(res)));
+		   "%s", caml_format_exception(Extract_exception(res)));
       return FALSE;
     }
   else

@@ -19,7 +19,7 @@ let camlize id =
 	  (is_not_uppercase id.[i-1] || 
 	  (i < String.length id - 1 && is_not_uppercase id.[i+1]))
 	then Buffer.add_char b '_' ;
-	Buffer.add_char b (Char.lowercase c)
+	Buffer.add_char b (Char.lowercase_ascii c)
     | '-' ->
 	Buffer.add_char b '_'
     | c ->
@@ -285,7 +285,7 @@ let ooutfile = ref ""
 
 let process_file f =
   let base = Filename.chop_extension f in
-  let baseM = String.capitalize base in
+  let baseM = String.capitalize_ascii base in
   prefix := baseM;
   (* Input *)
   (* Redefining saves space in bytecode! *)
@@ -428,7 +428,7 @@ let process_file f =
         (type_name name ~attrs) gtk_class;
       let tag =
         try List.assoc "tag" attrs
-        with Not_found -> !tagprefix ^ String.lowercase name
+        with Not_found -> !tagprefix ^ String.lowercase_ascii name
       in
       if props <> [] then begin
         out "@ @[<hv2>module P = struct";
@@ -540,7 +540,7 @@ let process_file f =
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
   List.iter !oheaders ~f:(fun s -> out "%s@." s);
-  out "open %s@." (String.capitalize (Filename.chop_extension !outfile));
+  out "open %s@." (String.capitalize_ascii (Filename.chop_extension !outfile));
   out "@[<hv>";
   let oprop ~name ~gtype ppf pname =
     try
@@ -621,7 +621,7 @@ let process_file f =
         out "@ @[<hv2>let %s_param = function" (camlize name);
         List.iter vprops ~f:(fun (pname,mlname,gtype,_) ->
           out "@ @[<hv4>| `%s p ->@ param %a p@]"
-            (String.uppercase mlname) (oprop ~name ~gtype) pname);
+            (String.uppercase_ascii mlname) (oprop ~name ~gtype) pname);
         out "@]@ ";
       end;
       let wsig = List.mem_assoc "wrapsig" attrs in
