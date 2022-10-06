@@ -71,14 +71,14 @@ CAMLexport value Val_GdkEvent (GdkEvent *);
 #define GdkNativeWindow_val Pointer_val
 #define Val_GdkNativeWindow Val_pointer
 #else
-#define Val_GdkNativeWindow copy_int32
+#define Val_GdkNativeWindow caml_copy_int32
 #define GdkNativeWindow_val Int32_val
 #endif
 
 #ifdef _WIN32
-#define Val_XID(id) copy_int32((long) id)
+#define Val_XID(id) caml_copy_int32((long) id)
 #else
-#define Val_XID copy_int32
+#define Val_XID caml_copy_int32
 #endif
 #define XID_val Int32_val
 

@@ -127,7 +127,8 @@ let declaration ~hc ~cc = parser
     (* Output table to code file *)
     oc "/* %s : conversion table */\n" name;
     let static =
-      if !static && not (List.mem "public" ~set:flags) || List.mem "private" ~set:flags
+      if !static && not (List.mem "public" ~set:flags)
+      || List.mem "private" ~set:flags
       then "static " else "" in
     oc "%sconst lookup_info ml_table_%s[] = {\n" static name;
     may guard
@@ -213,7 +214,8 @@ let process ic ~hc ~cc =
       List.iter convs ~f:
         begin fun (_,s,_,flags) ->
           let conv =
-            if List.mem "flags" ~set:flags then "Gobject.Data.flags" else enum in
+            if List.mem "flags" ~set:flags then "Gobject.Data.flags" else enum
+          in
           out "@ let %s = %s %s_tbl" s conv s
         end;
       out "@]@.end@.";

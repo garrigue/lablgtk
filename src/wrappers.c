@@ -131,13 +131,13 @@ CAMLprim value *ml_global_root_new (value v)
 {
     value *p = stat_alloc(sizeof(value));
     *p = v;
-    register_global_root (p);
+    caml_register_global_root (p);
     return p;
 }
 
 CAMLexport void ml_global_root_destroy (void *data)
 {
-    remove_global_root ((value *)data);
+    caml_remove_global_root ((value *)data);
     stat_free (data);
 }
 

@@ -178,7 +178,7 @@ Make_Val_final_pointer_ext(GClosure, _sink , g_closure_ref_and_sink,
 static void notify_destroy(gpointer unit, GClosure *c)
 {
     // printf("release %p\n", &c->data);
-    remove_global_root((value*)&c->data);
+    caml_remove_global_root((value*)&c->data);
 }
 
 static void marshal_core (GClosure *closure, GValue *ret,
@@ -215,7 +215,7 @@ CAMLprim value ml_g_closure_new (value clos)
 {
     GClosure* closure = g_closure_new_simple(sizeof(GClosure), (gpointer)clos);
     // printf("register %p\n", &closure->data);
-    register_global_root((value*)&closure->data);
+    caml_register_global_root((value*)&closure->data);
     g_closure_add_invalidate_notifier(closure, NULL, notify_destroy);
     g_closure_set_marshal(closure, marshal);
     return Val_GClosure_sink(closure);

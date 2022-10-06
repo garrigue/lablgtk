@@ -27,7 +27,7 @@
 
 /* Yell if a caml callback raised an exception */
 #define CAML_EXN_LOG(name) g_critical("%s: callback raised an exception", name)
-#define CAML_EXN_LOG_VERBOSE(name,exn) g_critical("%s: callback raised exception %s", name, format_caml_exception(Extract_exception(exn)))
+#define CAML_EXN_LOG_VERBOSE(name,exn) g_critical("%s: callback raised exception %s", name, caml_format_exception(Extract_exception(exn)))
 
 #include <caml/misc.h>
 #include <caml/mlvalues.h>
@@ -39,6 +39,64 @@
 
 #ifndef Bytes_val
 #define Bytes_val String_val
+#endif
+
+/* We are still using the compatibility layer */
+#ifdef CAML_NAME_SPACE
+/* **** alloc.c */
+#define alloc caml_alloc /*SP*/
+#define alloc_small caml_alloc_small
+#define alloc_tuple caml_alloc_tuple
+#define alloc_string caml_alloc_string
+#define alloc_final caml_alloc_final
+#define copy_string caml_copy_string
+#define alloc_array caml_alloc_array
+#define copy_string_array caml_copy_string_array
+#define convert_flag_list caml_convert_flag_list
+/* **** callback.c */
+#define callback_depth caml_callback_depth
+#define callbackN_exn caml_callbackN_exn
+#define callback_exn caml_callback_exn
+#define callback2_exn caml_callback2_exn
+#define callback3_exn caml_callback3_exn
+#define callback caml_callback
+#define callback2 caml_callback2
+#define callback3 caml_callback3
+#define callbackN caml_callbackN
+/* **** custom.c */
+#define alloc_custom caml_alloc_custom
+#define register_custom_operations caml_register_custom_operations
+/* **** ints.c */
+#define copy_int32 caml_copy_int32
+#define copy_int64 caml_copy_int64
+#define copy_nativeint caml_copy_nativeint
+/* **** fail.c */
+#define external_raise caml_external_raise
+#define mlraise caml_raise /*SP*/
+#define raise_constant caml_raise_constant
+#define raise_with_arg caml_raise_with_arg
+#define raise_with_string caml_raise_with_string
+#define failwith caml_failwith
+#define invalid_argument caml_invalid_argument
+#define array_bound_error caml_array_bound_error /*SP*/
+#define raise_out_of_memory caml_raise_out_of_memory
+#define raise_stack_overflow caml_raise_stack_overflow
+#define raise_sys_error caml_raise_sys_error
+#define raise_end_of_file caml_raise_end_of_file
+#define raise_zero_divide caml_raise_zero_divide
+#define raise_not_found caml_raise_not_found
+#define raise_sys_blocked_io caml_raise_sys_blocked_io
+/* **** floats.c */
+#define copy_double caml_copy_double
+/* **** memory.c */
+#define alloc_shr caml_alloc_shr
+#define initialize caml_initialize
+#define modify caml_modify
+#define stat_alloc caml_stat_alloc
+#define stat_free caml_stat_free
+#define stat_resize caml_stat_resize
+/* **** str.c */
+#define string_length caml_string_length
 #endif
 
 CAMLexport value copy_memblock_indirected (void *src, asize_t size);
