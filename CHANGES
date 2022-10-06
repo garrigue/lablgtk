@@ -1,5 +1,7 @@
 LablGTK changes log
 
+In Lablgtk-2.18.12:
+
 2022.10.06 [Jacques]
   * Adapt to deprecations in 5.0 and the splitting of camlp-streams
 
