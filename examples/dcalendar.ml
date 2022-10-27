@@ -57,8 +57,8 @@ let next_month () =
 
     (* leap, mon_name, wday_name: Calendar related function and data *)
 let leap year =
-  (year mod 400 = 0) or
-  (year mod 4 = 0) & (year mod 100 <> 0)
+  (year mod 400 = 0) ||
+  (year mod 4 = 0) && (year mod 100 <> 0)
 
 let mdays_in_month = [|31; 28; 31; 30; 31; 30; 31; 31; 30; 31; 30; 31|]
 
@@ -123,7 +123,7 @@ let update_calendar (calendar : GPack.table) (buttons : date_button array) =
   let wday0 = (first.Unix.tm_wday - 1 + 7) mod 7 in
   
   let ndays =
-    if date.mon = 1 & leap date.year then mdays_in_month.(date.mon) + 1
+    if date.mon = 1 && leap date.year then mdays_in_month.(date.mon) + 1
     else mdays_in_month.(date.mon) in
 
   Array.iter ~f: (fun button -> button#hide)

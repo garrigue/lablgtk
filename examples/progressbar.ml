@@ -24,7 +24,7 @@ let main () =
       ~packing:(table#attach ~left:0 ~right:2 ~top:1
                   ~expand:`BOTH ~fill:`X ~shrink:`BOTH) in
 
-  let ptimer = GMain.Timeout.add ~ms:50 ~callback:(fun () -> pbar#pulse(); true) in
+  let _ptimer = GMain.Timeout.add ~ms:50 ~callback:(fun () -> pbar#pulse(); true) in
 
   let button = GButton.button ~label:"Reset" ()
       ~packing:(table#attach ~left:0 ~top:2

@@ -27,13 +27,13 @@ let main () =
   root_layout#pack ~expand:true ~fill:true stack#coerce;
   switcher#set_halign `CENTER;
 
-  let checkbox = GButton.check_button ~label:"Item"
+  let _checkbox = GButton.check_button ~label:"Item"
     ~packing:(fun w -> stack#add_titled w "frame1" "Check button") () in
 
-  let label = GMisc.label ~text:"A label"
+  let _label = GMisc.label ~text:"A label"
     ~packing:(fun w -> stack#add_titled w "frame2" "Label") () in
 
-  let entry = GEdit.entry ~placeholder_text:"Type here"
+  let _entry = GEdit.entry ~placeholder_text:"Type here"
     ~packing:(fun w -> stack#add_titled w "frame3" "Form") () in
   
   ignore (transition_choice_button#connect#toggled ~callback:(fun () ->

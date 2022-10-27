@@ -48,22 +48,22 @@ class editor () =
 
     initializer
       self#textview1#buffer#set_text "A text editor skeleton. Only File/Open and Help/About are implemented." ;
-      self#open1#connect#activate ~callback:self#open_file;
-      self#about1#connect#activate ~callback:(fun () ->
+      let _ : GtkSignal.id = self#open1#connect#activate ~callback:self#open_file in
+      let _ : GtkSignal.id = self#about1#connect#activate ~callback:(fun () ->
        let d =
         GWindow.about_dialog
          ~name:"Editor skeleton"
          ~authors:["Anonymous coward"]
          () in
        d#set_logo (GMisc.image ~file:"logo.jpg" ())#pixbuf ;
-       d#show ());
+       d#show ()) in
       ()
   end
 
 let main () =
   let editor = new editor () in
   (* show bindings *)
-  editor#window1#connect#destroy ~callback:GMain.quit;
+  let _ : GtkSignal.id = editor#window1#connect#destroy ~callback:GMain.quit in
   GMain.main ()
 
 let _ = main ()

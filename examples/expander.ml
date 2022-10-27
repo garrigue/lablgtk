@@ -9,7 +9,7 @@
 let setup_expander packing =
   let e = GBin.expander ~packing () in
   let pixbuf = e#misc#render_icon ~size:`DIALOG `DIALOG_INFO in
-  let icon = GMisc.image ~pixbuf ~packing:e#add () in
+  let _icon = GMisc.image ~pixbuf ~packing:e#add () in
   e#set_label "Show image" ;
   e#connect#after#activate (fun () ->
     e#set_label 

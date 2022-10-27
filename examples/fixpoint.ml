@@ -20,7 +20,7 @@ let _ =
   let top = GWindow.window ~resizable: false () in
   top#connect#destroy ~callback:GMain.quit;
   let vbox = GPack.vbox ~packing: top#add () in
-  let label = GMisc.label ~text: "Fixed point of cos(x)" ~packing: vbox#add () in
+  let _label = GMisc.label ~text: "Fixed point of cos(x)" ~packing: vbox#add () in
   let entry = GEdit.entry ~max_length: 20 ~packing: vbox#add () in
   entry#set_tooltip_text "Initial value for fix-point";
   let result =

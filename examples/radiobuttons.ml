@@ -29,7 +29,7 @@ let main () =
       ~group:button1#group ~label:"button3" ~packing: box2#add () in
   button3#connect#clicked ~callback:(fun () -> prerr_endline "button3");
 
-  let separator =
+  let _separator =
     GMisc.separator `HORIZONTAL ~packing: box1#pack () in
 
   let box3 = GPack.vbox ~spacing: 10 ~border_width: 10
