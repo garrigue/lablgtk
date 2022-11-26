@@ -167,9 +167,24 @@ module StyleContext = struct
     let user : t = 800
   end
 
+  external add_provider_for_screen : Gdk.screen -> css_provider -> ProviderPriority.t -> unit
+      = "ml_gtk_style_context_add_provider_for_screen"
+  external remove_provider_for_screen : Gdk.screen -> css_provider -> unit
+      = "ml_gtk_style_context_remove_provider_for_screen"
+  external reset_widgets : Gdk.screen -> unit
+      = "ml_gtk_style_context_reset_widgets"
+
   (** Does not cascade!! *)
   external add_provider : style_context -> css_provider -> ProviderPriority.t -> unit
       = "ml_gtk_style_context_add_provider"
-  external add_provider_for_screen : Gdk.screen -> css_provider -> ProviderPriority.t -> unit
-      = "ml_gtk_style_context_add_provider_for_screen"
+  external remove_provider : style_context -> css_provider -> unit
+      = "ml_gtk_style_context_remove_provider"
+  external add_class : style_context -> string -> unit
+      = "ml_gtk_style_context_add_class"
+  external remove_class : style_context -> string -> unit
+      =  "ml_gtk_style_context_remove_class"
+  external has_class : style_context -> string -> bool
+      = "ml_gtk_style_context_has_class"
+  external list_classes : style_context -> string list
+      = "ml_gtk_style_context_list_classes"
 end

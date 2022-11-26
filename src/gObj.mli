@@ -172,7 +172,13 @@ val css_provider: unit -> css_provider
 class style_context: Gtk.style_context ->
   object
     val ctxt : Gtk.style_context
+    method as_style_context : Gtk.style_context
     method add_provider: css_provider -> int -> unit
+    method remove_provider : css_provider -> unit
+    method add_class : string -> unit
+    method remove_class : string -> unit
+    method has_class : string -> bool
+    method list_classes : string list
   end
 
 (** @gtkdoc gtk gtk-Selections *)
