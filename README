@@ -3,6 +3,7 @@
 
 Needed:
         ocaml-4.06 or more (including 5.0)
+        camlp-streams (for OCaml 5.0 or later)
         gtk+-2.x (gtk+-2.16.x for full functionality)
         findlib 1.2.1 or more (for default install)
         GNU make (there is no standard for conditionals)

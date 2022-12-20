@@ -1,6 +1,10 @@
 LablGTK changes log
 
-In Lablgtk-2.18.12:
+2022.12.20 [Jacques]
+  * Update .depend as suggested in issued #155
+  * Add camlp-streams to README
+
+In Lablgtk-2.18.13:
 
 2022.10.06 [Jacques]
   * Adapt to deprecations in 5.0 and the splitting of camlp-streams
