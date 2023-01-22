@@ -134,6 +134,8 @@ gtkThInit.cmo: gtkThread.cmi
 gtkThInit.cmx: gtkThread.cmx 
 gtkThread.cmo: glib.cmi gtkMain.cmo gtkSignal.cmi gtkThread.cmi 
 gtkThread.cmx: glib.cmx gtkMain.cmx gtkSignal.cmx gtkThread.cmi 
+gtkThInit.cmo : gtkThread.cmi
+gtkThInit.cmx : gtkThread.cmx
 gtkTree.cmo: gaux.cmo gobject.cmo gtk.cmo gtkBase.cmo gtkSignal.cmi 
 gtkTree.cmx: gaux.cmx gobject.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx 
 gtkWindow.cmo: gaux.cmo gdk.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi 
