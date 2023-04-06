@@ -1,7 +1,11 @@
 LablGTK changes log
 
+2023.04.06 [Jacques]
+  * Fix a typo in the Makefile that breaks the build with newer GNU make (#168)
+    [Brad Smith]
+
 2022.12.20 [Jacques]
-  * Update .depend as suggested in issued #155
+  * Update .depend as suggested in issue #155
   * Add camlp-streams to README
 
 In Lablgtk-2.18.13:
