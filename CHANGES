@@ -1,5 +1,10 @@
 LablGTK changes log
 
+In Lablgtk-2.18.14:
+
+2023.11.13 [Jacques]
+  * Fix use of String.create in lablgladecc (not available in ocaml 5.0)
+
 2023.04.06 [Jacques]
   * Fix a typo in the Makefile that breaks the build with newer GNU make (#168)
     [Brad Smith]

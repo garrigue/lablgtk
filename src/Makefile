@@ -541,8 +541,8 @@ varcc$(XE): varcc.ml
 propcc$(XE): propcc.ml
 	$(LINKER) $(STREAMSLINK) -o $@ $<
 
-check_externals$(XE): check_externals.cmo
-	$(LINKER) -o $@ $<
+check_externals$(XE): check_externals.ml
+	$(LINKER) $(STREAMSLINK) -o $@ $<
 
 clean:
 	rm -f *.cm* *.o *.a *.so *.exe *.obj *.lib *.dll *_tags.[ch] *.gch \
