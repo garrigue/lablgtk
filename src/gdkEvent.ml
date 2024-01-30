@@ -121,6 +121,8 @@ module Scroll = struct
   external device : t -> device = "ml_GdkEventScroll_device"
   external x_root : t -> float = "ml_GdkEventScroll_x_root"
   external y_root : t -> float = "ml_GdkEventScroll_y_root"
+  external delta_x : t -> float = "ml_GdkEventScroll_delta_x"
+  external delta_y : t -> float = "ml_GdkEventScroll_delta_y"
 end
 
 module Key = struct

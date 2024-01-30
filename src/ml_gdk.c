@@ -548,6 +548,8 @@ Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll),
 Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), device, Val_GdkDevice)
 Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), x_root, copy_double)
 Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), y_root, copy_double)
+Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), delta_x, copy_double)
+Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), delta_y, copy_double)
 
 Make_Extractor (GdkEventKey, GdkEvent_arg(Key), state, Val_int)
 Make_Extractor (GdkEventKey, GdkEvent_arg(Key), keyval, Val_int)
