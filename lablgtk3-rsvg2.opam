@@ -1,8 +1,8 @@
 opam-version: "2.0"
 
-synopsis: "OCaml interface to GTK+ gtksourceview library"
+synopsis: "OCaml interface to Gnome rsvg2 library"
 description: """
-OCaml interface to GTK+3, gtksourceview3 library.
+OCaml interface to Gnome rsvg2 library.
 
 See https://garrigue.github.io/lablgtk/ for more information.
 """
@@ -12,18 +12,17 @@ authors: ["Jacques Garrigue et al., Nagoya University"]
 homepage: "https://github.com/garrigue/lablgtk"
 bug-reports: "https://github.com/garrigue/lablgtk/issues"
 dev-repo: "git+https://github.com/garrigue/lablgtk.git"
-doc: "https://garrigue.github.io/lablgtk/lablgtk3/lablgtk3-sourceview3"
-license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+doc: "https://garrigue.github.io/lablgtk/lablgtk3-sourceview3"
+license: "LGPL with linking exception"
 
 depends: [
-  "ocaml"                {         >= "4.09.0" }
+  "ocaml"                {         >= "4.12.0" }
   "dune"                 {         >= "1.8.0"  }
   "lablgtk3"             {          = version  }
-  "conf-gtksourceview3"  { build & >= "0"      }
-  "camlp-streams"        { build               }
+  "conf-librsvg2"        { build & >= "0"      }
 ]
 
 build: [
-  [ "dune" "subst"] {pinned}
+  [ "dune" "subst" ] {pinned}
   [ "dune" "build" "-p" name "-j" jobs ]
 ]

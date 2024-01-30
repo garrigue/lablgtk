@@ -139,6 +139,7 @@ class Statusbar set : Box {
   method push : "statusbar_context -> text:string -> statusbar_message"
   method pop : "statusbar_context ->  unit"
   method remove : "statusbar_context -> statusbar_message -> unit"
+  method remove_all : "statusbar_context -> unit"
   signal text_popped : guint gchararray
   signal text_pushed : guint gchararray
 }

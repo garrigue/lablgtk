@@ -103,6 +103,7 @@ class window_skel : 'a obj ->
     method type_hint : Gdk.Tags.window_type_hint
     method set_urgency_hint : bool -> unit (** since Gtk 2.8 *)
     method urgency_hint : bool (** since Gtk 2.8 *)
+    method get_size : unit -> int * int
 
   end
 
@@ -283,7 +284,7 @@ val message_dialog :
 
 (** {3 GtkAboutDialog} *)
 
-(** @gtkdoc gtk GtkAboutDialog 
+(** @gtkdoc gtk GtkAboutDialog
     @since GTK 2.6 *)
 class about_dialog :
   ([> Gtk.about_dialog] as 'a) Gtk.obj ->
@@ -326,12 +327,12 @@ class about_dialog :
 
   end
 
-(** Display information about an application. 
+(** Display information about an application.
 
     In GTK+ 2.6.x and 2.8.x, a default handler is already connected to
     the [response] signal. It simply hides the dialog. This is no longer
     the case since GTK+ 2.10.x though.
-    You could use it like this: 
+    You could use it like this:
 {[let about_dialog = ref (fun () -> raise Not_found)
 let show_dialog () =
   try !about_dialog ()
@@ -340,8 +341,8 @@ let show_dialog () =
     about_dialog := dialog#present ;
     dialog#show () ]}
 
-    @gtkdoc gtk GtkAboutDialog 
-    @since GTK 2.6 
+    @gtkdoc gtk GtkAboutDialog
+    @since GTK 2.6
 *)
 val about_dialog :
   ?name:string ->
@@ -389,7 +390,7 @@ class ['a] file_chooser_dialog_signals :
 (** @since GTK 2.4
     @gtkdoc gtk GtkFileChooserDialog *)
 class ['a] file_chooser_dialog :
- ([> Gtk.file_chooser|Gtk.dialog] as 'b) Gtk.obj -> 
+ ([> Gtk.file_chooser|Gtk.dialog] as 'b) Gtk.obj ->
  object
    inherit ['a] dialog_ext
    inherit GFile.chooser
@@ -438,7 +439,7 @@ class plug_signals : ([> Gtk.plug] as 'a) obj ->
     method embedded : callback:(unit -> unit) -> GtkSignal.id
   end
 
-(** Toplevel for embedding into other processes 
+(** Toplevel for embedding into other processes
    @gtkdoc gtk GtkPlug *)
 class plug : Gtk.plug obj ->
   object

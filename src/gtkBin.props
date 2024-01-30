@@ -43,7 +43,10 @@ class AspectFrame set wrap : Frame {
   "yalign"               gfloat               : Read / Write
 }
 
-class EventBox : Bin {}
+class EventBox set wrap : Bin {
+  "above-child"          gboolean             : Read / Write
+  "visible-window"       gboolean             : Read / Write
+}
 
 class Invisible : Bin {
   "screen"               GdkScreen            : Read / Write

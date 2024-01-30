@@ -75,6 +75,10 @@ class event_box : ([> Gtk.event_box] as 'a) obj ->
     val obj : 'a obj
     method connect : container_signals
     method event : event_ops
+    method above_child : bool
+    method set_above_child : bool -> unit
+    method visible_window : bool
+    method set_visible_window : bool -> unit
   end
 
 (** @gtkdoc gtk GtkEventBox *)
@@ -239,7 +243,7 @@ val viewport :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> viewport
 
-(** {3 GtkAlignment} 
+(** {3 GtkAlignment}
    A widget which controls the alignment and size of its child *)
 
 (** @gtkdoc gtk GtkAlignment *)

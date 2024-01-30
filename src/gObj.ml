@@ -264,7 +264,7 @@ and misc_signals obj = object (self)
       end
   method selection_received ~callback =
     self#connect Signals.selection_received
-      ~callback:(fun data -> callback (new selection_data data)) 
+      ~callback:(fun data -> callback (new selection_data data))
 end
 
 and misc_ops obj = object (self)
@@ -305,7 +305,7 @@ and misc_ops obj = object (self)
   method set_size_request =
     Widget.size_params [] ~cont:(fun p () -> set_params obj p)
   method set_size_chars ?desc ?lang ?width ?height () =
-    let metrics = 
+    let metrics =
       (self#pango_context : GPango.context)#get_metrics ?desc ?lang () in
     let width = may_map width ~f:
         (fun w -> w * GPango.to_pixels metrics#approx_digit_width)
@@ -340,6 +340,8 @@ and misc_ops obj = object (self)
     may_map (fun w -> new widget (unsafe_cast w)) (get P.parent obj)
   method allocation = Widget.allocation obj
   method pango_context = new GPango.context (Widget.get_pango_context obj)
+  method allocated_width = Widget.get_allocated_width obj
+  method allocated_height = Widget.get_allocated_height obj
   (* icon *)
   method render_icon ~size id =
     Widget.render_icon obj (GtkStock.convert_id id) size

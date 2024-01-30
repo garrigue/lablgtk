@@ -42,6 +42,7 @@ class statusbar_context obj ctx = object (self)
   method push text = Statusbar.push obj context ~text
   method pop () = Statusbar.pop obj context
   method remove = Statusbar.remove obj context
+  method remove_all () = Statusbar.remove_all obj context
   method flash ?(delay=1000) text =
     let msg = self#push text in
     Glib.Timeout.add delay (fun () -> self#remove msg; false);

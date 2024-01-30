@@ -72,7 +72,7 @@ CAMLprim value ml_gtkwindow_init(value unit)
     GType t =
         gtk_message_dialog_get_type() +
         gtk_color_selection_dialog_get_type() +
-        gtk_font_selection_dialog_get_type() 
+        gtk_font_selection_dialog_get_type()
 #if !defined(GDK_WINDOWING_WIN32) && !defined(GDK_WINDOWING_QUARTZ)
         + gtk_plug_get_type()
         + gtk_socket_get_type()
@@ -359,7 +359,7 @@ ML_bc6 (ml_gtk_widget_add_accelerator)
 ML_4 (gtk_widget_remove_accelerator, GtkWidget_val, GtkAccelGroup_val,
       Char_val, OptFlags_GdkModifier_val, Unit)
 
-ML_3 (gtk_widget_set_accel_path, 
+ML_3 (gtk_widget_set_accel_path,
       GtkWidget_val, String_val, GtkAccelGroup_val, Unit)
 /* deprecated since 2.0 (?)
 ML_1 (gtk_widget_lock_accelerators, GtkWidget_val, Unit)
@@ -421,6 +421,9 @@ CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
     CAMLreturn (ret);
 }
 
+ML_1 (gtk_widget_get_allocated_width, GtkWidget_val, Val_int)
+ML_1 (gtk_widget_get_allocated_height, GtkWidget_val, Val_int)
+
 #ifdef HASGTK212
 ML_1 (gtk_widget_get_tooltip_markup, GtkWidget_val, Val_string)
 ML_2 (gtk_widget_set_tooltip_markup, GtkWidget_val, String_val, Unit)
@@ -449,7 +452,7 @@ CAMLprim value ml_gtk_drag_dest_set (value w, value f, value t, value a)
 {
   GtkTargetEntry *targets = (GtkTargetEntry *)NULL;
   int n_targets, i;
-  
+
   CAMLparam4 (w,f,t,a);
   n_targets = Wosize_val(t);
   if (n_targets)
@@ -489,7 +492,7 @@ CAMLprim value ml_gtk_drag_source_set (value w, value m, value t, value a)
   GtkTargetEntry *targets = (GtkTargetEntry *)Val_unit;
   int n_targets, i;
   CAMLparam4 (w,m,t,a);
-  
+
   n_targets = Wosize_val(t);
   if (n_targets)
       targets = (GtkTargetEntry *)
@@ -744,13 +747,13 @@ ML_2 (gtk_window_remove_accel_group, GtkWindow_val,
 ML_1 (gtk_window_activate_focus, GtkWindow_val, Val_bool)
 ML_1 (gtk_window_activate_default, GtkWindow_val, Val_bool)
 CAMLprim value ml_gtk_window_set_geometry_hints (
-  value win, value pos, value min_size, value max_size, value base_size, 
+  value win, value pos, value min_size, value max_size, value base_size,
   value aspect, value resize_inc, value win_gravity, value user_pos,
   value user_size, value wid )
 {
   GdkWindowHints hints = 0;
   GdkGeometry geom;
-  
+
   if (pos != Val_unit && Field(pos,0) != Val_unit) hints |= GDK_HINT_POS;
   if (min_size != Val_unit) {
     hints |= GDK_HINT_MIN_SIZE;
@@ -825,6 +828,18 @@ ML_1 (gtk_window_reshow_with_initial_size, GtkWindow_val, Unit)
 ML_3 (gtk_window_resize, GtkWindow_val, Int_val, Int_val, Unit)
 ML_2 (gtk_window_set_role, GtkWindow_val, String_val, Unit)
 ML_1 (gtk_window_get_role, GtkWindow_val, Val_optstring)
+
+CAMLprim value ml_gtk_window_get_size(value window)
+{
+  CAMLparam0();
+  CAMLlocal1(res) ;
+  res = alloc_tuple(2) ;
+  int w, h ;
+  gtk_window_get_size (GtkWindow_val(window), &w, &h);
+  Store_field(res, 0, Val_int(w));
+  Store_field(res, 1, Val_int(h));
+  CAMLreturn(res);
+}
 
 /* gtkmessagedialog.h */
 #define GtkMessageDialog_val(v) check_cast(GTK_MESSAGE_DIALOG,v)
