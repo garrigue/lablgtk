@@ -1,8 +1,8 @@
-# LablGTK3 3.1.3 : an interface to the GIMP Tool Kit
+# LablGTK3 3.1.4 : an interface to the GIMP Tool Kit
 
 ## Dependencies
 
-- ocaml >= 4.05.0  (including 5.0)
+- ocaml >= 4.05.0  (including 5.0 and 5.1)
 - gtk+ >= 3.18
 - dune >= 1.8
 - camlp5 (for developer build only)
