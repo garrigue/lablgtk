@@ -133,8 +133,8 @@ end
 
 let layout ?hadjustment ?vadjustment ?layout_width ?layout_height =
   Layout.make_params []
-    ?hadjustment:(may_map GData.as_adjustment hadjustment)
-    ?vadjustment:(may_map GData.as_adjustment vadjustment)
+    ?hadjustment:(may_map ~f:GData.as_adjustment hadjustment)
+    ?vadjustment:(may_map ~f:GData.as_adjustment hadjustment)
     ?width:layout_width ?height:layout_height ~cont:(
   pack_container ~create:(fun p -> new layout (Layout.create p)))
 
@@ -204,14 +204,14 @@ class size_group (obj : [> `sizegroup] obj) = object
  method remove_widget : 'a. (#widget as 'a) -> _ = fun w -> SizeGroup.remove_widget obj w#as_widget
 end
 
-let size_group_new ?mode () =
+let _size_group_new ?mode () =
   GtkPack.SizeGroup.make_params ?mode [] ~cont:(
   fun _ -> new size_group (GtkPack.SizeGroup.new_ ()))
 
 class notebook_signals obj = object (self)
   inherit container_signals_impl obj
   method switch_page ~callback = 
-    self#connect Notebook.S.switch_page (fun _ arg1 -> callback arg1)
+    self#connect Notebook.S.switch_page ~callback:(fun _ arg1 -> callback arg1)
   inherit notebook_sigs
 end
 

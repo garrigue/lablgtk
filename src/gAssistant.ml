@@ -49,11 +49,11 @@ class assistant obj = object (self)
     ~position w
     = 
     let n = Assistant.insert_page obj w position in
-    may (self#set_page_type w) page_type;
-    may (self#set_page_title w) title;
-    may (self#set_page_header_image w) header_image;
-    may (self#set_page_side_image w) side_image;
-    may (self#set_page_complete w) complete;
+    may ~f:(self#set_page_type w) page_type;
+    may ~f:(self#set_page_title w) title;
+    may ~f:(self#set_page_header_image w) header_image;
+    may ~f:(self#set_page_side_image w) side_image;
+    may ~f:(self#set_page_complete w) complete;
     n
   method append_page ?page_type ?title ?header_image ?side_image ?complete w = 
     self#insert_page ?page_type ?title ?header_image ?side_image ?complete ~position:(-1) w
@@ -82,7 +82,7 @@ let make_assistant ~create =
   GtkWindow.Window.make_params ~cont:(fun pl ?wmclass ->
     Container.make_params pl ~cont:(fun pl ?(show=false) () ->
       let (w : #GWindow.window_skel) = create pl in
-      may (fun (name,clas) -> w#set_wmclass ~name ~clas) wmclass;
+      may ~f:(fun (name,clas) -> w#set_wmclass ~name ~clas) wmclass;
       if show then w#show ();
       w))
 

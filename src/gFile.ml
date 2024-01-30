@@ -34,7 +34,7 @@ end
 
 let filter ?name ?(patterns=[]) ?(mime_types=[]) () =
    let w = FileFilter.create () in
-   Gaux.may (FileFilter.set_name w) name ;
+   Gaux.may ~f:(FileFilter.set_name w) name ;
    List.iter (FileFilter.add_pattern w) patterns ;
    List.iter (FileFilter.add_mime_type w) mime_types ;
    new filter w

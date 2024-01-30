@@ -40,7 +40,7 @@ let cannot_sync () =
 let gui_safe () =
   not (Sys.os_type = "Win32") || !loop_id = Some(Thread.id (Thread.self ()))
 
-let has_jobs () = not (with_jobs Queue.is_empty)
+let _has_jobs () = not (with_jobs Queue.is_empty)
 let n_jobs () = with_jobs Queue.length
 let do_next_job () = with_jobs Queue.take ()
 let has_timeout = ref false
@@ -50,7 +50,7 @@ let async j x = with_jobs
         GtkSignal.safe_call j x ~where:"asynchronous call") jobs;
       if not !has_timeout then begin
         has_timeout := true;
-        ignore (Glib.Timeout.add 1 (fun () -> has_timeout := false; false))
+        ignore (Glib.Timeout.add ~ms:1 ~callback:(fun () -> has_timeout := false; false))
       end)
 type 'a result = Val of 'a | Exn of exn | NA
 let sync f x =
@@ -71,7 +71,7 @@ let sync f x =
 let do_jobs_delay = ref 0.013;;
 let set_do_jobs_delay d = do_jobs_delay := max 0. d;;
 let do_jobs () =
-  for i = 1 to n_jobs () do do_next_job () done;
+  for _i = 1 to n_jobs () do do_next_job () done;
   true
 
 

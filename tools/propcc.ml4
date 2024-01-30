@@ -483,7 +483,7 @@ let process_file f =
             (type_name name ~attrs);
           may_cons_props cprops;
           out "@ @[<hov2>Object.make";
-          out "@ (if dir = `HORIZONTAL then \"%sH%s\" else \"%sV%s\")@  pl"
+          out "@ ~classe:(if dir = `HORIZONTAL then \"%sH%s\" else \"%sV%s\")@  pl"
             !prefix name !prefix name;
           out "@]@]";
         end else begin
@@ -492,7 +492,7 @@ let process_file f =
           if List.mem_assoc "gobject" ~map:attrs then
             out "@ Gobject.unsafe_create"
           else out "@ Object.make";
-           out " \"%s\" pl@]" gtk_class;
+           out " ~classe:\"%s\" pl@]" gtk_class;
         end
       end;
       List.iter meths ~f:

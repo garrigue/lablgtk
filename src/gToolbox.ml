@@ -86,15 +86,15 @@ let question_box ?parent ~title  ~buttons ?(default=1) ?icon message =
         let b = GButton.button ~label: button_label 
             ~packing:(bbox#pack ~expand:true ~padding:4) ()
         in
-        b#connect#clicked ~callback:
-          (fun () -> button_nb := n; window#destroy ());
+        let _sigid = b#connect#clicked ~callback:
+          (fun () -> button_nb := n; window#destroy ()) in
         (* If it's the first button then give it the focus *)
         if n = default then b#grab_default () else ();
 
         iter_buttons (n+1) q
   in
   iter_buttons 1 buttons;
-  window#connect#destroy ~callback: GMain.Main.quit;
+  let _sigid = window#connect#destroy ~callback: GMain.Main.quit in
   window#set_position `CENTER;
   window#show ();
   GMain.Main.main ();
@@ -110,7 +110,7 @@ let input_widget ?parent ~widget ~event ~get_text ~bind_ok ~expand
   let retour = ref None in
   let destroy_with_parent = Gaux.may_map ~f:(fun _ -> true) parent in
   let window = GWindow.dialog ?parent ?destroy_with_parent ~title ~modal:true () in
-  window#connect#destroy ~callback: GMain.Main.quit;
+  let _sigid = window#connect#destroy ~callback: GMain.Main.quit in
   let main_box = window#vbox in
   let hbox_boutons = window#action_area in
 
@@ -133,8 +133,8 @@ let input_widget ?parent ~widget ~event ~get_text ~bind_ok ~expand
     retour := None;
     window#destroy () 
   in
-  wb_ok#connect#clicked f_ok;
-  wb_cancel#connect#clicked f_cancel;
+  let _sid = wb_ok#connect#clicked ~callback:f_ok in
+  let _sid = wb_cancel#connect#clicked ~callback:f_cancel in
 
   (* the enter key is linked to the ok action *)
   (* the escape key is linked to the cancel action *)
@@ -154,7 +154,7 @@ let input_widget ?parent ~widget ~event ~get_text ~bind_ok ~expand
 let input_string ?parent ~title ?ok ?cancel ?(text="") message =
   let we_chaine = GEdit.entry ~text () in
   if text <> "" then
-    we_chaine#select_region 0 (we_chaine#text_length);
+    we_chaine#select_region ~start:0 ~stop:(we_chaine#text_length);
   input_widget ?parent ~widget:we_chaine#coerce ~event:we_chaine#event
     ~get_text:(fun () -> we_chaine#text) ~bind_ok:true
     ~expand: false
@@ -326,9 +326,9 @@ type 'a shortcut_specification = {
 (* mk_keys turns keys from a key_combination into a format which can be used in
 * a GTK+ RC file. *)
 let mk_keys (mods, c) =
-  let mods = List.map (function `A -> "<Alt>" | `C -> "<Control>" | `S ->
+  let mods = List.map ~f:(function `A -> "<Alt>" | `C -> "<Control>" | `S ->
     "<Shift>") mods in
-  (String.concat "" mods) ^ (String.make 1 (Char.uppercase_ascii c))
+  (String.concat ~sep:"" mods) ^ (String.make 1 (Char.uppercase_ascii c))
 
 (* Signal creation for shortcuts unfortunately requires us to create an
  * in-memory gtkrc file which this function do. *)

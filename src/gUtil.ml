@@ -52,8 +52,12 @@ class ['a] signal () = object (self)
     List.exists callbacks ~f:
       begin fun (_,f) ->
         let old = GtkSignal.push_callback () in
-        try f arg; GtkSignal.pop_callback old
-        with exn -> GtkSignal.pop_callback old; raise exn
+        try
+          f arg;
+          GtkSignal.pop_callback old
+        with exn ->
+          let _ = GtkSignal.pop_callback old in
+          raise exn
       end;
     ()
   method disconnect key =

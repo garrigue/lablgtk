@@ -22,7 +22,6 @@
 
 (* $Id$ *)
 
-open Gaux
 open Gobject
 open Gtk
 open Tags

@@ -23,12 +23,8 @@
 (* $Id$ *)
 
 open StdLabels
-open Gaux
 open Gobject
-open Gtk
-open Tags
 open GtkEditProps
-open GtkBase
 
 module Editable = struct
   include Editable

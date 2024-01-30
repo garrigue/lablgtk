@@ -25,7 +25,6 @@
 open Gobject
 open Gtk
 open GObj
-open GContainer
 
 (** Tree and list widgets
    @gtkdoc gtk TreeWidget *)
@@ -88,8 +87,9 @@ class model : ([> `treemodel] as 'a) obj ->
     method iter_next : tree_iter -> bool
     method iter_has_child : tree_iter -> bool
     method iter_n_children : tree_iter option -> int
-    method iter_children : ?nth:int -> tree_iter option -> tree_iter 
+    method iter_children : ?nth:int -> tree_iter option -> tree_iter
       (** @raise Invalid_argument if arguments do not designate a valid node *)
+
     method iter_parent : tree_iter -> tree_iter option
     method foreach : (tree_path -> tree_iter -> bool) -> unit
     method row_changed : tree_path -> tree_iter -> unit
@@ -134,8 +134,11 @@ class tree_store : Gtk.tree_store ->
     method is_ancestor : iter:tree_iter -> descendant:tree_iter -> bool
     method iter_depth : tree_iter -> int
     method iter_is_valid : tree_iter -> bool (** @since GTK 2.2 *)
+
     method move_after : iter:tree_iter -> pos:tree_iter -> bool (** @since GTK 2.2 *)
+
     method move_before : iter:tree_iter -> pos:tree_iter -> bool (** @since GTK 2.2 *)
+
     method prepend : ?parent:tree_iter -> unit -> tree_iter
     method remove : tree_iter -> bool
     method set : row:tree_iter -> column:'a column -> 'a -> unit
@@ -156,8 +159,11 @@ class list_store : Gtk.list_store ->
     method insert_after : tree_iter -> tree_iter
     method insert_before : tree_iter -> tree_iter
     method iter_is_valid : tree_iter -> bool (** @since GTK 2.2 *)
+
     method move_after : iter:tree_iter -> pos:tree_iter -> bool (** @since GTK 2.2 *)
+
     method move_before : iter:tree_iter -> pos:tree_iter -> bool (** @since GTK 2.2 *)
+
     method prepend : unit -> tree_iter
     method remove : tree_iter -> bool
     method set : row:tree_iter -> column:'a column -> 'a -> unit
@@ -247,6 +253,7 @@ class selection :
     method connect : selection_signals
     method misc : gobject_ops
     method count_selected_rows : int (** @since GTK 2.2 *)
+
     method get_mode : Tags.selection_mode
     method get_selected_rows : tree_path list
     method iter_is_selected : tree_iter -> bool
@@ -278,6 +285,7 @@ class cell_layout : ([> Gtk.cell_layout] as 'a) Gtk.obj ->
       ?from:Tags.pack_type -> #cell_renderer -> unit
    (** @param expand default value is [false]
        @param from default value is [`START] *)
+
     method reorder : #cell_renderer -> int -> unit
     method clear : unit -> unit
     method add_attribute : #cell_renderer -> string -> 'b column -> unit
@@ -403,7 +411,9 @@ class view : tree_view obj ->
     method expand_all : unit -> unit
     method expand_row : ?all:bool -> tree_path -> unit
     (** @param all default value is [false] *)
+
     method expand_to_path : tree_path -> unit (** @since GTK 2.2 *)
+
     method expander_column : view_column option
     method fixed_height_mode : bool
     method get_column : int -> view_column
@@ -430,8 +440,10 @@ class view : tree_view obj ->
     method selection : selection
     method set_cursor :
       ?cell:#cell_renderer ->
-      ?edit:bool -> tree_path -> view_column -> unit (** @since GTK 2.2 *)
-    (** @param edit default value is [false] *)
+      ?edit:bool -> tree_path -> view_column -> unit
+    (** @since GTK 2.2
+        @param edit default value is [false] *)
+
     method set_enable_search : bool -> unit
     method set_expander_column : view_column option -> unit
     method set_fixed_height_mode : bool -> unit
@@ -448,16 +460,24 @@ class view : tree_view obj ->
     method vadjustment : GData.adjustment
 
     method hover_expand : bool (** @since GTK 2.6 *)
+
     method set_hover_expand : bool -> unit (** @since GTK 2.6 *)
+
     method hover_selection : bool (** @since GTK 2.6 *)
+
     method set_hover_selection : bool -> unit (** @since GTK 2.6 *)
+
     method set_row_separator_func :
         (model -> tree_iter -> bool) option -> unit (** @since GTK 2.6 *)
+
     method enable_grid_lines : GtkEnums.tree_view_grid_lines
         (** @since GTK 2.10 *)
+
     method enable_tree_lines : bool (** @since GTK 2.10 *)
+
     method set_enable_grid_lines : GtkEnums.tree_view_grid_lines -> unit
         (** @since GTK 2.10 *)
+
     method set_enable_tree_lines : bool -> unit
         (** @since GTK 2.10 *)
     end

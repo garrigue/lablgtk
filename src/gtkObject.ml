@@ -20,7 +20,6 @@
 (*                                                                        *)
 (**************************************************************************)
 
-open Gtk
 open Gobject
 
 let cast w : [`giu] obj = try_cast w "GInitiallyUnowned"

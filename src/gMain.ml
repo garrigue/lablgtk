@@ -22,7 +22,6 @@
 
 (* $Id$ *)
 
-open Gtk
 open GtkMain
 open GObj
 

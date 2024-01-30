@@ -111,8 +111,10 @@ module FileChooser = struct
   external list_shortcut_folder_uris : [> Gtk.file_chooser] Gtk.obj -> string list
       = "ml_gtk_file_chooser_list_shortcut_folder_uris"
 
-  let dialog_create pl : [Gtk.dialog|Gtk.file_chooser] Gtk.obj = GtkObject.make "GtkFileChooserDialog" pl
-  let widget_create pl : [Gtk.widget|Gtk.file_chooser] Gtk.obj = GtkObject.make "GtkFileChooserWidget" pl
+  let dialog_create pl : [Gtk.dialog|Gtk.file_chooser] Gtk.obj =
+    GtkObject.make ~classe:"GtkFileChooserDialog" pl
+  let widget_create pl : [Gtk.widget|Gtk.file_chooser] Gtk.obj =
+    GtkObject.make ~classe:"GtkFileChooserWidget" pl
 end
 
 module FileChooserButton = GtkFileProps.FileChooserButton

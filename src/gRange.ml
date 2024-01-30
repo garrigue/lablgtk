@@ -61,11 +61,11 @@ end
 
 let scale dir ?adjustment =
   Scale.make_params [] ~cont:(
-  Range.make_params ?adjustment:(may_map GData.as_adjustment adjustment)
+  Range.make_params ?adjustment:(may_map ~f:GData.as_adjustment adjustment)
     ~cont:(fun pl ?packing ?show params ->
       pack_return (new scale (Scale.create dir pl)) ~packing ~show))
 
 let scrollbar dir ?adjustment =
-  Range.make_params [] ?adjustment:(may_map GData.as_adjustment adjustment)
+  Range.make_params [] ?adjustment:(may_map ~f:GData.as_adjustment adjustment)
     ~cont:(fun pl ?packing ?show params ->
       pack_return (new range (Scrollbar.create dir pl)) ~packing ~show)

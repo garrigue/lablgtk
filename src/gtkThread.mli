@@ -31,20 +31,25 @@
     to [main] will be automatically routed through [sync].
     With system threads, the ocaml giant lock is now released on
     polling, so that other ocaml threads can run without busy wait. *)
+
 val main : unit -> unit
 (** Setting [busy_waiting] to [true] forces the main loop to be
     non-blocking. This is required with VM threads.
     The default value is set to [true] at startup if the environment
     variable [LABLGTK_BUSY_WAIT] is set to something other than [0]. *)
+
 val busy_waiting : bool ref
 (** Start the main loop in a new GUI thread. Do not use recursively.
     Do not use with the Quartz backend, as the GUI must imperatively
     run in the main thread. *)
+
 val start : unit -> Thread.t
 (** The real main function *)
+
 val thread_main : unit -> unit
 (** Forget the current GUI thread. The next call to [main]
     will register its caller as GUI thread. *)
+
 val reset : unit -> unit
 
 (* Jobs are needed for windows and quartz, as you cannot do GTK work from
@@ -59,14 +64,17 @@ val reset : unit -> unit
 (** Add an asynchronous job (to do in the main thread) *)
 val async : ('a -> unit) -> 'a -> unit
 (** Add a synchronous job (to do in the main thread) *)
+
 val sync : ('a -> 'b) -> 'a -> 'b
 (** Whether it is safe to call most GTK functions directly from
     the current thread *)
+
 val gui_safe : unit -> bool
 (** Allow other threads to run, and process the message queue.
     The following ensures that messages will be processed even
     if another main loop is running:
       [Glib.Timeout.add ~ms:100 ~callback:GtkThread.do_jobs] *)
+
 val do_jobs : unit -> bool
 
 (** Set the delay used in the main loop when [busy_waiting] is [true].

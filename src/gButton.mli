@@ -24,7 +24,6 @@
 
 open Gtk
 open GObj
-open GContainer
 
 (** A widget that creates a signal when clicked on *)
 
@@ -50,15 +49,22 @@ class button_skel : 'a obj ->
     method set_focus_on_click : bool -> unit
     method focus_on_click : bool
     method image : GObj.widget             (** @since GTK 2.6 *)
+
     method set_image : GObj.widget -> unit (** @since GTK 2.6 *)
+
     method unset_image : unit -> unit      (** @since GTK 2.6 *)
+
     method image_position : GtkEnums.position_type  (** @since GTK 2.10 *)
-    method set_image_position : GtkEnums.position_type -> unit 
+
+    method set_image_position : GtkEnums.position_type -> unit
 	(** @since GTK 2.10 *)
- 
+
     method set_xalign : float -> unit  (** @since GTK 2.4 *)
+
     method xalign     : float          (** @since GTK 2.4 *)
+
     method set_yalign : float -> unit  (** @since GTK 2.4 *)
+
     method yalign     : float          (** @since GTK 2.4 *)
   end
 
@@ -207,8 +213,10 @@ class color_button :
     @gtkdoc gtk GtkColorButton
     @since GTK 2.4 *)
 val color_button :
-  ?color:Gdk.color -> (** @deprecated GTK 3.4; exclusive of rgba *)
-  ?rgba:Gdk.rgba -> (** @since GTK 3.0 *)
+  ?color:Gdk.color -> (* @deprecated GTK 3.4; exclusive of rgba *)
+
+  ?rgba:Gdk.rgba -> (* @since GTK 3.0 *)
+
   ?title:string ->
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> color_button
 
@@ -297,6 +305,7 @@ class toolbar :
     method connect : toolbar_signals
     method insert : ?pos:int -> #tool_item_o -> unit 
     (** @param pos default value is [-1] i.e. end of the toolbar *)
+
     method get_n_items : int
     method get_nth_item : int -> [`toolitem] obj
     method get_item_index : Gtk.tool_item obj -> int

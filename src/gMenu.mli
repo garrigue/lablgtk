@@ -24,7 +24,6 @@
 
 open Gtk
 open GObj
-open GContainer
 
 (** Menus *)
 

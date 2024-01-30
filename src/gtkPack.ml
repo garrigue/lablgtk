@@ -22,12 +22,9 @@
 
 (* $Id$ *)
 
-open Gaux
-open Gobject
 open Gtk
 open Tags
 open GtkPackProps
-open GtkBase
 
 module Box = struct
   include Box

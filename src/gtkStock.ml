@@ -292,13 +292,13 @@ end
 
 let make_icon_source ?filename ?pixbuf ?direction ?state ?size () =
   let s = Icon_source.new_icon_source () in
-  Gaux.may (Icon_source.set_filename s) filename ;
-  Gaux.may (Icon_source.set_pixbuf s) pixbuf ;
-  Gaux.may (fun p -> Icon_source.set_direction_wildcarded s false ; 
+  Gaux.may ~f:(Icon_source.set_filename s) filename ;
+  Gaux.may ~f:(Icon_source.set_pixbuf s) pixbuf ;
+  Gaux.may ~f:(fun p -> Icon_source.set_direction_wildcarded s false ;
     Icon_source.set_direction s p) direction ;
-  Gaux.may (fun p -> Icon_source.set_state_wildcarded s false ; 
+  Gaux.may ~f:(fun p -> Icon_source.set_state_wildcarded s false ;
     Icon_source.set_state s p) state ;
-  Gaux.may (fun p -> Icon_source.set_size_wildcarded s false ; 
+  Gaux.may ~f:(fun p -> Icon_source.set_size_wildcarded s false ;
     Icon_source.set_size s p) size ;
   s
 

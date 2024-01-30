@@ -168,6 +168,7 @@ val tree_selection_dialog :
 
 (** {2 Keyboard shortcuts}
 Associate messages to key combinations. *)
+
 (** A keyboard shorcut: a combination of Alt, Control and Shift and a letter. *)
 type key_combination = [ `A | `C | `S ] list * char
 

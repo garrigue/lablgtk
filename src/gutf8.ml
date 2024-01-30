@@ -65,7 +65,7 @@ let write_unichar s ~pos (c : unichar) =
   end;
   pos := p + len
 
-let sub_string s ~pos ~len = Bytes.sub_string s pos len
+let sub_string s ~pos ~len = Bytes.sub_string s ~pos ~len
 
 let from_unichar (n : unichar) =
   let s = Bytes.create 6 and pos = ref 0 in
@@ -89,7 +89,7 @@ let to_unichar s ~pos : unichar =
   let n = hi_bits c in
   if n = 0 then c else (* if string is valid then 2 <= n <= 6 *)
   let u = ref (c land (1 lsl (7-n) - 1)) in
-  for i = 1 to n-1 do
+  for _i = 1 to n-1 do
     let c = Char.code s.[!pos] in
     u := !u lsl 6 + c land 0x3f ;
     incr pos
@@ -112,7 +112,7 @@ let to_unichar_validated s ~pos : unichar =
     if !pos + n > String.length s then
       raise (Error(PARTIAL_INPUT, "partial UTF-8 character"));
     let u = ref (c land (1 lsl (7-n) - 1)) in
-    for i = 1 to n-1 do
+    for _i = 1 to n-1 do
       let c = Char.code s.[!pos] in
       if c lsr 6 <> 0b10 then raise_bad_utf8 () ;
       u := !u lsl 6 + c land 0x3f ;

@@ -22,7 +22,6 @@
 
 (* $Id$ *)
 
-open Gaux
 open Gdk
 open Tags
 

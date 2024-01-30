@@ -41,7 +41,7 @@ type mark = [mark_name | `MARK of text_mark]
 class child_anchor obj = object
   method get_oid = Gobject.get_oid obj
   method as_childanchor : text_child_anchor = obj
-  method widgets = List.map (new widget) (ChildAnchor.get_widgets obj)
+  method widgets = List.map ~f:(new widget) (ChildAnchor.get_widgets obj)
   method deleted = ChildAnchor.get_deleted obj
 end
 
@@ -137,7 +137,7 @@ class tag obj = object (self)
   method set_property p =
     Gobject.set_params obj [text_tag_param p]
   method set_properties l =
-    Gobject.set_params obj (List.map text_tag_param l)
+    Gobject.set_params obj (List.map ~f:text_tag_param l)
   method get_property : 'a. (_,'a) Gobject.property -> 'a =
     Gobject.Property.get obj
 end
@@ -226,7 +226,7 @@ object (self)
     Iter.get_visible_text it stop#as_iter
 
   method marks = Iter.get_marks it
-  method get_toggled_tags b = List.map (fun x -> new tag x)
+  method get_toggled_tags b = List.map ~f:(fun x -> new tag x)
 			      (Iter.get_toggled_tags it b)
   method begins_tag (tag : tag option) =
     Iter.begins_tag it (may_map tag ~f:(fun t -> t#as_tag))
@@ -235,7 +235,7 @@ object (self)
   method toggles_tag (tag : tag option) =
     Iter.toggles_tag it (may_map tag ~f:(fun t -> t#as_tag))
   method has_tag (t : tag) = Iter.has_tag it t#as_tag
-  method tags = List.map (fun t -> new tag t) (Iter.get_tags it)
+  method tags = List.map ~f:(fun t -> new tag t) (Iter.get_tags it)
 
   method editable = Iter.editable it
   method can_insert = Iter.can_insert it
@@ -573,7 +573,7 @@ class buffer_skel obj = object(self)
     Buffer.insert_child_anchor obj iter#as_iter child_anchor#as_childanchor
   method paste_clipboard ?iter ?(default_editable=true) clipboard =
     Buffer.paste_clipboard obj (GData.as_clipboard clipboard)
-      (may_map as_iter iter) default_editable
+      (may_map ~f:as_iter iter) default_editable
   method copy_clipboard clip =
     Buffer.copy_clipboard obj (GData.as_clipboard clip)
   method cut_clipboard ?(default_editable=true) clipboard =

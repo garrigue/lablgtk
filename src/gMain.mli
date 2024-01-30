@@ -32,11 +32,14 @@ module Main : sig
     (** [init] also sets the locale and returns its name.
        Either set [~setlocale] to [false] or GTK_SETLOCALE to "0"
        if you don't want to the locale to be set *)
+
   val main : unit -> unit
     (** [main] runs the main loop, until [quit] is called.
        {e Do not use in multi-threaded programs.} *)
+
   val quit : unit -> unit
     (** quit the main loop *)
+
   val version : int * int * int
     (** [major, minor, micro] *)
 end
@@ -60,8 +63,11 @@ end
 
 module Event : sig
   val get_current_time : unit -> int32     (** May return GDK_CURRENT_TIME *)
+
   val get_current : unit -> GdkEvent.any       (** May raise Gpointer.Null *)
+
   val get_widget : 'a Gdk.event -> widget obj  (** May raise Gpointer.Null *)
+
   val propagate : [> `widget] obj -> 'a Gdk.event -> unit
 end
 
@@ -98,5 +104,6 @@ module Gc_custom : sig
     (** make the allocation of custom blocks contribute more or less to
         the GC cycle. 0 means do nothing, 100 is as in lablgtk 2.18.3.
         The default is 10. *)
+
   val get_speed : unit -> int
 end

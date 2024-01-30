@@ -26,7 +26,6 @@ open Gaux
 open Gobject
 open Gtk
 open GtkMenuProps
-open GtkBase
 
 module MenuItem = struct
   include MenuItem

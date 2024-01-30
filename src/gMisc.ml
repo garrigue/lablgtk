@@ -44,7 +44,7 @@ class statusbar_context obj ctx = object (self)
   method remove = Statusbar.remove obj context
   method flash ?(delay=1000) text =
     let msg = self#push text in
-    Glib.Timeout.add delay (fun () -> self#remove msg; false);
+    let _ = Glib.Timeout.add ~ms:delay ~callback:(fun () -> self#remove msg; false) in
     ()
 end
 
@@ -164,7 +164,7 @@ let arrow =
   Misc.all_params ~cont:(fun p ?packing ?show () ->
     pack_return (new arrow (Arrow.create p)) ~packing ~show))
 
-class image obj = object (self)
+class image obj = object (_self)
   inherit misc obj
   inherit image_props
   method clear () = Image.clear obj
@@ -179,7 +179,7 @@ let image =
   Misc.all_params ~cont:(fun p ?packing ?show () ->
     pack_return (new image (Image.create p)) ~packing ~show))
 
-class label_skel obj = object(self)
+class label_skel obj = object(_self)
   inherit misc obj
   inherit label_props
   method text = GtkMiscProps.Label.get_text obj
@@ -197,7 +197,7 @@ end
 let label ?text ?markup ?use_underline ?mnemonic_widget =
   let label, use_markup =
     if markup = None then text, None else markup, Some true in
-  let mnemonic_widget = may_map (fun w -> w#as_widget) mnemonic_widget in
+  let mnemonic_widget = may_map ~f:(fun w -> w#as_widget) mnemonic_widget in
   Label.make_params [] ?label ?use_markup ?use_underline ?mnemonic_widget
     ~cont:(
   Misc.all_params ~cont:(fun p ?packing ?show () ->

@@ -30,7 +30,7 @@ open GtkData
 open GObj
 open OgtkBaseProps
 
-class adjustment_signals obj = object (self)
+class adjustment_signals obj = object (_self)
   inherit [_] gobject_signals obj
   inherit adjustment_sigs
 end
@@ -42,11 +42,11 @@ class adjustment obj = object (self)
   method connect = new adjustment_signals obj
   method clamp_page = Adjustment.clamp_page obj
   method set_bounds ?lower ?upper ?step_incr ?page_incr ?page_size () =
-    may self#set_lower lower;
-    may self#set_upper upper;
-    may self#set_step_increment step_incr;
-    may self#set_page_increment page_incr;
-    may self#set_page_size page_size
+    may ~f:self#set_lower lower;
+    may ~f:self#set_upper upper;
+    may ~f:self#set_step_increment step_incr;
+    may ~f:self#set_page_increment page_incr;
+    may ~f:self#set_page_size page_size
 end
 
 let adjustment ?(value=0.) ?(lower=0.) ?(upper=100.)
@@ -87,7 +87,7 @@ end
 
 (* Additions by SooHyoung Oh *)
 
-let default_get_cb context ~info ~time  = ()
+let default_get_cb _context ~info:_ ~time:_  = ()
 
 class clipboard ~selection = object (self)
   inherit clipboard_skel (lazy (GtkBase.Clipboard.get selection))
@@ -118,7 +118,7 @@ class clipboard ~selection = object (self)
     self#call_clear;
     get_cb <- get_func;
     clear_cb <- Some clear_func;
-    widget#misc#grab_selection selection;
+    let _ = widget#misc#grab_selection selection in
     widget#misc#clear_selection_targets selection;
     List.iter
       (fun target -> widget#misc#add_selection_target ~target selection)

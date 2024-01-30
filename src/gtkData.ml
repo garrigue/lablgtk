@@ -22,7 +22,6 @@
 
 (* $Id$ *)
 
-open Gaux
 open Gobject
 open GtkBaseProps
 open Gtk

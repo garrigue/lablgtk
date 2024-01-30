@@ -25,7 +25,6 @@
 open Gaux
 open Gobject
 open Gtk
-open Tags
 open GtkButtonProps
 open GtkBase
 
@@ -45,7 +44,8 @@ end
 
 module ToggleButton = struct
   include ToggleButton
-  let create_check pl : toggle_button obj = Object.make "GtkCheckButton" pl
+  let create_check pl : toggle_button obj =
+    Object.make ~classe:"GtkCheckButton" pl
   external toggled : [>`toggle] obj -> unit
       = "ml_gtk_toggle_button_toggled"
 end

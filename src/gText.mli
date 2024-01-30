@@ -400,19 +400,23 @@ object
   method create_mark :
     ?name:string -> ?left_gravity:bool -> iter -> text_mark
   (** @param left_gravity default value is [true] *)
+
   method create_tag : ?name:string -> tag_property list -> tag
   method cut_clipboard : ?default_editable:bool -> GData.clipboard -> unit
    (** @param default_editable default value is [true] *)
+
   method delete : start:iter -> stop:iter -> unit
   method delete_interactive :
     start:iter ->
     stop:iter -> ?default_editable:bool -> unit -> bool
   (** @param default_editable default value is [true] *)
+
   method delete_mark : mark -> unit
   method delete_selection :
     ?interactive:bool -> ?default_editable:bool -> unit -> bool
   (** @param interactive default value is [true]
       @param default_editable default value is [true] *)
+
   method end_iter : iter
   method end_user_action : unit -> unit
   method get_iter : position -> iter
@@ -425,6 +429,7 @@ object
     ?start:iter -> ?stop:iter -> ?slice:bool -> ?visible:bool -> unit -> string
   (** @param slice default value is [false]
       @param visible default value is [false] *)
+
   method insert :
     ?iter:iter -> ?tag_names:string list -> ?tags:tag list
     -> string -> unit
@@ -432,6 +437,7 @@ object
   method insert_interactive :
     ?iter:iter -> ?default_editable:bool -> string -> bool
   (** @param default_editable default value is [true] *)
+
   method insert_pixbuf : iter:iter -> pixbuf:GdkPixbuf.pixbuf -> unit
   method insert_range :
     iter:iter -> start:iter -> stop:iter -> unit
@@ -439,14 +445,17 @@ object
     iter:iter -> start:iter -> stop:iter ->
     ?default_editable:bool -> unit -> bool
   (** @param default_editable default value is [true] *)
+
   method line_count : int
   method modified : bool
   method move_mark : mark -> where:iter -> unit
   method paste_clipboard :
     ?iter:iter -> ?default_editable:bool -> GData.clipboard -> unit
   (** @param default_editable default value is [true] *)
+
   method place_cursor : where:iter -> unit
   method select_range : iter -> iter -> unit (** @since GTK 2.4 *)
+
   method remove_all_tags : start:iter -> stop:iter -> unit
   method remove_selection_clipboard : GData.clipboard -> unit
   method remove_tag : tag -> start:iter -> stop:iter -> unit
@@ -457,6 +466,7 @@ object
   method start_iter : iter
   method tag_table : text_tag_table
   method has_selection : bool (**  since Gtk 2.10 *)
+
   method cursor_position : int (**  since Gtk 2.10 *)
 end
 
@@ -575,10 +585,12 @@ object
     ?use_align:bool ->
     ?xalign:float -> ?yalign:float -> iter -> bool
   (** @param use_align default value is [false] *)
+
   method scroll_to_mark :
     ?within_margin:float ->
     ?use_align:bool -> ?xalign:float -> ?yalign:float -> mark -> unit
   (** @param use_align default value is [false] *)
+
   method set_accepts_tab : bool -> unit
   method set_border_window_size :
     typ:[ `BOTTOM | `LEFT | `RIGHT | `TOP] -> size:int -> unit

@@ -101,7 +101,7 @@ end
 let radio_action ?group ~name ~value () =
   new radio_action (RadioAction.create 
 		      (Gobject.Property.may_cons RadioAction.P.group
-			 (Gaux.may_map (fun g -> Some (g#as_radio_action)) group)
+			 (Gaux.may_map ~f:(fun g -> Some (g#as_radio_action)) group)
 			 [ Gobject.param Action.P.name name ;
 			   Gobject.param RadioAction.P.value value ]))
 
@@ -115,18 +115,18 @@ class action_group_signals obj = object (self)
 	(Gobject.Data.gobject : Gtk.action Gtk.obj Gobject.data_conv) 
 	GObj.conv_widget
        "GtkActionGroup::connect_proxy" f}
-      (fun o -> callback (new action o))
+      ~callback:(fun o -> callback (new action o))
   method disconnect_proxy ~callback = self#connect
     {ActionGroup.S.disconnect_proxy with GtkSignal.marshaller = fun f ->
      GtkSignal.marshal2 
 	(Gobject.Data.gobject : Gtk.action Gtk.obj Gobject.data_conv) 
 	GObj.conv_widget
 	"GtkActionGroup::disconnect_proxy" f}
-      (fun o -> callback (new action o))
+      ~callback:(fun o -> callback (new action o))
   method post_activate ~callback = self#connect ActionGroup.S.post_activate
-      (fun o -> callback (new action o))
+      ~callback:(fun o -> callback (new action o))
   method pre_activate ~callback = self#connect ActionGroup.S.pre_activate
-      (fun o -> callback (new action o))
+      ~callback:(fun o -> callback (new action o))
 end
 
 class action_group obj = object
@@ -152,9 +152,9 @@ type 'a entry = action_group -> 'a
 
 let add_single_action ret a ?stock ?label ?accel ?tooltip
     (group : #action_group) =
-  Gaux.may a#set_label label ;
-  Gaux.may a#set_tooltip tooltip ;
-  Gaux.may a#set_stock_id stock ;
+  Gaux.may ~f: a#set_label label ;
+  Gaux.may ~f: a#set_tooltip tooltip ;
+  Gaux.may ~f: a#set_stock_id stock ;
   group#add_action_with_accel ?accel a ;
   ret a
 
@@ -166,7 +166,7 @@ let add_action name ?callback =
 
 let add_toggle_action name ?active ?callback =
   let a = toggle_action ~name () in
-  Gaux.may a#set_active active ;
+  Gaux.may ~f:a#set_active active ;
   Gaux.may callback
     ~f:(fun cb -> a#connect#activate ~callback:(fun () -> cb a)) ;
   add_single_action ignore a
@@ -181,17 +181,17 @@ let group_radio_actions ?init_value ?callback radio_action_entries ac_group =
   let last_radio_ac =
     List.fold_left 
       (fun radio_grp f -> 
-	let radio_ac = f ac_group in
-	radio_ac#set_group radio_grp ;
-	Gaux.may 
-	  (fun init_v -> radio_ac#set_active (radio_ac#value = init_v)) 
+         let radio_ac = f ac_group in
+         radio_ac#set_group radio_grp ;
+         Gaux.may
+           ~f:(fun init_v -> radio_ac#set_active (radio_ac#value = init_v))
 	  init_value ;
 	Some radio_ac#as_radio_action)
       None radio_action_entries in
-  Gaux.may
+  Gaux.may ~f:
     (fun cb ->
       Gaux.may
-	(fun o ->
+	~f:(fun o ->
 	  GtkSignal.connect
 	    ~sgn:RadioAction.S.changed
 	    ~callback:(fun curr -> cb (RadioAction.get_current_value curr))
@@ -209,18 +209,18 @@ class ui_manager_signals obj = object (self)
 	(Gobject.Data.gobject : Gtk.action Gtk.obj Gobject.data_conv) 
 	GObj.conv_widget
        "GtkUIManager::connect_proxy" f}
-      (fun o -> callback (new action o))
+      ~callback:(fun o -> callback (new action o))
   method disconnect_proxy ~callback = self#connect
     {UIManager.S.disconnect_proxy with GtkSignal.marshaller = fun f ->
      GtkSignal.marshal2 
 	(Gobject.Data.gobject : Gtk.action Gtk.obj Gobject.data_conv) 
 	GObj.conv_widget
        "GtkUIManager::disconnect_proxy" f}
-      (fun o -> callback (new action o))
+      ~callback:(fun o -> callback (new action o))
   method post_activate ~callback = self#connect UIManager.S.post_activate
-      (fun o -> callback (new action o))
+      ~callback:(fun o -> callback (new action o))
   method pre_activate ~callback = self#connect UIManager.S.pre_activate
-      (fun o -> callback (new action o))
+      ~callback:(fun o -> callback (new action o))
 end
 
 type ui_id = int

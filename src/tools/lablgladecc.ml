@@ -254,10 +254,10 @@ let rec skip_to_endtag lexbuf =
      (* CSC: if this can happen, then the code logic (coming from
         lablgtk2 code) needs to be rewritten completely. *)
      assert false
-  | Tag(t,_,true) -> skip_to_endtag lexbuf
-  | Tag(t,_,false) -> skip_to_endtag lexbuf ; skip_to_endtag lexbuf
+  | Tag(_t,_,true) -> skip_to_endtag lexbuf
+  | Tag(_t,_,false) -> skip_to_endtag lexbuf ; skip_to_endtag lexbuf
   | Chars _ -> skip_to_endtag lexbuf
-  | Endtag t -> ()
+  | Endtag _t -> ()
   | EOF -> assert false
 
 let assoc_opt x l = try Some (List.assoc x l) with Not_found -> None
@@ -270,14 +270,14 @@ let rec parse_widget ~closed ~wclass ~wname ~internal lexbuf =
                  ~internal ~wname:(assoc_opt "id" attrs) lexbuf
                @ !widgets;
      true
-  | Tag ("child",attrs,true) -> assert false
+  | Tag ("child",_attrs,true) -> assert false
   | Tag ("child",attrs,false) ->
       let is_internal =
 	try List.assoc "internal-child" attrs <> "" with Not_found -> false in
       Stack.push is_internal internal;
       true
   | Endtag "child" -> ignore(Stack.pop internal); true
-  | Tag (tag,_,closed) ->
+  | Tag (_tag,_,closed) ->
       if not closed then skip_to_endtag lexbuf ; true
   | Endtag "object" ->
       false
@@ -343,7 +343,7 @@ let output_wrapper ~file wtree =
      is_default_name w.wname)
   in
     
-  List.iter (List.filter (fun w -> not (is_hidden w)) widgets) 
+  List.iter (List.filter ~f:(fun w -> not (is_hidden w)) widgets) 
     ~f:output_widget;
 
   (* reparent method *)
@@ -376,7 +376,7 @@ let parse_body ~file lexbuf =
           if !roots = [] then output_wrapper ~file wtree
           else output_roots wtree) ;
       true
-  | Tag(tag, _, true) -> true
+  | Tag(_tag, _, true) -> true
   | Endtag "interface" -> false
   | Tag(_, _, false) | Chars _ | EOF | Endtag _ -> failwith "bad XML syntax"
   do () done

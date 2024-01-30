@@ -20,7 +20,6 @@
 (*                                                                        *)
 (**************************************************************************)
 
-open StdLabels
 open Gobject
 
 type id
@@ -83,7 +82,7 @@ external handler_unblock : 'a obj -> id -> unit
   = "ml_g_signal_handler_unblock"
 external disconnect : 'a obj -> id -> unit
   = "ml_g_signal_handler_disconnect"
-external is_connected : 'a obj -> id -> bool
+external _is_connected : 'a obj -> id -> bool
   = "ml_g_signal_handler_is_connected"
 
 let marshal_unit f _ = f ()
@@ -98,7 +97,7 @@ let marshal_string f argv =
 
 let marshal1 conv1 name f argv =
   let arg1 =
-    try Data.of_value conv1 (Closure.nth argv 1)
+    try Data.of_value conv1 (Closure.nth argv ~pos:1)
     with _ -> failwith ("GtkSignal.marshal1 : " ^ name)
   in f arg1
 
@@ -162,7 +161,7 @@ let marshal4_ret ~ret conv1 conv2 conv3 conv4 name f argv =
 external emit_by_name :
   'a obj -> name:string -> params:'b data_set array -> g_value
   = "ml_g_signal_emit_by_name"
-let emit_by_name_unit obj ~name ~params =
+let _emit_by_name_unit obj ~name ~params =
   ignore (emit_by_name obj ~name ~params)
 
 let emit (obj : 'a obj) ~(sgn : ('a, 'b) t)
@@ -177,7 +176,7 @@ let emit_int =
 external _override_class_closure : 
   string -> g_type -> g_closure -> unit
   = "ml_g_signal_override_class_closure"
-let override_class_closure { name = name } t c = _override_class_closure name t c
+let override_class_closure { name = name; _ } t c = _override_class_closure name t c
 
 external chain_from_overridden : Closure.argv -> unit = "ml_g_signal_chain_from_overridden"
 

@@ -137,6 +137,7 @@ module Convert :  sig
   val convert :
     string -> to_codeset:string -> from_codeset:string -> string
       (** @raise Error . *)
+
   val convert_with_fallback :
     ?fallback:string ->
     to_codeset:string -> from_codeset:string -> string -> string
@@ -145,24 +146,28 @@ module Convert :  sig
   (** All internal strings are encoded in utf8: you should use
       the following conversion functions *)
 
-  val locale_from_utf8 : string -> string 
+  val locale_from_utf8 : string -> string
     (** Converts the input string from [UTF-8] to the encoding of the
         current locale. If the locale's encoding is [UTF-8], the string
         is simply validated and returned unmodified.
         @raise Error if the conversion fails
         @raise Error if the string is not a valid [UTF-8] string *)
 
-  val locale_to_utf8 : string -> string (** @raise Error . *)
-    (** Converts the input string from the encoding of the current locale
+  val locale_to_utf8 : string -> string
+    (** @raise Error .
+        Converts the input string from the encoding of the current locale
         to [UTF-8]. If the locale's encoding is [UTF-8], the string is
         simply validated and returned unmodified.
         @raise Error if the conversion fails
         @raise Error if the string is not a valid [UTF-8] string *)
 
   val filename_from_utf8 : string -> string (** @raise Error . *)
+
   val filename_to_utf8 : string -> string (** @raise Error . *)
+
   val filename_from_uri : string -> string option * string
       (** @raise Error . *)
+
   val filename_to_uri : ?hostname:string -> string -> string
       (** @raise Error . *)
 
@@ -262,6 +267,7 @@ end
 val get_prgname : unit -> string
 val set_prgname : string -> unit
 val get_application_name : unit -> string (** @since GTK 2.2 *)
+
 val set_application_name : string -> unit (** @since GTK 2.2 *)
 
 val get_user_name : unit -> string
@@ -276,16 +282,22 @@ val find_program_in_path : string -> string
 
 val getenv : string -> string
     (** @raise Not_found if the environment variable is not found. *)
+
 val setenv : string -> string -> bool -> unit
     (** @raise Failure if the environment variable couldn't be set.
         @since GTK 2.4 *)
+
 val unsetenv : string -> unit
     (** @since GTK 2.4 *)
 
 val get_user_cache_dir : unit -> string (** @since GTK 2.6 *)
+
 val get_user_data_dir : unit -> string (** @since GTK 2.6 *)
+
 val get_user_config_dir : unit -> string (** @since GTK 2.6 *)
+
 val get_system_data_dirs : unit -> string list (** @since GTK 2.6 *)
+
 val get_system_config_dirs : unit -> string list (** @since GTK 2.6 *)
 
 val usleep : int -> unit

@@ -23,7 +23,6 @@
 (* $Id$ *)
 
 open StdLabels
-open Gaux
 open Gobject
 
 type color
@@ -136,7 +135,7 @@ module Visual = struct
 
   external get_best : ?depth:int -> ?kind:visual_type -> unit -> visual
       = "ml_gdk_visual_get_best"
-  external get_screen : visual -> screen = "ml_gdk_visual_get_screen"
+  external _get_screen : visual -> screen = "ml_gdk_visual_get_screen"
   external get_type : visual -> visual_type = "ml_gdk_visual_get_visual_type"
   external depth : visual -> int = "ml_gdk_visual_get_depth"
 end
@@ -151,7 +150,7 @@ module Color = struct
 (* Removed in GdkColor 3.0
   external color_alloc : colormap -> color -> bool = "ml_gdk_color_alloc"
 *)
-  external color_create : red:int -> green:int -> blue:int -> color
+  external _color_create : red:int -> green:int -> blue:int -> color
       = "ml_GdkColor"
 
 (* Removed in GdkColor 3.0
@@ -399,6 +398,7 @@ module Cursor = struct
   external create_from_pixbuf :
     [`pixbuf] obj -> x:int -> y:int -> cursor
     = "ml_gdk_cursor_new_from_pixbuf" (** @since GTK 2.4 *)
+
   external get_image : cursor -> [`pixbuf] obj
     = "ml_gdk_cursor_get_image"       (** @since GTK 2.8 *)
 end
