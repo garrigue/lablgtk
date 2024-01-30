@@ -148,8 +148,15 @@ let css_provider () = new css_provider (CssProvider.create ())
 
 class style_context ctxt = object
   val ctxt = ctxt
-  (** Does not cascade!! StyleContext.add_provider_for_screen does cascade. *)
+  method as_style_context = ctxt
+  (* Does not cascade!! StyleContext.add_provider_for_screen does cascade. *)
   method add_provider (provider: css_provider) = StyleContext.add_provider ctxt (provider#as_css_provider)
+  method remove_provider (provider: css_provider) =
+    StyleContext.remove_provider ctxt provider#as_css_provider
+  method add_class cls = StyleContext.add_class ctxt cls
+  method remove_class cls = StyleContext.remove_class ctxt cls
+  method has_class cls = StyleContext.has_class ctxt cls
+  method list_classes = StyleContext.list_classes ctxt
 end
 
 class selection_input (sel : Gtk.selection_data) = object
