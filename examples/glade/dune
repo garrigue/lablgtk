@@ -1,13 +1,13 @@
 (executables
  (names glade_demo)
  (modules project1 glade_demo)
- (flags :standard -no-strict-sequence -warn-error -10)
+ (flags :standard -no-strict-sequence -w -10)
  (libraries lablgtk3))
 
 (executables
  (names gladecalc)
  (modules project2 gladecalc)
- (flags :standard -no-strict-sequence -warn-error -10)
+ (flags :standard -no-strict-sequence -w -10)
  (libraries lablgtk3))
 
 (rule

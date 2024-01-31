@@ -49,7 +49,7 @@ let () =
   redirect Unix.stderr "Std Error";
   let _ = 
     GMain.Timeout.add 500 (fun () -> try
-                         Pervasives.print_endline "Hello print_endline";
+                         print_endline "Hello print_endline";
                          true
                          with e -> prerr_endline (Printexc.to_string e); false),
     GMain.Timeout.add 500 (fun () -> 
@@ -59,7 +59,7 @@ let () =
                         Format.printf "Hello format@.";
                         true),
     GMain.Timeout.add 5000 (fun () ->
-                         Pervasives.prerr_endline "Hello prerr_endline";
+                         prerr_endline "Hello prerr_endline";
                          true)
   in
   let _ = w#connect#destroy GMain.quit in

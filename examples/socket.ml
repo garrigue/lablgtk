@@ -16,8 +16,8 @@ let main () =
   let label = GMisc.label ~packing:vbox#pack () in
   w#show ();
   let socket = GWindow.socket ~packing:vbox#add ~height:40 () in
-  label#set_text ("XID to plug into this socket: 0x" ^ 
-                  Int32.format "%x" socket#xwindow);
+  label#set_text (Printf.sprintf "XID to plug into this socket: 0x%lx"
+                    socket#xwindow);
   GMain.main ()
 
 let _ = main ()
