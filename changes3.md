@@ -1,5 +1,13 @@
 LablGTK changes log
 
+## In Lablgtk-3.1.4
+
+2024.01.31 [Jacques]
+  * use Bytes rather than String
+  * Various missing bindings, including lablgtk3-rsvg2 (#128)
+  * GtkStyleContext: Add missing class and provider functions (#163)
+  * Add GdkEvent.Scroll.delta_{x,y} (#173) [Thomas Leonard]
+
 ## In Lablgtk-3.1.3
 
 2022.10.06 [Jacques]
