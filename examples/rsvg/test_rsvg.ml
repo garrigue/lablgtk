@@ -26,15 +26,12 @@ let _ =
   end
 
 let pb =
-  let gz =
-    Filename.check_suffix !fname ".svgz" ||
-    Filename.check_suffix !fname ".svg.gz" in
   let size_cb = match !zoom with
   | None -> None
-  | Some z -> Some (Rsvg.at_zoom z z) in
-  Rsvg.render_from_file ~gz ?dpi:!dpi ?size_cb !fname
+  | Some z -> Some (Rsvg2.at_zoom z z) in
+  Rsvg2.render_from_file ?dpi:!dpi ?size_cb !fname
 
-let w = GWindow.window ~allow_grow:false ~title:!fname ()
+let w = GWindow.window ~title:!fname ()
 let i = GMisc.image ~packing:w#add ()
 
 let () = 
