@@ -107,7 +107,7 @@ CAMLprim value ml_some (value);
 value ml_cons (value, value);
 CAMLexport void ml_raise_null_pointer (void) Noreturn;
 CAMLexport value Val_pointer (void *);
-CAMLprim value copy_string_check (const char*);
+CAMLprim value copy_string_check (void *);
 value copy_string_or_null (const char *);
 value Val_option_string (const char *s);
 
