@@ -113,7 +113,7 @@ CAMLexport value Val_pointer (void *ptr)
     return ret;
 }
 
-CAMLprim value copy_string_check (const char*str)
+CAMLprim value copy_string_check (void *str)
 {
     if (!str) ml_raise_null_pointer ();
     return copy_string ((char*) str);
