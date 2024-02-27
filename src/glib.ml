@@ -73,7 +73,7 @@ module Io = struct
   external channel_of_descr : Unix.file_descr -> channel
     = "ml_g_io_channel_unix_new"
   external channel_of_descr_socket : Unix.file_descr -> channel
-    = "ml_g_io_channel_unix_new_socket"
+    = "ml_g_io_channel_win32_new_socket"
   external remove : id -> unit = "ml_g_source_remove"
   external add_watch :
     cond:condition list -> callback:(condition list -> bool) -> ?prio:int -> channel -> id
