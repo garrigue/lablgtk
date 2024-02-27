@@ -350,7 +350,7 @@ CAMLprim value ml_g_io_channel_unix_new(value wh)
      (_open_osfhandle((long)*(HANDLE*)Data_custom_val(wh), O_BINARY)));
 }
 
-ML_1 (g_io_channel_win_new_socket, Socket_val, Val_GIOChannel_noref)
+ML_1 (g_io_channel_win32_new_socket, Socket_val, Val_GIOChannel_noref)
 #endif
 
 static gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c,
