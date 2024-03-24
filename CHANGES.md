@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2024.03.24 [Jacques]
+  * fix pointer incompatibility in ml_gtk_style_context_list_classes (#178)
+
 ## In Lablgtk-3.1.4
 
 2024.01.31 [Jacques]
