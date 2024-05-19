@@ -366,7 +366,7 @@ CAMLprim value ml_gtk_text_buffer_get_iter_at_line_index(value tb,
 {
   CAMLparam3(tb,l,c);
   GtkTextIter res;
-  gtk_text_buffer_get_iter_at_line_offset(GtkTextBuffer_val(tb),
+  gtk_text_buffer_get_iter_at_line_index(GtkTextBuffer_val(tb),
 					  &res,
 					  Int_val(l),
 					  Int_val(c));
