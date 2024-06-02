@@ -198,13 +198,13 @@ For many constructor or method arguments, default values are provided.
 Generally, this default value is defined by GTK, and you must refer
 to GTK's documentation.
 For ML defined defaults, usually default values are either `false`, `0`, `None`
-or ```NONE``, according to the expected type.
-Important exceptions are `~show`, which default to true in all widgets
-except those in **GWindow**, and `~fill`, which defaults to true or ```BOTH``.
+or `NONE`, according to the expected type.
+Important exceptions are `~show`, which defaults to true in all widgets
+except those in **GWindow**, and `~fill`, which defaults to true or `BOTH`.
 
 Note about unit as method argument:
 
-O'Caml introduces no distinction between methods having side-effects
+OCaml introduces no distinction between methods having side-effects
 and methods simply returning a value. In practice, this is
 confusing, and awkward when used as callbacks. For this reason all
 methods having noticeable side-effects should take arguments, and
@@ -263,7 +263,7 @@ it, you may use compaction through `Gc.compact` where it is safe
                 It requires libgtksourceview-3.x.
                 See examples in examples/sourceview/*3.ml
                 The executable must be linked with lablgtksourceview3.cma.
-- GtkSpell 3 support: 
+- GtkSpell 3 support
 
 #### Not available in Gtk3
 
@@ -274,9 +274,7 @@ it, you may use compaction through `Gc.compact` where it is safe
 
 ### Running lablgtk3 in the toplevel
 
-The X11 version of lablgt3
-
-### Windows port
+#### Windows port
 
 If you want to use threads, you must be aware of windows specific
 restrictions; see for instance:
@@ -309,7 +307,7 @@ Here is an example using the lablgtk toplevel with threads:
 # b#connect#clicked (fun () -> prerr_endline "Hello");;
 ```
 
-### OSX/Quartz port
+#### OSX/Quartz port
 
 Since Darwin is Unix, this port compiles as usual.
 Note however that Quartz imposes even stronger restrictions than
