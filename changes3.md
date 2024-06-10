@@ -1,5 +1,21 @@
 LablGTK changes log
 
+## In Lablgtk-3.1.5
+
+2024.06.10 [Jacques]
+  * Prepare for release
+  * Fix typos in README.md (#182) [Sylvain Chiron]
+
+2024.05.20 [Jacques]
+  * Typo in ml_gtk_text_buffer_get_iter_at_line_index. (#181) [Hugo Herbelin]
+
+2024.05.14 [Jacques]
+  * Support windows sockets in Glib.IO.channel_of_descr (#176)
+    [with Michael Soegtrop]
+
+2024.03.24 [Jacques]
+  * fix pointer incompatibility in ml_gtk_style_context_list_classes (#178)
+
 ## In Lablgtk-3.1.4
 
 2024.01.31 [Jacques]

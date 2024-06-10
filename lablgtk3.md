@@ -1,8 +1,8 @@
-# LablGTK3 3.1.3 : an interface to the GIMP Tool Kit
+# LablGTK3 3.1.5 : an interface to the GIMP Tool Kit
 
 ## Dependencies
 
-- ocaml >= 4.05.0  (including 5.0)
+- ocaml >= 4.09.0  (including 5.0 to 5.2)
 - gtk+ >= 3.18
 - dune >= 1.8
 - camlp5 (for developer build only)
@@ -198,13 +198,13 @@ For many constructor or method arguments, default values are provided.
 Generally, this default value is defined by GTK, and you must refer
 to GTK's documentation.
 For ML defined defaults, usually default values are either `false`, `0`, `None`
-or ```NONE``, according to the expected type.
-Important exceptions are `~show`, which default to true in all widgets
-except those in **GWindow**, and `~fill`, which defaults to true or ```BOTH``.
+or `NONE`, according to the expected type.
+Important exceptions are `~show`, which defaults to true in all widgets
+except those in **GWindow**, and `~fill`, which defaults to true or `BOTH`.
 
 Note about unit as method argument:
 
-O'Caml introduces no distinction between methods having side-effects
+OCaml introduces no distinction between methods having side-effects
 and methods simply returning a value. In practice, this is
 confusing, and awkward when used as callbacks. For this reason all
 methods having noticeable side-effects should take arguments, and
@@ -263,20 +263,28 @@ it, you may use compaction through `Gc.compact` where it is safe
                 It requires libgtksourceview-3.x.
                 See examples in examples/sourceview/*3.ml
                 The executable must be linked with lablgtksourceview3.cma.
-- GtkSpell 3 support: 
+- GtkSpell 3 support
+- RSVG2 support:
+                This binding was contributed by Olivier Andrieu.
+                It requires librsvg-2.x (preferably 2.2.x).
+                See an example in examples/rsvg.
+                The executable must be linked with lablrsvg.cma.
+- GooCanvas2 support:
+                This binding was contributed by Maxence Guesdon.
+                It requires libgoocanvas-2.x.
+                See examples in examples/goocanvas2.
+                The executable must be linked with lablgtk3_goocanvas2.cma.
+
 
 #### Not available in Gtk3
 
 - LibGlade support: not available in Gtk3 (replaced by GtkBuilder)
 - GL extension: not available in Gtk3
-- SVG support: not available in Gtk3
 - GnomeCanvas support: not available in Gtk3
 
 ### Running lablgtk3 in the toplevel
 
-The X11 version of lablgt3
-
-### Windows port
+#### Windows port
 
 If you want to use threads, you must be aware of windows specific
 restrictions; see for instance:
@@ -309,7 +317,7 @@ Here is an example using the lablgtk toplevel with threads:
 # b#connect#clicked (fun () -> prerr_endline "Hello");;
 ```
 
-### OSX/Quartz port
+#### OSX/Quartz port
 
 Since Darwin is Unix, this port compiles as usual.
 Note however that Quartz imposes even stronger restrictions than
