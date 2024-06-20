@@ -285,7 +285,8 @@ module Data = struct
   let gobject_option =
     { kind = `OBJECT;
       proj = (function `OBJECT c -> may_map ~f:unsafe_cast c
-             | _ -> failwith "Gobject.get_object");
+                     | `NONE -> None
+                     | _ -> failwith "Gobject.get_object");
       inj = (fun c -> `OBJECT (may_map ~f:unsafe_cast c)) }
   let gobject =
     { kind = `OBJECT;

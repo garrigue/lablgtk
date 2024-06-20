@@ -29,6 +29,7 @@
    ; testdnd testgtk
    testthread ; timer toolbar
    tooltip tree tree_model tree_store ; tron
+   glarea
  )
  (modules
    about accel_tree action assistant assistant_tutorial
@@ -46,6 +47,7 @@
    stackcontainer stackswitcher
    testdnd ; testgtk
    testthread timer toolbar tooltip tree tree_model tree_store tron
+   glarea
  )
  (flags :standard -w -3-6-7-10-24-26-27-33-35 -no-strict-sequence)
  (libraries lablgtk3))
