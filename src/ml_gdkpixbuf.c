@@ -59,7 +59,7 @@ CAMLprim value ml_gdk_pixbuf_set_marshal_use_rle (value v)
   return Val_unit;
 }
 
-static void ml_GdkPixbuf_serialize (value v, unsigned long *wsize_32, unsigned long *wsize_64)
+static void ml_GdkPixbuf_serialize (value v, uintnat *wsize_32, uintnat *wsize_64)
 {
   GdkPixbuf *pb = GdkPixbuf_val(v);
   GdkPixdata pixdata;
@@ -75,7 +75,7 @@ static void ml_GdkPixbuf_serialize (value v, unsigned long *wsize_32, unsigned l
   *wsize_64 = 8;
 }
 
-static unsigned long ml_GdkPixbuf_deserialize (void *dst)
+static uintnat ml_GdkPixbuf_deserialize (void *dst)
 {
   GError *error = NULL;
   GdkPixdata pixdata;
