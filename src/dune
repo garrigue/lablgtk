@@ -34,6 +34,6 @@
    ml_gtkmenu ml_gtkfile ml_gtktree ml_gtkpack
    ml_gtkstock ml_gtkrange ml_gtkassistant
  )
- (c_flags         (:include cflag-gtk+-3.0.sexp) (:include cflag-extraflags.sexp) -Wno-deprecated-declarations)
+ (c_flags         (:include cflag-gtk+-3.0.sexp) (:include cflag-extraflags.sexp))
  (c_library_flags (:include clink-gtk+-3.0.sexp))
  (libraries threads cairo2))
