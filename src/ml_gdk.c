@@ -270,6 +270,8 @@ ML_2 (gdk_window_set_cursor, GdkWindow_val, GdkCursor_val, Unit)
 ML_1 (gdk_window_clear, GdkWindow_val, Unit)
 ML_5 (gdk_window_clear_area, GdkWindow_val, Int_val, Int_val, Int_val, Int_val,
       Unit)
+ML_5 (gdk_window_clear_area_e, GdkWindow_val, Int_val, Int_val, Int_val, Int_val,
+      Unit)
 ML_0 (GDK_ROOT_PARENT, Val_GdkWindow)
 ML_1 (gdk_window_get_parent, GdkWindow_val, Val_GdkWindow)
 ML_2 (gdk_window_set_transient_for, GdkWindow_val, GdkWindow_val, Unit)

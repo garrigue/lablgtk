@@ -317,7 +317,10 @@ module Window = struct
   external clear : window -> unit = "ml_gdk_window_clear"
   external clear_area :
     window -> x:int -> y:int -> width:int -> height:int -> unit
-    = "ml_gdk_window_clear"
+    = "ml_gdk_window_clear_area"
+  external clear_area_e :
+    window -> x:int -> y:int -> width:int -> height:int -> unit
+    = "ml_gdk_window_clear_area_e"
   external get_xwindow : [>`drawable] obj -> xid = "ml_GDK_WINDOW_XWINDOW"
 
   let set_back_pixmap w pix = 
