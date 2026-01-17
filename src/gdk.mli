@@ -227,6 +227,8 @@ module Window :
     val clear : window -> unit
     val clear_area :
         window -> x:int -> y:int -> width:int -> height:int -> unit
+    val clear_area_e :
+        window -> x:int -> y:int -> width:int -> height:int -> unit
     val get_xwindow : [>`drawable] obj -> xid
     val native_of_xid : xid -> native_window
     val xid_of_native : native_window -> xid
