@@ -289,7 +289,7 @@ let outfile = ref ""
 let ooutfile = ref ""
 
 let process_file f =
-  let base = Filename.chop_extension f in
+  let base = Filename.chop_extension (Filename.basename f) in
   let baseM = String.capitalize_ascii base in
   prefix := baseM;
   (* Input *)
