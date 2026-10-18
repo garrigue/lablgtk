@@ -72,6 +72,10 @@ module Window = struct
       = "ml_gtk_window_set_default"
   external get_size : [>`window] obj -> int * int
       = "ml_gtk_window_get_size"
+  external titlebar : [>`window] obj -> [>`widget] obj
+      = "ml_gtk_window_get_titlebar"
+  external set_titlebar : [>`window] obj -> [>`widget] obj -> unit
+      = "ml_gtk_window_set_titlebar"
   (* see gtk.props for others *)
 end
 

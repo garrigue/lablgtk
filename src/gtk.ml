@@ -206,6 +206,10 @@ type tooltip = [`tooltip] obj
 (* Widgets from GTK3 *)
 type stack = [container|`stack]
 type stack_switcher = [box|`stackswitcher]
+type popover = [bin|`popover]
+type overlay = [bin|`overlay]
+type header_bar = [container|`headerbar]
+type spinner = [widget|`spinner]
 
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj

@@ -230,3 +230,17 @@ let font_selection =
   FontSelection.make_params [] ~cont:(
   GContainer.pack_container ~create:
     (fun p -> new font_selection (FontSelection.create p)))
+
+class spinner obj = object
+  inherit [Gtk.spinner] widget_impl obj
+  inherit spinner_props
+  method start = Spinner.start obj
+  method stop = Spinner.stop obj
+  method connect = new widget_signals_impl obj
+end
+
+let spinner ?active =
+  Spinner.make_params [] ?active ~cont:(
+    Widget.size_params ~cont:(fun pl ?packing ?show () ->
+      let w = Spinner.create pl in
+      pack_return (new spinner w) ~packing ~show))

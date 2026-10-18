@@ -53,6 +53,7 @@ CAMLprim value ml_gtkmisc_init(value unit)
         gtk_arrow_get_type() +
         gtk_image_get_type() +
         gtk_label_get_type() +
+        gtk_spinner_get_type() +
         gtk_hseparator_get_type() +
         gtk_vseparator_get_type() +
         gtk_font_selection_get_type() +
@@ -174,3 +175,8 @@ CAMLprim value ml_gtk_label_get_selection_bounds (value label)
 
 
 /* gtk[hv]separator.h */
+
+/* gtkSpinner.h */
+#define GtkSpinner_val(val) check_cast(GTK_SPINNER,val)
+ML_1 (gtk_spinner_start, GtkSpinner_val, Unit)
+ML_1 (gtk_spinner_stop, GtkSpinner_val, Unit)

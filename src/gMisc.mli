@@ -414,3 +414,22 @@ val font_selection :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> font_selection
+
+(** gtk GtkSpinner *)
+class spinner : Gtk.spinner obj ->
+  object
+    inherit GObj.widget_full
+    val obj : Gtk.spinner obj
+    method active : bool
+    method set_active : bool -> unit
+    method start : unit -> unit
+    method stop : unit -> unit
+    method connect : widget_signals
+  end
+
+(** @gtkdoc gtk GtkSpinner *)
+val spinner : 
+  ?active:bool -> 
+  ?width:int -> 
+  ?height:int -> 
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> spinner  

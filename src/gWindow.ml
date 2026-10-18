@@ -65,6 +65,8 @@ class window_skel obj = object (self)
   method iconify () = Window.iconify obj
   method deiconify () = Window.deiconify obj
   method get_size () = Window.get_size obj
+  method titlebar = new widget (Window.titlebar obj)
+  method set_titlebar w = Window.set_titlebar obj (as_widget w)
 
 end
 

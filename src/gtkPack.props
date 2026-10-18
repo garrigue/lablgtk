@@ -158,3 +158,16 @@ class StackSwitcher set wrap wrapsig : Box {
   "icon-size" gint    : Read / Write (** GTK 3.20 *) 
   "stack" GtkStack    : Read / Write / Construct
 }
+
+class HeaderBar set wrap wrapsig : Container {
+  "custom-title" GtkWidget         : Read / Write
+  "decoration-layout" string       : Read / Write
+  "decoration-layout-set" gboolean : Read / Write
+  "has-subtitle" gboolean          : Read / Write
+  "show-close-button" gboolean     : Read / Write
+  "spacing" gint                   : Read / Write
+  "subtitle" string                : Read / Write
+  "title" string                   : Read / Write
+  method pack_start : "[>`widget] obj -> unit"
+  method pack_end : "[>`widget] obj -> unit"
+}

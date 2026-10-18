@@ -58,6 +58,7 @@ CAMLprim value ml_gtkpack_init(value unit)
         gtk_grid_get_type() +
         gtk_size_group_get_type() +
         gtk_stack_get_type() +
+        gtk_header_bar_get_type() +
         gtk_stack_switcher_get_type();
     return Val_GType(t);
 }
@@ -217,3 +218,7 @@ ML_2 (gtk_stack_get_child_by_name, GtkStack_val, String_val, Val_GtkWidget)
 ML_3 (gtk_stack_set_visible_child_full, GtkStack_val, String_val, Stack_transition_type_val, Unit)
 
 #define GtkStackSwitcher_val(val) check_cast(GTK_STACK_SWITCHER,val)
+
+#define GtkHeaderBar_val(val) check_cast(GTK_HEADER_BAR,val)
+ML_2 (gtk_header_bar_pack_start, GtkHeaderBar_val, GtkWidget_val, Unit)
+ML_2 (gtk_header_bar_pack_end, GtkHeaderBar_val, GtkWidget_val, Unit)

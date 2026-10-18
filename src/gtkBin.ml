@@ -45,3 +45,22 @@ module ScrolledWindow = ScrolledWindow
 module Invisible = Invisible
 
 module Expander = Expander
+
+module Popover = struct
+  include Popover
+  external set_pointing_to : [> `popover] Gtk.obj -> Gdk.Rectangle.t -> unit
+    = "ml_gtk_popover_set_pointing_to"
+  external get_pointing_to_raw : [> `popover] Gtk.obj -> (int * int * int * int) option
+    = "ml_gtk_popover_get_pointing_to"
+  let get_pointing_to obj =
+    match get_pointing_to_raw obj with
+    | None -> None
+    | Some (x, y, width, height) ->
+        Some (Gdk.Rectangle.create ~x ~y ~width ~height)
+end
+
+module Overlay = struct
+  include Overlay
+  external add_overlay : [> `overlay] Gtk.obj -> [> `widget] Gtk.obj -> unit
+    = "ml_gtk_overlay_add_overlay"
+end

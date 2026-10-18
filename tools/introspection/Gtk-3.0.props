@@ -3886,4 +3886,3 @@ class Window set wrap wrapsig : Bin {
 
 class WindowAccessible set wrap wrapsig : ContainerAccessible {
 }
-

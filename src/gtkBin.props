@@ -73,6 +73,22 @@ class ScrolledWindow set wrap : Bin {
   signal scroll_child :   GtkScrollType gboolean
 }
 
+class Popover set wrap wrapsig : Bin {
+  "relative-to"          GtkWidget         : Read / Write
+  "position"             GtkPositionType   : Read / Write
+  "modal"                gboolean          : Read / Write
+  "transitions-enabled"   gboolean         : Read / Write
+  method popup : "unit -> unit"
+  method popdown : "unit -> unit"
+  signal closed
+}
+
+class Overlay set wrap wrapsig : Bin {
+  method add_overlay : "[>`widget] obj -> unit"
+  method set_overlay_pass_through : "[>`widget] obj -> bool -> unit"
+  method reorder_overlay : "[>`widget] obj -> int -> unit"
+}
+
 class Viewport set wrap : Bin {
   "hadjustment"          GtkAdjustment        : Read / Write
   "vadjustment"          GtkAdjustment        : Read / Write

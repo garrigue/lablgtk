@@ -171,3 +171,9 @@ class DrawingArea : Widget {
 class Separator hv : Widget {
   "orientation"          GtkOrientation       : Read / Write / NoSet
 }
+
+class Spinner set wrap wrapsig : Widget {
+  "active"               gboolean             : Read / Write
+  method start : "unit -> unit"
+  method stop : "unit -> unit"
+}

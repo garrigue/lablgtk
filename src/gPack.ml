@@ -281,3 +281,28 @@ end
 let stack_switcher =
   StackSwitcher.make_params [] ~cont:(
   pack_container ~create:(fun p -> new stack_switcher (StackSwitcher.create p)))
+
+class header_bar obj = object
+  inherit container obj
+  inherit header_bar_props
+  method pack_start w = HeaderBar.pack_start obj (as_widget w)
+  method pack_end w = HeaderBar.pack_end obj (as_widget w)
+end
+
+let header_bar 
+  ?custom_title 
+  ?decoration_layout 
+  ?decoration_layout_set 
+  ?has_subtitle 
+  ?show_close_button 
+  ?spacing 
+  ?title 
+  ?subtitle ?show () =
+  let custom_title = Option.map (fun (w : GObj.widget) -> w#as_widget) custom_title in
+    HeaderBar.make_params [] 
+      ?custom_title ?decoration_layout ?decoration_layout_set ?has_subtitle ?show_close_button ?spacing ?title ?subtitle
+      ~cont:(fun p -> 
+        let self = new header_bar (HeaderBar.create p) in
+        if show <> Some false then self#misc#show ();
+        self)
+

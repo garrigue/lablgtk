@@ -104,6 +104,8 @@ class window_skel : 'a obj ->
     method set_urgency_hint : bool -> unit (** since Gtk 2.8 *)
     method urgency_hint : bool (** since Gtk 2.8 *)
     method get_size : unit -> int * int
+    method titlebar : GObj.widget 
+    method set_titlebar : GObj.widget -> unit 
 
   end
 

@@ -841,6 +841,9 @@ CAMLprim value ml_gtk_window_get_size(value window)
   CAMLreturn(res);
 }
 
+ML_1 (gtk_window_get_titlebar, GtkWindow_val, Val_GtkWidget)
+ML_2 (gtk_window_set_titlebar, GtkWindow_val, GtkWidget_val, Unit)
+
 /* gtkmessagedialog.h */
 #define GtkMessageDialog_val(v) check_cast(GTK_MESSAGE_DIALOG,v)
 

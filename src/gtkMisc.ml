@@ -54,3 +54,5 @@ module Label = Label
 module Separator = Separator
 
 module FontSelection = FontSelection
+
+module Spinner = Spinner

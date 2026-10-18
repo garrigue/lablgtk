@@ -452,3 +452,41 @@ val stack_switcher :
   ?width:int ->
   ?height:int ->
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> stack_switcher
+
+(** @gtkdoc gtk GtkHeaderBar *)
+class header_bar : ([> Gtk.header_bar] as 'a) obj ->
+  object
+    inherit container
+    val obj : 'a obj
+    method custom_title : GObj.widget
+    method set_custom_title : GObj.widget -> unit
+    method decoration_layout : string
+    method set_decoration_layout : string -> unit
+    method decoration_layout_set : bool
+    method set_decoration_layout_set : bool -> unit
+    method has_subtitle : bool
+    method set_has_subtitle : bool -> unit
+    method show_close_button : bool
+    method set_show_close_button : bool -> unit
+    method spacing : int
+    method set_spacing : int -> unit
+    method subtitle : string
+    method set_subtitle : string -> unit
+    method title : string
+    method set_title : string -> unit
+    method pack_start : GObj.widget -> unit
+    method pack_end : GObj.widget -> unit
+  end
+
+val header_bar :
+  ?custom_title: GObj.widget ->
+  ?decoration_layout:string ->
+  ?decoration_layout_set:bool ->
+  ?has_subtitle:bool ->
+  ?show_close_button:bool ->
+  ?spacing:int ->
+  ?title:string ->
+  ?subtitle:string ->
+  ?show:bool ->
+  unit -> header_bar
+  

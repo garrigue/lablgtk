@@ -49,6 +49,43 @@ let scrolled_window ?hadjustment ?vadjustment =
   pack_container ~create:(fun pl ->
     new scrolled_window (ScrolledWindow.create pl)))
 
+
+class popover_signals obj = object
+  inherit GContainer.container_signals_impl (obj : [> Gtk.popover] Gtk.obj)
+  inherit OgtkBinProps.popover_sigs
+end
+
+class popover obj = object
+  inherit [Gtk.popover] GContainer.bin_impl obj
+  inherit OgtkBinProps.popover_props
+  method set_pointing_to rect = GtkBin.Popover.set_pointing_to obj rect
+  method pointing_to = GtkBin.Popover.get_pointing_to obj
+  method popup = Popover.popup obj
+  method popdown = Popover.popdown obj
+  method connect = new popover_signals obj
+end
+
+let popover ?relative_to ?position ?modal ?transitions_enabled =
+  let relative_to = Option.map (fun (w : GObj.widget) -> w#as_widget) relative_to in
+  GtkBin.Popover.make_params []
+    ?relative_to ?position ?modal ?transitions_enabled
+    ~cont:(fun pl () -> new popover (GtkBin.Popover.create pl))
+    
+class overlay_signals obj = object
+  inherit GContainer.container_signals_impl (obj : [> Gtk.overlay] Gtk.obj)
+end
+
+class overlay obj = object
+  inherit [Gtk.overlay] GContainer.bin_impl obj
+  method add_overlay w = GtkBin.Overlay.add_overlay obj (as_widget w)
+  method set_overlay_pass_through w b = GtkBin.Overlay.set_overlay_pass_through obj (as_widget w) b
+  method reorder_overlay w i = GtkBin.Overlay.reorder_overlay obj (as_widget w) i
+  method connect = new overlay_signals obj
+end
+
+let overlay =
+  pack_container ~create:(fun pl -> new overlay (Overlay.create pl)) []
+
 class event_box obj = object
   inherit bin obj
   inherit OgtkBinProps.event_box_props

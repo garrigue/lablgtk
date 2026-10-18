@@ -80,3 +80,5 @@ module Notebook = Notebook
 module Stack = Stack
 
 module StackSwitcher = StackSwitcher
+
+module HeaderBar = HeaderBar
