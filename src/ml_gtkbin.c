@@ -36,7 +36,6 @@
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
-#include <stdio.h>
 #include "ml_gdk.h"
 
 /* Init all */
@@ -69,9 +68,6 @@ ML_1 (gtk_popover_popdown, GtkPopover_val, Unit)
 CAMLprim value ml_gtk_popover_set_pointing_to(value v_popover, value v_rect) {
     CAMLparam2(v_popover, v_rect);
     GdkRectangle *rect = GdkRectangle_val(v_rect);
-    //printf("[C DEBUG] Popover: %p | x: %d, y: %d, w: %d, h: %d\n",
-    //       (void*)GtkPopover_val(v_popover), rect->x, rect->y, rect->width, rect->height);
-    fflush(stdout);
     gtk_popover_set_pointing_to(GtkPopover_val(v_popover), rect);
     CAMLreturn(Val_unit);
 }
